@@ -1,0 +1,12 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+<<<<<<< HEAD
+    "react-hooks/rules-of-hooks": "off"
+=======
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-page-custom-font": "off"
+    // Add any additional rules you want to disable here
+>>>>>>> 6333fd87bdeb8c9b7af023a4d390f413fc65773c
+  }
+}

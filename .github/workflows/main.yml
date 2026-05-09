@@ -1,0 +1,47 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  Azubi_Admin:
+
+    runs-on: ubuntu-latest
+
+    steps:
+ 
+    - name: Checkout
+
+      uses: actions/checkout@v3
+
+    - name: Deployment
+
+      uses: appleboy/ssh-action@master
+
+      with:
+
+        host: 203.190.153.23
+
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+        username: user
+        
+        port: 22
+
+        script: |
+          cd /home/user/Azubi/admin/
+          
+          # Load NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+          
+          nvm use node
+          node -v  # Print Node.js version to verify it's loaded
+          pm2 -v   # Check if PM2 is available
+          
+          git pull origin main
+          yarn install
+          yarn build
+          pm2 restart 12
+          

@@ -1,0 +1,18 @@
+.section-border{
+    border: 2px solid #2894A2;
+    border-radius: 30px;
+    padding-bottom: 15px;
+    padding-right: 15px;
+    margin-bottom: 10px;
+
+}
+
+.card-section{
+    border: 2px solid #2894A2;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    padding: 10px;
+}
+.cards-container{
+    padding: 5px;
+}
