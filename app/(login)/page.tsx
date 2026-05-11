@@ -75,6 +75,20 @@ const Login = () => {
     },
   });
   
+  const [showBranding, setShowBranding] = useState(true);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname;
+      const userDomain = process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang";
+      const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
+
+      if (host.includes(userDomain) || host.includes(employeeDomain)) {
+        setShowBranding(false);
+      }
+    }
+  }, []);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -114,25 +128,26 @@ const Login = () => {
             <Grid
               item
               xs={12}
-              lg={6}
+              lg={showBranding ? 6 : 12}
               sx={{ display: "flex" }}
               justifyContent={"center"}
             >
-              <SVG.LoginBg />
+              {showBranding && <SVG.LoginBg />}
             </Grid>
-            <Grid item xs={12} lg={6}>
+            <Grid item xs={12} lg={showBranding ? 6 : 12}>
               <Typography
                 component={"h1"}
                 sx={{ marginBottom: "25px", textAlign: "center" }}
               >
-                <Image
-                  // sizes="100vw"
-                  src="/logo.png"
-                  alt=""
-                  width={300}
-                  height={74}
-                  style={{ objectFit: "contain" }}
-                />
+                {showBranding && (
+                  <Image
+                    src="/logo.png"
+                    alt=""
+                    width={300}
+                    height={74}
+                    style={{ objectFit: "contain" }}
+                  />
+                )}
               </Typography>
               <Typography variant="h2" sx={{ textAlign: "center" }}>
                 Welcome Back !

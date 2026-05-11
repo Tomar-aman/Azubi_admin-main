@@ -27,6 +27,20 @@ export default function AdminLayout({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isToggle, setIsToggle] = useState(true);
   const loading = useSelector((state: RootState) => state.auth.loading);
+  const [showBranding, setShowBranding] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname;
+      const userDomain = process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang";
+      const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
+      
+      if (host.includes(userDomain) || host.includes(employeeDomain)) {
+        setShowBranding(false);
+      }
+    }
+  }, []);
+
   const handleToggle = () => {
     setIsToggle(!isToggle);
   };
@@ -63,13 +77,15 @@ export default function AdminLayout({
               alignItems: "center",
             }}
           >
-            <Image
-              src={isToggle ? "/logo.png" : "/logo.png"}
-              alt=""
-              width={isToggle ? 210 : 28}
-              height={isToggle ? 44 : 30.7}
-              style={{objectFit:"contain"}}
-            />
+            {showBranding && (
+              <Image
+                src={isToggle ? "/logo.png" : "/logo.png"}
+                alt=""
+                width={isToggle ? 210 : 28}
+                height={isToggle ? 44 : 30.7}
+                style={{objectFit:"contain"}}
+              />
+            )}
           </Typography>
           <Box sx={{ flexGrow: 1 }}>
             <IconButton
