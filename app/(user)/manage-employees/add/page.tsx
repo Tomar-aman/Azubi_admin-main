@@ -73,7 +73,7 @@ const AddEmployeePage = () => {
       setLoading(true);
       try {
         if (isEdit) {
-          const res = await updateManagedEmployee(id, values);
+          const res = await updateManagedEmployee(id as string, values);
           if (res.remote === "success") {
             toast.success("Employee updated successfully!");
             setTimeout(() => router.push("/manage-employees"), 1200);

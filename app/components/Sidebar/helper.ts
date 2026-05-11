@@ -1,7 +1,7 @@
 import { SVG } from "../icon";
 export interface SidebarMenu {
   id: number;
-  icon?: React.ReactNode;
+  icon?: React.ElementType | any;
   label: string;
   url?: string;
   key?: string;

@@ -83,7 +83,7 @@ const AddUserPage = () => {
             status: values.status,
           };
           if (values.password) payload.newPassword = values.password;
-          const res = await updateManagedUser(id, payload);
+          const res = await updateManagedUser(id as string, payload);
           if (res.remote === "success") {
             toast.success("User updated successfully!");
             setTimeout(() => router.push("/manage-users"), 1200);
@@ -126,7 +126,6 @@ const AddUserPage = () => {
     const params = new URLSearchParams(window.location.search);
     const userId = params.get("id");
     if (userId) {
-      setId(userId);
       (async () => {
         setLoading(true);
         const res = await getManagedUserById(userId);
