@@ -15,12 +15,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SVG } from "../icon";
 import { setIsLogin } from "@/app/redux/auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const SidebarMenu = () => {
   const dispatch = useDispatch();
   const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState<number | null>(null);
+
+  // @ts-ignore
+  const currentUser = useSelector((state: any) => state.user?.data);
+  const permissions = currentUser?.permissions;
 
   const handleMenu = (id: number) => {
     if (id === openMenu) {
@@ -29,10 +33,17 @@ const SidebarMenu = () => {
       setOpenMenu(id);
     }
   };
+
+  const filteredMenuData = MENU_DATA.filter((item) => {
+    if (item.label === "Log Out") return true;
+    if (!permissions) return true; // main admin, or old user
+    return permissions.includes(item.key as string);
+  });
+
   return (
     <>
       <List>
-        {MENU_DATA.map((item, index) => (
+        {filteredMenuData.map((item, index) => (
           <React.Fragment key={`parent-${index}`}>
             <ListItem
               key={`parent-${index}`}

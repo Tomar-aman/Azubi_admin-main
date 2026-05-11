@@ -4,6 +4,7 @@ export interface SidebarMenu {
   icon?: React.ReactNode;
   label: string;
   url?: string;
+  key?: string;
 
   children?: {
     id: number;
@@ -11,53 +12,61 @@ export interface SidebarMenu {
     url?: string;
   }[];
 }
-export const MENU_DATA = [
+export const MENU_DATA: SidebarMenu[] = [
   {
     id: 1,
     icon: SVG.DashboardIcon,
     label: "Dashboard",
     url: "/dashboard",
+    key: "dashboard",
   },
   {
     id: 2,
     icon: SVG.GroupUser,
     label: "Manage Employers",
     url: "/manage-employers",
+    key: "manage-employers",
   },
   {
     id: 3,
     icon: SVG.JobsIcon,
     label: "Manage Jobs",
     url: "/manage-jobs",
+    key: "manage-jobs",
   },
   {
     id: 4,
     icon: SVG.Industries,
     label: "Manage Industries",
     url: "/manage-industries",
+    key: "manage-industries",
   },
   {
     id: 5,
     icon: SVG.Industries,
     label: "Job Types",
     url: "/manage-type-of-job",
+    key: "manage-type-of-job",
   },
   {
     id: 6,
     icon: SVG.CitiesIcon,
     label: "Manage Regions",
     url: "/manage-regions",
+    key: "manage-regions",
   },
   {
     id: 7,
     icon: SVG.CitiesIcon,
     label: "Manage Cities",
     url: "/manage-cities",
+    key: "manage-cities",
   },
   {
     id: 8,
     icon: SVG.ContentIcon,
     label: "Manage Content",
+    key: "manage-content",
     children: [
       {
         id: 1,
@@ -179,13 +188,11 @@ export const MENU_DATA = [
         label: "Navbar Tabs",
         url: "nav-bar-tab",
       },
-
       {
         id: 25,
         label: "Manage-Footer",
         url: "manage-footer",
       },
-
       {
         id: 26,
         label: "Manage-City",
@@ -208,32 +215,47 @@ export const MENU_DATA = [
       },
     ],
   },
-
-
-
   {
     id: 9,
     icon: SVG.Setting,
     label: "Manage Banners",
     url: "/add-banner",
+    key: "add-banner",
   },
   {
     id: 10,
     icon: SVG.Setting,
     label: "Admin Settings",
     url: "/admin-setting",
+    key: "admin-setting",
   },
   {
     id: 11,
     icon: SVG.Setting,
     label: "Contact",
     url: "/contact",
+    key: "contact",
   },
   {
     id: 12,
     icon: SVG.Setting,
     label: "ApplicationTip",
     url: "/applicationTip",
+    key: "applicationTip",
+  },
+  {
+    id: 14,
+    icon: SVG.GroupUser,
+    label: "Manage Users",
+    url: "/manage-users",
+    key: "manage-users",
+  },
+  {
+    id: 15,
+    icon: SVG.GroupUser,
+    label: "Manage Employees",
+    url: "/manage-employees",
+    key: "manage-employees",
   },
   {
     id: 13,
