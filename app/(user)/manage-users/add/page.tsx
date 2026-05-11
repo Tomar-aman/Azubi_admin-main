@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { SVG } from "@/app/components/icon";
 import Title from "@/app/components/title.components";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { StyledManageForm } from "@/app/components/form.styled";
 import { useFormik } from "formik";
 import * as Yup from "yup";
