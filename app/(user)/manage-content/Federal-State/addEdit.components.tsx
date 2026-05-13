@@ -1,7 +1,7 @@
 "use client";
 
 import { getJobTypeByName } from "@/app/api/jobTypes/jobType";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { FormHelperText,  Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect } from "react";
 import * as Yup from "yup";
@@ -65,10 +65,12 @@ const AddEditJobTypes = (props: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.name}
+
+          error={formik.touched.name && Boolean(formik.errors.name)}
+
+          helperText={formik.touched.name && (formik.errors.name as string)}
+
         />
-        {formik.touched.name && formik.errors.name && (
-          <div style={{ color: "red" }}>{formik.errors.name}</div>
-        )}
 
         <Stack
           direction={"row"}

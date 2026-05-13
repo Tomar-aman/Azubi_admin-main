@@ -1,4 +1,4 @@
-import {
+import { FormHelperText, 
   Box,
   Button,
   Stack,
@@ -77,10 +77,12 @@ const AddEditApplicationTips = (props: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.title}
+
+          error={formik.touched.title && Boolean(formik.errors.title)}
+
+          helperText={formik.touched.title && (formik.errors.title as string)}
+
         />
-        {formik.touched.title && formik.errors.title && (
-          <div style={{ color: "red" }}>{formik.errors.title}</div>
-        )}
 
         <StyledTextarea
           minRows={3}
@@ -92,10 +94,12 @@ const AddEditApplicationTips = (props: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.description}
+
+          error={formik.touched.description && Boolean(formik.errors.description)}
+
+          helperText={formik.touched.description && (formik.errors.description as string)}
+
         />
-        {formik.touched.description && formik.errors.description && (
-          <div style={{ color: "red" }}>{formik.errors.description}</div>
-        )}
 
         <Stack
           direction={"row"}

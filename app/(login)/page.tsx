@@ -1,7 +1,7 @@
 "use client";
 
 import { SVG } from "@/app/components/icon";
-import {
+import { FormHelperText, 
   Box,
   Button,
   Container,
@@ -178,10 +178,12 @@ const Login = () => {
                       fontWeight: "500",
                     },
                   }}
+
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+
+                  helperText={formik.touched.email && (formik.errors.email as string)}
+
                 />
-                {formik.touched.email && formik.errors.email && (
-                  <div style={{ color: "red" }}>{formik.errors.email}</div>
-                )}
                 <TextField
                   type={showPassword ? "text" : "password"}
                   InputProps={{
@@ -210,10 +212,12 @@ const Login = () => {
                       fontWeight: "500",
                     },
                   }}
+
+                  error={formik.touched.password && Boolean(formik.errors.password)}
+
+                  helperText={formik.touched.password && (formik.errors.password as string)}
+
                 />
-                {formik.touched.password && formik.errors.password && (
-                  <div style={{ color: "red" }}>{formik.errors.password}</div>
-                )}
 
                 <Typography
                   variant="body1"

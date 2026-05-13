@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, ChangeEvent, useRef } from "react";
-import {
+import { FormHelperText, 
   Autocomplete,
   Box,
   Button,
@@ -753,12 +753,12 @@ const AddComponent: React.FC = () => {
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Select City" />
                     )}
+
+                    error={formik.touched.newCity && Boolean(formik.errors.newCity)}
+
+                    helperText={formik.touched.newCity && (formik.errors.newCity as string)}
+
                   />
-                  {formik.touched.newCity && formik.errors.newCity && (
-                    <div style={{ color: "red" }}>
-                      {formik.errors.newCity as string}
-                    </div>
-                  )}
                   {/* end------ */}
                 </Grid>
 
@@ -807,10 +807,12 @@ const AddComponent: React.FC = () => {
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Select Region" />
                     )}
+
+                    error={formik.touched.region && Boolean(formik.errors.region)}
+
+                    helperText={formik.touched.region && (formik.errors.region as string)}
+
                   />
-                  {formik.touched.region && formik.errors.region && (
-                    <div style={{ color: "red" }}>{formik.errors.region}</div>
-                  )}
                 </Grid>
 
                 <Grid item xs={12} lg={2}>
@@ -833,12 +835,12 @@ const AddComponent: React.FC = () => {
                       }
                     }}
                     renderInput={(params) => <TextField {...params} label="" />}
+
+                    error={formik.touched.company && Boolean(formik.errors.company)}
+
+                    helperText={formik.touched.company && (formik.errors.company as string)}
+
                   />
-                  {formik.touched.company && formik.errors.company && (
-                    <div style={{ color: "red" }}>
-                      {formik.errors.company as string}
-                    </div>
-                  )}
                 </Grid>
 
                 <Grid item xs={12} lg={2}>
@@ -861,13 +863,12 @@ const AddComponent: React.FC = () => {
                       }
                     }}
                     renderInput={(params) => <TextField {...params} label="" />}
+
+                    error={formik.touched.industryName && Boolean(formik.errors.industryName)}
+
+                    helperText={formik.touched.industryName && (formik.errors.industryName as string)}
+
                   />
-                  {formik.touched.industryName &&
-                    formik.errors.industryName && (
-                      <div style={{ color: "red" }}>
-                        {formik.errors.industryName as string}
-                      </div>
-                    )}
                 </Grid>
 
                 {/* desktop view field  */}
@@ -892,12 +893,12 @@ const AddComponent: React.FC = () => {
                         renderInput={(params) => (
                           <TextField {...params} label="" />
                         )}
+
+                        error={formik.touched.training && Boolean(formik.errors.training)}
+
+                        helperText={formik.touched.training && (formik.errors.training as string)}
+
                       />
-                      {formik.touched.training && formik.errors.training && (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.training as string}
-                        </div>
-                      )}
                     </Grid>
 
                     <Grid item xs={12} lg={2}>
@@ -920,13 +921,12 @@ const AddComponent: React.FC = () => {
                         renderInput={(params) => (
                           <TextField {...params} label="" />
                         )}
+
+                        error={formik.touched.federalState && Boolean(formik.errors.federalState)}
+
+                        helperText={formik.touched.federalState && (formik.errors.federalState as string)}
+
                       />
-                      {formik.touched.federalState &&
-                        formik.errors.federalState && (
-                          <div style={{ color: "red" }}>
-                            {formik.errors.federalState as string}
-                          </div>
-                        )}
                     </Grid>
 
                     <Grid item xs={12} lg={2}>
@@ -948,12 +948,12 @@ const AddComponent: React.FC = () => {
                         renderInput={(params) => (
                           <TextField {...params} label="" />
                         )}
+
+                        error={formik.touched.beginning && Boolean(formik.errors.beginning)}
+
+                        helperText={formik.touched.beginning && (formik.errors.beginning as string)}
+
                       />
-                      {formik.touched.beginning && formik.errors.beginning && (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.beginning as string}
-                        </div>
-                      )}
                     </Grid>
                   </>
                 )}
@@ -971,10 +971,12 @@ const AddComponent: React.FC = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.jobTitle}
                     name="jobTitle"
+
+                    error={formik.touched.jobTitle && Boolean(formik.errors.jobTitle)}
+
+                    helperText={formik.touched.jobTitle && (formik.errors.jobTitle as string)}
+
                   />
-                  {formik.touched.jobTitle && formik.errors.jobTitle && (
-                    <div style={{ color: "red" }}>{formik.errors.jobTitle}</div>
-                  )}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Starting Date</label>
@@ -997,12 +999,12 @@ const AddComponent: React.FC = () => {
                         </IconButton>
                       ),
                     }}
+
+                    error={formik.touched.startDate && Boolean(formik.errors.startDate)}
+
+                    helperText={formik.touched.startDate && (formik.errors.startDate as string)}
+
                   />
-                  {formik.touched.startDate && formik.errors.startDate && (
-                    <div style={{ color: "red" }}>
-                      {formik.errors.startDate}
-                    </div>
-                  )}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Email Id</label>
@@ -1016,10 +1018,12 @@ const AddComponent: React.FC = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.email}
                     name="email"
+
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+
+                    helperText={formik.touched.email && (formik.errors.email as string)}
+
                   />
-                  {formik.touched.email && formik.errors.email && (
-                    <div style={{ color: "red" }}>{formik.errors.email}</div>
-                  )}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Additional Email</label>
@@ -1040,13 +1044,12 @@ const AddComponent: React.FC = () => {
                         fontWeight: "500",
                       },
                     }}
+
+                    error={formik.touched.additionalEmail && Boolean(formik.errors.additionalEmail)}
+
+                    helperText={formik.touched.additionalEmail && (formik.errors.additionalEmail as string)}
+
                   />
-                  {formik.touched.additionalEmail &&
-                    formik.errors.additionalEmail && (
-                      <div style={{ color: "red" }}>
-                        {formik.errors.additionalEmail}
-                      </div>
-                    )}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Address</label>
@@ -1060,10 +1063,12 @@ const AddComponent: React.FC = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.address}
                     name="address"
+
+                    error={formik.touched.address && Boolean(formik.errors.address)}
+
+                    helperText={formik.touched.address && (formik.errors.address as string)}
+
                   />
-                  {formik.touched.address && formik.errors.address && (
-                    <div style={{ color: "red" }}>{formik.errors.address}</div>
-                  )}
                 </Grid>
 
                 {/* job google map url */}
@@ -1079,10 +1084,12 @@ const AddComponent: React.FC = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.mapUrl}
                     name="mapUrl"
+
+                    error={formik.touched.mapUrl && Boolean(formik.errors.mapUrl)}
+
+                    helperText={formik.touched.mapUrl && (formik.errors.mapUrl as string)}
+
                   />
-                  {formik.touched.mapUrl && formik.errors.mapUrl && (
-                    <div style={{ color: "red" }}>{formik.errors.mapUrl}</div>
-                  )}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Location</label>
@@ -1093,13 +1100,12 @@ const AddComponent: React.FC = () => {
                     type="url"
                     fullWidth
                     {...formik.getFieldProps("locationField")}
+
+                    error={formik.touched.locationField && Boolean(formik.errors.locationField)}
+
+                    helperText={formik.touched.locationField && (formik.errors.locationField as string)}
+
                   />
-                  {formik.touched.locationField &&
-                    formik.errors.locationField && (
-                      <div style={{ color: "red" }}>
-                        {formik.errors.locationField as any}
-                      </div>
-                    )}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Location Url</label>
@@ -1111,11 +1117,9 @@ const AddComponent: React.FC = () => {
                     fullWidth
                     {...formik.getFieldProps("locationUrl")}
                   />
-                  {/* {formik.touched.locationUrl && formik.errors.locationUrl && (
-                    <div style={{ color: "red" }}>
-                      {formik.errors.locationUrl}
-                    </div>
-                  )} */}
+                  {/* {formik.touched.locationUrl && Boolean(formik.errors.locationUrl) && (
+                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.locationUrl as string}</FormHelperText>
+                )} */}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Zip Code</label>
@@ -1130,10 +1134,12 @@ const AddComponent: React.FC = () => {
                     onBlur={formik.handleBlur}
                     value={formik.values.zipCode}
                     name="zipCode"
+
+                    error={formik.touched.zipCode && Boolean(formik.errors.zipCode)}
+
+                    helperText={formik.touched.zipCode && (formik.errors.zipCode as string)}
+
                   />
-                  {formik.touched.zipCode && formik.errors.zipCode && (
-                    <div style={{ color: "red" }}>{formik.errors.zipCode}</div>
-                  )}
                 </Grid>
                 <Grid item xs={12} lg={2}>
                   <label>Job Description</label>
@@ -1174,12 +1180,9 @@ const AddComponent: React.FC = () => {
                       }}
                     />
                   </Box>
-                  {formik.touched.jobDescription &&
-                    formik.errors.jobDescription && (
-                      <div style={{ color: "red" }}>
-                        {formik.errors.jobDescription}
-                      </div>
-                    )}
+                  {formik.touched.jobDescription && Boolean(formik.errors.jobDescription) && (
+                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.jobDescription as string}</FormHelperText>
+                )}
                 </Grid>
 
                 <Grid item xs={12} lg={2}>
@@ -1242,12 +1245,9 @@ const AddComponent: React.FC = () => {
                           }
                           value={link}
                         />
-                        {formik.errors.videoLink &&
-                          formik.errors.videoLink[index] && (
-                            <div style={{ color: "red" }}>
-                              {formik.errors.videoLink[index]}
-                            </div>
-                          )}
+                        {formik.errors.videoLink && Boolean(formik.errors.videoLink[index]) && (
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.videoLink[index] as string}</FormHelperText>
+                        )}
                         {link ? (
                           <Box sx={{ my: 2 }}>
                             <iframe
@@ -1349,12 +1349,12 @@ const AddComponent: React.FC = () => {
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Type of Job" />
                     )}
+
+                    error={formik.touched.jobType && Boolean(formik.errors.jobType)}
+
+                    helperText={formik.touched.jobType && (formik.errors.jobType as string)}
+
                   />
-                  {formik.touched.jobType && formik.errors.jobType && (
-                    <div style={{ color: "red" }}>
-                      {formik.errors.jobType as string}
-                    </div>
-                  )}
                 </Grid>
 
                 <Grid item xs={12} lg={2}>

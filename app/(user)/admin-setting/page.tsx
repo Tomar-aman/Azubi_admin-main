@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import {
+import { FormHelperText, 
   Box,
   Button,
   Card,
@@ -273,12 +273,12 @@ const AdminSetting = () => {
                       type="text"
                       fullWidth
                       {...formik.getFieldProps("adminName")}
+
+                      error={formik.touched.adminName && Boolean(formik.errors.adminName)}
+
+                      helperText={formik.touched.adminName && (formik.errors.adminName as string)}
+
                     />
-                    {formik.touched.adminName && formik.errors.adminName && (
-                      <div style={{ color: "red" }}>
-                        {formik.errors.adminName}
-                      </div>
-                    )}
                   </Grid>
 
                   <Grid item xs={12} lg={2}>
@@ -290,10 +290,12 @@ const AdminSetting = () => {
                       type="email"
                       fullWidth
                       {...formik.getFieldProps("email")}
+
+                      error={formik.touched.email && Boolean(formik.errors.email)}
+
+                      helperText={formik.touched.email && (formik.errors.email as string)}
+
                     />
-                    {formik.touched.email && formik.errors.email && (
-                      <div style={{ color: "red" }}>{formik.errors.email}</div>
-                    )}
                   </Grid>
 
                   <Grid item xs={12} lg={2}>
@@ -321,13 +323,12 @@ const AdminSetting = () => {
                         ),
                       }}
                       {...formik.getFieldProps("oldPassword")}
+
+                      error={formik.touched.oldPassword && Boolean(formik.errors.oldPassword)}
+
+                      helperText={formik.touched.oldPassword && (formik.errors.oldPassword as string)}
+
                     />
-                    {formik.touched.oldPassword &&
-                      formik.errors.oldPassword && (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.oldPassword}
-                        </div>
-                      )}
                   </Grid>
 
                   <Grid item xs={12} lg={2}>
@@ -357,13 +358,12 @@ const AdminSetting = () => {
                         ),
                       }}
                       {...formik.getFieldProps("newPassword")}
+
+                      error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
+
+                      helperText={formik.touched.newPassword && (formik.errors.newPassword as string)}
+
                     />
-                    {formik.touched.newPassword &&
-                      formik.errors.newPassword && (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.newPassword}
-                        </div>
-                      )}
                   </Grid>
 
                   <Grid item xs={12} lg={2}>
@@ -393,13 +393,12 @@ const AdminSetting = () => {
                         ),
                       }}
                       {...formik.getFieldProps("confirmPassword")}
+
+                      error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+
+                      helperText={formik.touched.confirmPassword && (formik.errors.confirmPassword as string)}
+
                     />
-                    {formik.touched.confirmPassword &&
-                      formik.errors.confirmPassword && (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.confirmPassword}
-                        </div>
-                      )}
                   </Grid>
 
                   <Grid item xs={12}>
@@ -553,9 +552,7 @@ const AdminSetting = () => {
                       />
                       {formicSMTP.touched.service &&
                         formicSMTP.errors.smtpHost && (
-                          <div style={{ color: "red" }}>
-                            {formicSMTP.errors.service}
-                          </div>
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formicSMTP.errors.service}</FormHelperText>
                         )}
                     </Grid>
                     {/* End */}
@@ -570,9 +567,7 @@ const AdminSetting = () => {
                       />
                       {formicSMTP.touched.smtpHost &&
                         formicSMTP.errors.smtpHost && (
-                          <div style={{ color: "red" }}>
-                            {formicSMTP.errors.smtpHost}
-                          </div>
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formicSMTP.errors.smtpHost}</FormHelperText>
                         )}
                     </Grid>
 
@@ -586,9 +581,7 @@ const AdminSetting = () => {
                       />
                       {formicSMTP.touched.smtpPort &&
                         formicSMTP.errors.smtpPort && (
-                          <div style={{ color: "red" }}>
-                            {formicSMTP.errors.smtpPort}
-                          </div>
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formicSMTP.errors.smtpPort}</FormHelperText>
                         )}
                     </Grid>
 
@@ -605,9 +598,7 @@ const AdminSetting = () => {
                       />
                       {formicSMTP.touched.smtpUsername &&
                         formicSMTP.errors.smtpUsername && (
-                          <div style={{ color: "red" }}>
-                            {formicSMTP.errors.smtpUsername}
-                          </div>
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formicSMTP.errors.smtpUsername}</FormHelperText>
                         )}
                     </Grid>
 
@@ -642,9 +633,7 @@ const AdminSetting = () => {
                       />
                       {formicSMTP.touched.smtpPassword &&
                         formicSMTP.errors.smtpPassword && (
-                          <div style={{ color: "red" }}>
-                            {formicSMTP.errors.smtpPassword}
-                          </div>
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formicSMTP.errors.smtpPassword}</FormHelperText>
                         )}
                     </Grid>
 
@@ -658,9 +647,7 @@ const AdminSetting = () => {
                       />
                       {formicSMTP.touched.smtpEncryption &&
                         formicSMTP.errors.smtpEncryption && (
-                          <div style={{ color: "red" }}>
-                            {formicSMTP.errors.smtpEncryption}
-                          </div>
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formicSMTP.errors.smtpEncryption}</FormHelperText>
                         )}
                     </Grid>
 
@@ -674,9 +661,7 @@ const AdminSetting = () => {
                       />
                       {formicSMTP.touched.formAddress &&
                         formicSMTP.errors.formAddress && (
-                          <div style={{ color: "red" }}>
-                            {formicSMTP.errors.formAddress}
-                          </div>
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formicSMTP.errors.formAddress}</FormHelperText>
                         )}
                     </Grid>
 

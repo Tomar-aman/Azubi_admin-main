@@ -1,6 +1,6 @@
 "use client";
 
-import {
+import { FormHelperText, 
   Box,
   Button,
   Grid,
@@ -97,10 +97,12 @@ const AddCities = (props: any) => {
           placeholder="Add city"
           autoComplete="off"
           // helperText="dd"
+
+          error={formik.touched.name && Boolean(formik.errors.name)}
+
+          helperText={formik.touched.name && (formik.errors.name as string)}
+
         />
-        {formik.touched.name && formik.errors.name && (
-          <div style={{ color: "red" }}>{formik.errors.name as string}</div>
-        )}
 
         <FormLabel>Select Region</FormLabel>
         <Autocomplete
@@ -125,10 +127,12 @@ const AddCities = (props: any) => {
           renderInput={(params) => (
             <TextField {...params} label="" placeholder="" />
           )}
+
+          error={formik.touched.region && Boolean(formik.errors.region)}
+
+          helperText={formik.touched.region && (formik.errors.region as string)}
+
         />
-        {formik.touched.region && formik.errors.region && (
-          <div style={{ color: "red" }}>{formik.errors.region as string}</div>
-        )}
         <FormControlLabel
           control={
             <Checkbox
@@ -178,10 +182,8 @@ const AddCities = (props: any) => {
                     />
                   </DemoContainer>
                 </LocalizationProvider>
-                {formik.touched.startTime && formik.errors.startTime && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.startTime as string}
-                  </div>
+                {formik.touched.startTime && Boolean(formik.errors.startTime) && (
+                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.startTime as string}</FormHelperText>
                 )}
               </Box>
             </Grid>
@@ -212,10 +214,8 @@ const AddCities = (props: any) => {
                     />
                   </DemoContainer>
                 </LocalizationProvider>
-                {formik.touched.endTime && formik.errors.endTime && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.endTime as string}
-                  </div>
+                {formik.touched.endTime && Boolean(formik.errors.endTime) && (
+                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.endTime as string}</FormHelperText>
                 )}
               </Box>
             </Grid>
@@ -245,10 +245,12 @@ const AddCities = (props: any) => {
           id="outlined-basic"
           placeholder="Address"
           autoComplete="off"
+
+          error={formik.touched.address && Boolean(formik.errors.address)}
+
+          helperText={formik.touched.address && (formik.errors.address as string)}
+
         />
-        {formik.touched.address && formik.errors.address && (
-          <div style={{ color: "red" }}>{formik.errors.address as string}</div>
-        )}
         <FormLabel>zipCode</FormLabel>
         <TextField
           sx={{
@@ -272,10 +274,12 @@ const AddCities = (props: any) => {
           placeholder="zipCode"
           autoComplete="off"
           // helperText="dd"
+
+          error={formik.touched.zipCode && Boolean(formik.errors.zipCode)}
+
+          helperText={formik.touched.zipCode && (formik.errors.zipCode as string)}
+
         />
-        {formik.touched.zipCode && formik.errors.zipCode && (
-          <div style={{ color: "red" }}>{formik.errors.zipCode as string}</div>
-        )}
 
         <FormLabel>Direction Link</FormLabel>
         <TextField
@@ -299,12 +303,12 @@ const AddCities = (props: any) => {
           id="outlined-basic"
           placeholder="Direction Link"
           autoComplete="off"
+
+          error={formik.touched.directionLink && Boolean(formik.errors.directionLink)}
+
+          helperText={formik.touched.directionLink && (formik.errors.directionLink as string)}
+
         />
-        {formik.touched.directionLink && formik.errors.directionLink && (
-          <div style={{ color: "red" }}>
-            {formik.errors.directionLink as string}
-          </div>
-        )}
         <FormControlLabel
           control={
             <Checkbox

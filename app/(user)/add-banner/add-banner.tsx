@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import {
+import { FormHelperText, 
   Autocomplete,
   Box,
   Button,
@@ -480,12 +480,12 @@ const AddBanner = ({
                   renderInput={(params) => (
                     <TextField {...params} label="" placeholder="" />
                   )}
+
+                  error={formik.touched.companyName && Boolean(formik.errors.companyName)}
+
+                  helperText={formik.touched.companyName && (formik.errors.companyName as string)}
+
                 />
-                {formik.touched.companyName && formik.errors.companyName && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.companyName as string}
-                  </div>
-                )}
               </Grid>
               {/* company Field End */}
               {/* city field */}
@@ -519,10 +519,12 @@ const AddBanner = ({
                     }
                   }}
                   renderInput={(params) => <TextField {...params} label="" />}
+
+                  error={formik.touched.city && Boolean(formik.errors.city)}
+
+                  helperText={formik.touched.city && (formik.errors.city as string)}
+
                 />
-                {formik.touched.city && formik.errors.city && (
-                  <div style={{ color: "red" }}>city is required</div>
-                )}
               </Grid>
               {/* city field End */}
               {/*industry field*/}
@@ -557,10 +559,12 @@ const AddBanner = ({
                     }
                   }}
                   renderInput={(params) => <TextField {...params} label="" />}
+
+                  error={formik.touched.industryName && Boolean(formik.errors.industryName)}
+
+                  helperText={formik.touched.industryName && (formik.errors.industryName as string)}
+
                 />
-                {formik.touched.industryName && formik.errors.industryName && (
-                  <div style={{ color: "red" }}>industry name is required</div>
-                )}
               </Grid>
               {/*industry field end*/}
               {/*typeOfJobs field */}
@@ -612,12 +616,12 @@ const AddBanner = ({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.bannerTitle}
+
+                  error={formik.touched.bannerTitle && Boolean(formik.errors.bannerTitle)}
+
+                  helperText={formik.touched.bannerTitle && (formik.errors.bannerTitle as string)}
+
                 />
-                {formik.touched.bannerTitle && formik.errors.bannerTitle && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.bannerTitle}
-                  </div>
-                )}
               </Grid>
               <Grid item xs={12} lg={2}>
                 <FormLabel component="legend">Job Type</FormLabel>
@@ -656,10 +660,12 @@ const AddBanner = ({
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.jobUrl}
+
+                      error={formik.touched.jobUrl && Boolean(formik.errors.jobUrl)}
+
+                      helperText={formik.touched.jobUrl && (formik.errors.jobUrl as string)}
+
                     />
-                    {formik.touched.jobUrl && formik.errors.jobUrl && (
-                      <div style={{ color: "red" }}>{formik.errors.jobUrl}</div>
-                    )}
                   </Grid>
                 </>
               )}
@@ -695,12 +701,12 @@ const AddBanner = ({
                       renderInput={(params) => (
                         <TextField {...params} label="" />
                       )}
+
+                      error={formik.touched.job && Boolean(formik.errors.job)}
+
+                      helperText={formik.touched.job && (formik.errors.job as string)}
+
                     />
-                    {formik.touched.job && formik.errors.job && (
-                      <div style={{ color: "red" }}>
-                        {formik.errors.job as string}
-                      </div>
-                    )}
                   </Grid>
                 </>
               )}
@@ -746,7 +752,7 @@ const AddBanner = ({
                     isA4={true}
                   />
                   {formik.errors.images && (
-                    <div style={{ color: "red" }}>{formik.errors.images}</div>
+                    <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.images as string}</FormHelperText>
                   )}
                 </Box>
               </Grid>
@@ -776,10 +782,8 @@ const AddBanner = ({
                     />
                   </div>
                 )}
-                {/* {formik.touched.bannerTitle && formik.errors.bannerTitle && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.bannerTitle}
-                  </div>
+                {/* {formik.touched.bannerTitle && Boolean(formik.errors.bannerTitle) && (
+                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.bannerTitle as string}</FormHelperText>
                 )} */}
               </Grid>
               <Grid item xs={12}>

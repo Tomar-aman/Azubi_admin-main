@@ -1,6 +1,6 @@
 "use client";
 import * as Yup from "yup";
-import { Button, Dialog, Stack, TextField, Typography } from "@mui/material";
+import { FormHelperText,  Button, Dialog, Stack, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { getResetLink } from "../api/auth/auth";
@@ -81,10 +81,12 @@ const ForgotPassword = (props: any) => {
               placeholder="Registred Email id"
               autoComplete="off"
               {...formik.getFieldProps("email")}
+
+              error={formik.touched.email && Boolean(formik.errors.email)}
+
+              helperText={formik.touched.email && (formik.errors.email as string)}
+
             />
-            {formik.touched.email && formik.errors.email && (
-              <div style={{ color: "red" }}>{formik.errors.email}</div>
-            )}
             <Box sx={{ px: { xs: 0, lg: 10 } }}>
               <Button
                 fullWidth

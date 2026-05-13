@@ -1,6 +1,6 @@
 "use client";
 
-import {
+import { FormHelperText, 
   Box,
   Button,
   Stack,
@@ -83,10 +83,12 @@ const AddEditContacts = (props: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.name}
+
+          error={formik.touched.name && Boolean(formik.errors.name)}
+
+          helperText={formik.touched.name && (formik.errors.name as string)}
+
         />
-        {formik.touched.name && formik.errors.name && (
-          <div style={{ color: "red" }}>{formik.errors.name}</div>
-        )}
 
         <TextField
           sx={{
@@ -112,10 +114,12 @@ const AddEditContacts = (props: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.phoneNumber}
+
+          error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+
+          helperText={formik.touched.phoneNumber && (formik.errors.phoneNumber as string)}
+
         />
-        {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-          <div style={{ color: "red" }}>{formik.errors.phoneNumber}</div>
-        )}
 
         <TextField
           sx={{
@@ -141,10 +145,12 @@ const AddEditContacts = (props: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.email}
+
+          error={formik.touched.email && Boolean(formik.errors.email)}
+
+          helperText={formik.touched.email && (formik.errors.email as string)}
+
         />
-        {formik.touched.email && formik.errors.email && (
-          <div style={{ color: "red" }}>{formik.errors.email}</div>
-        )}
 
         <TextareaAutosize
           placeholder="Message"
@@ -161,10 +167,12 @@ const AddEditContacts = (props: any) => {
             width: "100%",
             resize: "vertical",
           }}
+
+          error={formik.touched.message && Boolean(formik.errors.message)}
+
+          helperText={formik.touched.message && (formik.errors.message as string)}
+
         />
-        {formik.touched.message && formik.errors.message && (
-          <div style={{ color: "red" }}>{formik.errors.message}</div>
-        )}
 
         <Stack
           direction={"row"}

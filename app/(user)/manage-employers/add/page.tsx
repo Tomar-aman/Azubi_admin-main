@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import {
+import { FormHelperText, 
   Autocomplete,
   Box,
   Button,
@@ -471,12 +471,12 @@ const AddComponent = () => {
                     }
                   }}
                   renderInput={(params) => <TextField {...params} label="" />}
+
+                  error={formik.touched.industryName && Boolean(formik.errors.industryName)}
+
+                  helperText={formik.touched.industryName && (formik.errors.industryName as string)}
+
                 />
-                {formik.touched.industryName && formik.errors.industryName && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.industryName as string}
-                  </div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -492,13 +492,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.contactPerson}
+
+                  error={formik.touched.contactPerson && Boolean(formik.errors.contactPerson)}
+
+                  helperText={formik.touched.contactPerson && (formik.errors.contactPerson as string)}
+
                 />
-                {formik.touched.contactPerson &&
-                  formik.errors.contactPerson && (
-                    <div style={{ color: "red" }}>
-                      {formik.errors.contactPerson}
-                    </div>
-                  )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -514,10 +513,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.jobTitle}
+
+                  error={formik.touched.jobTitle && Boolean(formik.errors.jobTitle)}
+
+                  helperText={formik.touched.jobTitle && (formik.errors.jobTitle as string)}
+
                 />
-                {formik.touched.jobTitle && formik.errors.jobTitle && (
-                  <div style={{ color: "red" }}>{formik.errors.jobTitle}</div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -533,12 +534,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.companyName}
+
+                  error={formik.touched.companyName && Boolean(formik.errors.companyName)}
+
+                  helperText={formik.touched.companyName && (formik.errors.companyName as string)}
+
                 />
-                {formik.touched.companyName && formik.errors.companyName && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.companyName}
-                  </div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -561,10 +562,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
+
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+
+                  helperText={formik.touched.email && (formik.errors.email as string)}
+
                 />
-                {formik.touched.email && formik.errors.email && (
-                  <div style={{ color: "red" }}>{formik.errors.email}</div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -580,10 +583,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.website}
+
+                  error={formik.touched.website && Boolean(formik.errors.website)}
+
+                  helperText={formik.touched.website && (formik.errors.website as string)}
+
                 />
-                {formik.touched.website && formik.errors.website && (
-                  <div style={{ color: "red" }}>{formik.errors.website}</div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -599,10 +604,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.mapUrl}
+
+                  error={formik.touched.mapUrl && Boolean(formik.errors.mapUrl)}
+
+                  helperText={formik.touched.mapUrl && (formik.errors.mapUrl as string)}
+
                 />
-                {formik.touched.mapUrl && formik.errors.mapUrl && (
-                  <div style={{ color: "red" }}>{formik.errors.mapUrl}</div>
-                )}
               </Grid>
               <Grid item xs={12} lg={2}>
                 <label>Location Url</label>
@@ -616,12 +623,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.locationUrl}
+
+                  error={formik.touched.locationUrl && Boolean(formik.errors.locationUrl)}
+
+                  helperText={formik.touched.locationUrl && (formik.errors.locationUrl as string)}
+
                 />
-                {formik.touched.locationUrl && formik.errors.locationUrl && (
-                  <div style={{ color: "red" }}>
-                    {formik.errors.locationUrl}
-                  </div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -646,10 +653,12 @@ const AddComponent = () => {
                   }}
                   value={id ? "+49" + formik.values.phoneNo : "+49"}
                   onlyCountries={["de"]} // Allow only Germany
+
+                  error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
+
+                  helperText={formik.touched.phoneNo && (formik.errors.phoneNo as string)}
+
                 />
-                {formik.touched.phoneNo && formik.errors.phoneNo && (
-                  <div style={{ color: "red" }}>{formik.errors.phoneNo}</div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -665,10 +674,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.address}
+
+                  error={formik.touched.address && Boolean(formik.errors.address)}
+
+                  helperText={formik.touched.address && (formik.errors.address as string)}
+
                 />
-                {formik.touched.address && formik.errors.address && (
-                  <div style={{ color: "red" }}>{formik.errors.address}</div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -684,10 +695,12 @@ const AddComponent = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.zipCode}
+
+                  error={formik.touched.zipCode && Boolean(formik.errors.zipCode)}
+
+                  helperText={formik.touched.zipCode && (formik.errors.zipCode as string)}
+
                 />
-                {formik.touched.zipCode && formik.errors.zipCode && (
-                  <div style={{ color: "red" }}>{formik.errors.zipCode}</div>
-                )}
               </Grid>
 
               <Grid item xs={12} lg="auto">
@@ -720,10 +733,12 @@ const AddComponent = () => {
                     }
                   }}
                   renderInput={(params) => <TextField {...params} label="" />}
+
+                  error={formik.touched.city && Boolean(formik.errors.city)}
+
+                  helperText={formik.touched.city && (formik.errors.city as string)}
+
                 />
-                {formik.touched.city && formik.errors.city && (
-                  <div style={{ color: "red" }}>city is required</div>
-                )}
               </Grid>
               <Grid item xs={12} lg={2}>
                 <label>Company Logo</label>
@@ -769,8 +784,8 @@ const AddComponent = () => {
                     );
                   }}
                 /> */}
-                {formik.touched.companyLogo && formik.errors.companyLogo && (
-                  <div style={{ color: "red" }}>CompanyLogo is Required</div>
+                {formik.touched.companyLogo && Boolean(formik.errors.companyLogo) && (
+                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>CompanyLogo is Required</FormHelperText>
                 )}
               </Grid>
 
@@ -813,12 +828,9 @@ const AddComponent = () => {
                     }}
                   />
                 </Box>
-                {formik.touched.companyDescription &&
-                  formik.errors.companyDescription && (
-                    <div style={{ color: "red" }}>
-                      {formik.errors.companyDescription}
-                    </div>
-                  )}
+                {formik.touched.companyDescription && Boolean(formik.errors.companyDescription) && (
+                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.companyDescription as string}</FormHelperText>
+                )}
               </Grid>
               <Grid item xs={2} sx={{ minHeight: "160px" }}>
                 <label>Company Images</label>
@@ -873,12 +885,9 @@ const AddComponent = () => {
                       onChange={(event: any) => handleSkillChange(index, event)}
                       value={link}
                     />
-                    {formik.errors.videoLink &&
-                      formik.errors.videoLink[index] && (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.videoLink[index]}
-                        </div>
-                      )}
+                    {formik.errors.videoLink && Boolean(formik.errors.videoLink[index]) && (
+                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.videoLink[index] as string}</FormHelperText>
+                        )}
                     {link ? (
                       <Box sx={{ my: 2 }}>
                         <iframe
