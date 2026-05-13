@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { SVG } from "@/app/components/icon";
 import Title from "@/app/components/title.components";
 import { useRouter } from "next/navigation";
@@ -39,6 +40,7 @@ const AddEmployeePage = () => {
   const router = useRouter();
   const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const isEdit = Boolean(id);
 
   // @ts-ignore
@@ -56,6 +58,7 @@ const AddEmployeePage = () => {
     email: Yup.string().email("Invalid email").required("Email is required"),
     position: Yup.string(),
     phoneNo: Yup.string(),
+    password: Yup.string().min(6, "Password must be at least 6 characters"),
     permissions: Yup.array().of(Yup.string()),
   });
 
@@ -65,6 +68,7 @@ const AddEmployeePage = () => {
       email: "",
       phoneNo: "",
       position: "",
+      password: "",
       permissions: [],
       status: "Active",
     },
@@ -169,6 +173,33 @@ const AddEmployeePage = () => {
                     {...formik.getFieldProps("email")}
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
+                  />
+                </Grid>
+
+                {/* PASSWORD */}
+                <Grid item xs={12} lg={2}>
+                  <label>
+                    Password <br />
+                    <small style={{ fontSize: "0.75em", color: "grey" }}>
+                      {isEdit ? "(Leave blank to keep current)" : "(Optional, generated if empty)"}
+                    </small>
+                  </label>
+                </Grid>
+                <Grid item xs={12} lg={10}>
+                  <TextField
+                    fullWidth
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    {...formik.getFieldProps("password")}
+                    error={formik.touched.password && Boolean(formik.errors.password)}
+                    helperText={formik.touched.password && formik.errors.password}
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      ),
+                    }}
                   />
                 </Grid>
 

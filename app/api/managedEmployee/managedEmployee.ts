@@ -21,6 +21,7 @@ export interface ManagedEmployeeFormValues {
   position?: string;
   permissions: string[];
   status: "Active" | "Inactive";
+  password?: string;
 }
 
 export const getAllManagedEmployees = async (payload: {

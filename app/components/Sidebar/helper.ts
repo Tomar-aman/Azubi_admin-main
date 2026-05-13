@@ -21,6 +21,20 @@ export const MENU_DATA: SidebarMenu[] = [
     key: "dashboard",
   },
   {
+    id: 14,
+    icon: SVG.GroupUser,
+    label: "Manage Users",
+    url: "/manage-users",
+    key: "manage-users",
+  },
+  {
+    id: 15,
+    icon: SVG.GroupUser,
+    label: "Manage Employees",
+    url: "/manage-employees",
+    key: "manage-employees",
+  },
+  {
     id: 2,
     icon: SVG.GroupUser,
     label: "Manage Employers",
@@ -243,20 +257,7 @@ export const MENU_DATA: SidebarMenu[] = [
     url: "/applicationTip",
     key: "applicationTip",
   },
-  {
-    id: 14,
-    icon: SVG.GroupUser,
-    label: "Manage Users",
-    url: "/manage-users",
-    key: "manage-users",
-  },
-  {
-    id: 15,
-    icon: SVG.GroupUser,
-    label: "Manage Employees",
-    url: "/manage-employees",
-    key: "manage-employees",
-  },
+
   {
     id: 13,
     icon: SVG.Logout,

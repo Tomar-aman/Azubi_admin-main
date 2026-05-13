@@ -1,6 +1,8 @@
 // All sidebar tab permission keys — these match the labels in the sidebar
 export const SIDEBAR_TABS = [
   { key: "dashboard", label: "Dashboard" },
+  { key: "manage-users", label: "Manage Users" },
+  { key: "manage-employees", label: "Manage Employees" },
   { key: "manage-employers", label: "Manage Employers" },
   { key: "manage-jobs", label: "Manage Jobs" },
   { key: "manage-industries", label: "Manage Industries" },
@@ -12,6 +14,4 @@ export const SIDEBAR_TABS = [
   { key: "admin-setting", label: "Admin Settings" },
   { key: "contact", label: "Contact" },
   { key: "applicationTip", label: "ApplicationTip" },
-  { key: "manage-users", label: "Manage Users" },
-  { key: "manage-employees", label: "Manage Employees" },
 ];

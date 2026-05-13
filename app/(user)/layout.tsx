@@ -54,7 +54,7 @@ export default function AdminLayout({
   };
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
       <AppBar
         position="static"
         sx={{
@@ -148,7 +148,7 @@ export default function AdminLayout({
           </div> */}
         </Toolbar>
       </AppBar>
-      <Box sx={{ display: "flex", height: "100%", background:"#e5f3f3" }}>
+      <Box sx={{ display: "flex", flexGrow: 1, background:"#e5f3f3", overflow: "hidden" }}>
         {isToggle ? (
           <Box
             sx={{
@@ -156,6 +156,15 @@ export default function AdminLayout({
               p: 0,
               transition: "all 0.5s",
               flexShrink: "0",
+              height: "100%",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "5px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#0096A4",
+                borderRadius: "10px",
+              },
             }}
           >
             <SidebarMenu />
@@ -169,13 +178,13 @@ export default function AdminLayout({
             p: 3,
             pt: 2,
             background: "#fff",
-            minHeight: "calc(100vh - 65px)",
-            overflow: "hidden",
+            height: "100%",
+            overflowY: "auto",
           }}
         >
           {children}
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }
