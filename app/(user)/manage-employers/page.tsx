@@ -58,6 +58,18 @@ const ManageEmployee = () => {
   const [mount, setMount] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [statusToggleId, setStatusToggleId] = useState("");
+  const [isUserDomain, setIsUserDomain] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname;
+      const userDomain = process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang";
+      if (host.includes(userDomain)) {
+        setIsUserDomain(true);
+      }
+    }
+  }, []);
+
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
   };
@@ -200,13 +212,15 @@ const ManageEmployee = () => {
             },
           }}
         >
-          <IconButton
-            onClick={() => {
-              navigateToCopy(rowData.id, true);
-            }}
-          >
-            <SVG.DashboardIcon />
-          </IconButton>
+          {!(isUserDomain && pageCount >= 1) && (
+            <IconButton
+              onClick={() => {
+                navigateToCopy(rowData.id, true);
+              }}
+            >
+              <SVG.DashboardIcon />
+            </IconButton>
+          )}
           <IconButton
             onClick={() => {
               navigateToAdd(rowData.id);
@@ -261,18 +275,20 @@ const ManageEmployee = () => {
             { name: "Company Name", value: "companyName" },
           ]}
         />
-        <Link href="/manage-employers/add?action=false">
-          <Button
-            disableRipple={true}
-            sx={{
-              fontSize: "20px",
-              color: "#646464",
-              "&:hover": { color: "#0096A4" },
-            }}
-          >
-            <SVG.AddIcon className="svgActive" style={{ marginRight: "8px" }} /> Add
-          </Button>
-        </Link>
+        {!(isUserDomain && pageCount >= 1) && (
+          <Link href="/manage-employers/add?action=false">
+            <Button
+              disableRipple={true}
+              sx={{
+                fontSize: "20px",
+                color: "#646464",
+                "&:hover": { color: "#0096A4" },
+              }}
+            >
+              <SVG.AddIcon className="svgActive" style={{ marginRight: "8px" }} /> Add
+            </Button>
+          </Link>
+        )}
       </Stack>
       <Box sx={{ overflow: "hidden", position: "relative" }}>
         <CustomTable

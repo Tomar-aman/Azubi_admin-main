@@ -18,6 +18,7 @@ import SidebarMenu from "../components/Sidebar/page";
 import AuthChecker from "./authChecker";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { QRCodeDownload } from "../components/QRCodeDownload";
 
 export default function AdminLayout({
   children,
@@ -27,7 +28,12 @@ export default function AdminLayout({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isToggle, setIsToggle] = useState(true);
   const loading = useSelector((state: RootState) => state.auth.loading);
-  const [showBranding, setShowBranding] = useState(true);
+  const [showBranding, setShowBranding] = useState<boolean | null>(null);
+  const [isUserDomain, setIsUserDomain] = useState(false);
+  
+  // @ts-ignore
+  const currentUser = useSelector((state: any) => state.user?.data);
+  const userId = currentUser?._id;
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -35,11 +41,19 @@ export default function AdminLayout({
       const userDomain = process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang";
       const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
       
+      if (host.includes(userDomain)) {
+        setIsUserDomain(true);
+      }
+      
       if (host.includes(userDomain) || host.includes(employeeDomain)) {
         setShowBranding(false);
+      } else {
+        setShowBranding(true);
       }
     }
   }, []);
+
+  if (showBranding === null) return <Box sx={{ height: "100vh", background: "#e5f3f3" }} />;
 
   const handleToggle = () => {
     setIsToggle(!isToggle);
@@ -167,6 +181,11 @@ export default function AdminLayout({
               },
             }}
           >
+            {userId && isUserDomain && (
+              <Box sx={{ width: "100%", display: "flex", justifyContent: "center", pt: 3, pb: 2 }}>
+                <QRCodeDownload value={userId} fileName={`qr_${currentUser?.username || "user"}`} displaySize={160} />
+              </Box>
+            )}
             <SidebarMenu />
           </Box>
         ) : (

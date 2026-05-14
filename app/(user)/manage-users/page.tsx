@@ -24,6 +24,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import { QRCodeDownload } from "@/app/components/QRCodeDownload";
 
 const COLUMNS = [
   { id: 1, name: "Username", key: "username" },
@@ -32,7 +33,8 @@ const COLUMNS = [
   { id: 4, name: "Status", key: "status" },
   { id: 5, name: "Added By", key: "addedBy" },
   { id: 6, name: "Created", key: "createdAt" },
-  { id: 7, name: "Action", key: "action" },
+  { id: 7, name: "QR Code", key: "qrCode" },
+  { id: 8, name: "Action", key: "action" },
 ];
 
 const ManageUsersPage = () => {
@@ -129,6 +131,12 @@ const ManageUsersPage = () => {
     ),
     addedBy: <span style={{ color: "#555", fontWeight: 500 }}>{user.createdByName ?? "Superadmin"}</span>,
     createdAt: formatDate(user.createdAt),
+    qrCode: (
+      <QRCodeDownload 
+        value={user._id} 
+        fileName={`qr_user_${user.username}`} 
+      />
+    ),
     action: (
       <Stack
         direction="row"

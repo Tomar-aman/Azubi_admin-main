@@ -75,7 +75,7 @@ const Login = () => {
     },
   });
   
-  const [showBranding, setShowBranding] = useState(true);
+  const [showBranding, setShowBranding] = useState<boolean | null>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
@@ -85,9 +85,13 @@ const Login = () => {
 
       if (host.includes(userDomain) || host.includes(employeeDomain)) {
         setShowBranding(false);
+      } else {
+        setShowBranding(true);
       }
     }
   }, []);
+
+  if (showBranding === null) return null;
 
   const handleClickOpen = () => {
     setOpen(true);

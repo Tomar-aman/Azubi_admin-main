@@ -18,6 +18,7 @@ import DeleteModal from "@/app/components/delete.modal.components";
 import { useEffect, useState } from "react";
 import IModal from "@/app/components/modal.components";
 import AddCities from "./add-cities";
+import { QRCodeDownload } from "@/app/components/QRCodeDownload";
 import { useDebounce } from "@uidotdev/usehooks";
 import {
   City,
@@ -163,6 +164,12 @@ const ManageCities = () => {
             ? "active"
             : "inactive"}
         </div>
+      ),
+      qrCode: (
+        <QRCodeDownload 
+          value={SingleRowData.id} 
+          fileName={`qr_city_${SingleRowData.name}`} 
+        />
       ),
       action: (
         <Stack

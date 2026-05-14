@@ -26,6 +26,9 @@ const SidebarMenu = () => {
   const currentUser = useSelector((state: any) => state.user?.data);
   const permissions = currentUser?.permissions;
 
+  // Prevent flicker by waiting for Redux to populate currentUser
+  if (!currentUser) return null;
+
   const handleMenu = (id: number) => {
     if (id === openMenu) {
       setOpenMenu(null);
