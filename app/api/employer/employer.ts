@@ -115,8 +115,8 @@ export const addEmployer = async (
     prepareAdditionalData[`objects[${idx}][text]`] = obj.text;
   });
 
-  // Destructure companyLogo out so it doesn't get spread as null/empty into the data
-  const { companyLogo, ...restPayload } = payload as any;
+  // Destructure companyLogo and oldCompanyLogo out so they don't get spread as null/empty into the data
+  const { companyLogo, oldCompanyLogo, ...restPayload } = payload as any;
 
   const data: any = {
     ...restPayload,
@@ -129,6 +129,11 @@ export const addEmployer = async (
   // Only include companyLogo if it's a real value (e.g. a File object)
   if (companyLogo && companyLogo !== "" && !(Array.isArray(companyLogo) && companyLogo.length === 0)) {
     data.companyLogo = companyLogo;
+  }
+
+  // Only include oldCompanyLogo if it's a real ObjectId string
+  if (oldCompanyLogo && oldCompanyLogo !== "") {
+    data.oldCompanyLogo = oldCompanyLogo;
   }
 
   const response = await request({
@@ -175,8 +180,8 @@ export const updateEmployerById = async (
     industryName: updatedData.industryName.id,
     city: updatedData.city.id,
   }).forEach(([key, value]) => {
-    // Skip companyLogo if it's null, empty string, or empty array
-    if (key === "companyLogo" && (!value || value === "" || (Array.isArray(value) && value.length === 0))) {
+    // Skip companyLogo or oldCompanyLogo if it's null, empty string, or empty array
+    if ((key === "companyLogo" || key === "oldCompanyLogo") && (!value || value === "" || (Array.isArray(value) && value.length === 0))) {
       return;
     }
     if (Array.isArray(value)) {
