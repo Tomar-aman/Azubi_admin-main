@@ -123,6 +123,7 @@ export const addEmployer = async (
       videoLink: JSON.stringify(payload.videoLink),
       industryName: payload?.industryName?.id,
       city: payload.city.id,
+      ...(payload.companyLogo && payload.companyLogo !== "" ? { companyLogo: payload.companyLogo } : {}),
       ...prepareAdditionalData,
     },
     headers: {
@@ -165,6 +166,10 @@ export const updateEmployerById = async (
     industryName: updatedData.industryName.id,
     city: updatedData.city.id,
   }).forEach(([key, value]) => {
+    // Skip companyLogo if it's null, empty string, or empty array
+    if (key === "companyLogo" && (!value || value === "" || (Array.isArray(value) && value.length === 0))) {
+      return;
+    }
     if (Array.isArray(value)) {
       value.forEach((item) => {
         formData.append(`${key}`, item);

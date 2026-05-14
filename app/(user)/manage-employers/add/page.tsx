@@ -139,6 +139,10 @@ const AddComponent = () => {
           return item;
         }
       });
+
+      if (!values.companyLogo || values.companyLogo === "" || (Array.isArray(values.companyLogo) && values.companyLogo.length === 0)) {
+        delete (values as any).companyLogo;
+      }
       try {
         setIsLoading(true);
         if (id) {
