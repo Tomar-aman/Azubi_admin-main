@@ -37,10 +37,8 @@ import Cropper, { FileState } from "@/app/ulits/cropper";
 import { AdditionalData } from "..";
 import { v4 } from "uuid";
 import dynamic from "next/dynamic";
-import { setCurrentElementId } from "@/app/redux/user/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-import { ImageGalleryModal } from "@/app/ulits/imageGallery/ImageGalleryV1";
 import { handleFindImage } from "@/app/ulits/constatnt";
 import ClearIcon from "@mui/icons-material/Clear";
 const TextEditorNew = dynamic(
@@ -52,13 +50,10 @@ const AddComponent = () => {
     /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
   const route = useRouter();
   const [disable, setIsDisable] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState("");
   const [fileList, setFileList] = useState<FileState[]>([]);
   const [oldFile, setOldFile] = useState<string[]>([]);
   const [companyLogoPath, setCompanyLogoPath] = useState<FileState[]>([]);
-  const dispatch = useDispatch();
-  const elementId = useSelector((state: RootState) => state?.user?.elementId);
   const mediaUrls = useSelector((state: RootState) => state?.user?.mediaUrls);
   const validationSchema = Yup.object({
     industryName: Yup.object().test(
@@ -188,12 +183,7 @@ const AddComponent = () => {
   const [state, setState] = useState<AdditionalData>({
     iconWithContent: [],
   });
-  const handleOpenGalleryModel = () => {
-    setIsOpen(true);
-  };
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+
   function addAdditionData() {
     setState({
       ...state,
@@ -341,45 +331,7 @@ const AddComponent = () => {
     }
     setIsLoading(false);
   };
-  const handleSelectedFile = (id: string, file: any) => {
-    if (id === "companyLogo") {
-      formik.setFieldValue("oldCompanyLogo", file._id);
-      setCompanyLogoPath((pre: any) => {
-        return [
-          {
-            name: file.filepath,
-            uid: file._id,
-            url: process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL + file.filepath,
-          },
-        ];
-      });
-    } else if (id === "oldCompanyImages") {
-      formik.setFieldValue("oldCompanyImages", [
-        ...(formik.values.oldCompanyImages as string[]),
-        file._id as string,
-      ]);
-      setFileList((pre: any) => {
-        return [
-          ...pre,
-          {
-            name: file.filepath,
-            uid: file._id + 1,
-            url: process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL + file.filepath,
-          },
-        ];
-      });
-    } else {
-      setState({
-        ...state,
-        //@ts-ignore
-        iconWithContent: state.iconWithContent.map((acc, idx) =>
-          acc._id === id ? { ...acc, oldImage: file._id } : acc
-        ),
-      });
-    }
 
-    handleClose();
-  };
   useEffect(() => {
     getAllCity();
     getAllIndustries();
@@ -754,46 +706,25 @@ const AddComponent = () => {
                 <label>Company Logo</label>
               </Grid>
               <Grid item xs={12} lg={10}>
-                <span>
-                  <Cropper
-                    id="companyLogo"
-                    fileList={companyLogoPath || []}
-                    clickable={() => {
-                      handleOpenGalleryModel();
-                      dispatch(setCurrentElementId("companyLogo"));
-                    }}
-                    setFileList={(fileList: any) => {
-                      setCompanyLogoPath(fileList);
-                      if (fileList[0]?.originFileObj) {
-                        formik.setFieldValue(
-                          "companyLogo",
-                          fileList[0]?.originFileObj
-                        );
-                      } else {
-                        formik.setFieldValue("companyLogo", []);
-                      }
-                    }}
-                    setOldFile={(data) => console.log("Old file:", data)}
-                    disabled={!isOpen}
-                    maxCount={1} // Example max count
-                    isA4={false}
-                  />
-                </span>
-
-                {/* <TextField
-                  placeholder="576557"
-                  disabled={disable}
-                  type="file"
-                  fullWidth
-                  helperText="recommend size 250x250px"
-                  name="companyLogo"
-                  onChange={(e: any) => {
-                    formik.setFieldValue(
-                      "companyLogo",
-                      e.target.files![0] || null
-                    );
+                <Cropper
+                  id="companyLogo"
+                  fileList={companyLogoPath || []}
+                  setFileList={(newFileList: any) => {
+                    setCompanyLogoPath(newFileList);
+                    if (newFileList[0]?.originFileObj) {
+                      formik.setFieldValue(
+                        "companyLogo",
+                        newFileList[0]?.originFileObj
+                      );
+                    } else {
+                      formik.setFieldValue("companyLogo", null);
+                    }
                   }}
-                /> */}
+                  setOldFile={(data) => console.log("Old file:", data)}
+                  disabled={disable}
+                  maxCount={1}
+                  isA4={false}
+                />
                 {formik.touched.companyLogo && Boolean(formik.errors.companyLogo) && (
                   <FormHelperText error sx={{ ml: 1, mt: 0 }}>CompanyLogo is Required</FormHelperText>
                 )}
@@ -846,47 +777,21 @@ const AddComponent = () => {
                 <label>Company Images</label>
               </Grid>
               <Grid item xs={10}>
-                {" "}
-                <Box
-                  sx={{
-                    "& textarea": {
-                      width: "100%",
-                      height: "136px",
-                      resize: "none",
-                      borderRadius: "10px",
-                      border: "1px solid #646464",
-                      fontSize: "16px",
-                      fontFamily: "'Poppins', sans-serif",
-                      padding: "8px 12px",
-                      outline: "none",
-                      fontWeight: "500",
-                    },
-                  }}
-                >
-                  {" "}
-                  <span>
-                    <Cropper
-                      clickable={() => {
-                        handleOpenGalleryModel();
-                        dispatch(setCurrentElementId("oldCompanyImages"));
-                      }}
-                      id="oldCompanyImages"
-                      disabled={!isOpen}
-                      fileList={fileList}
-                      setFileList={setFileList}
-                      setOldFile={setOldFile}
-                    />
-                  </span>
-                </Box>
+                <Cropper
+                  id="oldCompanyImages"
+                  disabled={disable}
+                  fileList={fileList}
+                  setFileList={setFileList}
+                  setOldFile={setOldFile}
+                />
               </Grid>
               <Grid item xs={12} lg={2}>
-                <label>YouTube link</label>
+                <label>YouTube links</label>
               </Grid>
               <Grid item xs={10}>
                 {formik.values.videoLink.map((link, index) => (
-                  <>
+                  <Box key={index} sx={{ mb: 3, p: 2, border: "1px solid #eee", borderRadius: "8px", bgcolor: "#fafafa" }}>
                     <TextField
-                      style={{ marginBottom: "20px" }}
                       disabled={disable}
                       placeholder="Embed youtube video link"
                       type="text"
@@ -894,133 +799,167 @@ const AddComponent = () => {
                       name={`videoLink[${index}]`}
                       onChange={(event: any) => handleSkillChange(index, event)}
                       value={link}
+                      sx={{ bgcolor: "#fff" }}
                     />
                     {formik.errors.videoLink && Boolean(formik.errors.videoLink[index]) && (
-                          <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.videoLink[index] as string}</FormHelperText>
-                        )}
-                    {link ? (
-                      <Box sx={{ my: 2 }}>
+                      <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.videoLink[index] as string}</FormHelperText>
+                    )}
+                    {link && (
+                      <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
                         <iframe
                           title="Preview"
-                          width="200"
-                          height="110"
+                          width="300"
+                          height="168"
                           src={link}
+                          style={{ border: "none", borderRadius: "4px" }}
                         ></iframe>
                       </Box>
-                    ) : (
-                      ""
                     )}
-                    <Button
-                      size="small"
-                      onClick={() => removeSkill(index)}
-                      disabled={disable}
-                      // variant="outlined"
-                      className="outlineBtn"
-                      sx={{ marginRight: "15px" }}
-                    >
-                      remove
-                    </Button>
-                  </>
+                    <Box sx={{ mt: 1, textAlign: "right" }}>
+                      <Button
+                        size="small"
+                        color="error"
+                        onClick={() => removeSkill(index)}
+                        disabled={disable}
+                        sx={{ textTransform: "none" }}
+                      >
+                        Remove Link
+                      </Button>
+                    </Box>
+                  </Box>
                 ))}
 
                 <Button
-                  // variant="contained"
-                  className="modalBtn"
+                  variant="outlined"
                   size="small"
                   onClick={addSkill}
                   disabled={disable}
+                  sx={{ textTransform: "none", borderColor: "#1FA49A", color: "#1FA49A" }}
                 >
-                  Add
+                  + Add YouTube Link
                 </Button>
               </Grid>
-              {/* ---------------video field----------------- */}
-              <Grid item xs={12}>
-                <Button onClick={addAdditionData}>Add additional field</Button>
+              <Grid item xs={12} lg={2}>
+                <label>Additional info</label>
               </Grid>
-              {state.iconWithContent.map((itm:any, idx) => (
-                <>
-                  <Grid item xs={5}>
-                    <TextField
-                      id={itm._id}
-                      // disabled={!isOpen}
-                      type="file"
-                      fullWidth
-                      name="image"
-                      onClick={(e: any) => {
-                        if (!isOpen) {
-                          e.preventDefault();
-                        }
-                        handleOpenGalleryModel();
-                        dispatch(setCurrentElementId(e.target.id));
-                      }}
-                      onChange={(e) => {
-                        handleChangeForArrayType(
-                          e as any,
-                          idx,
-                          "iconWithContent"
-                        );
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
+              <Grid item xs={10}>
+                {state.iconWithContent.map((itm: any, idx) => (
+                  <Box key={itm._id} sx={{ mb: 3, p: 2, border: "1px solid #eee", borderRadius: "8px", bgcolor: "#fafafa" }}>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item xs={12} sm={4}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          {itm.oldImage || itm.image ? (
+                            <Box
+                              component="img"
+                              src={itm.image ? URL.createObjectURL(itm.image) : handleFindImage(mediaUrls, itm.oldImage)}
+                              sx={{
+                                width: 60,
+                                height: 60,
+                                objectFit: "cover",
+                                borderRadius: "4px",
+                                border: "1px solid #ddd"
+                              }}
+                            />
+                          ) : (
+                            <Box
+                              sx={{
+                                width: 60,
+                                height: 60,
+                                bgcolor: "#fff",
+                                borderRadius: "4px",
+                                border: "1px dashed #ccc",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#999",
+                                fontSize: "10px",
+                                textAlign: "center"
+                              }}
+                            >
+                              Icon
+                            </Box>
+                          )}
+                          <Button
+                            variant="outlined"
+                            component="label"
+                            size="small"
+                            disabled={disable}
+                            sx={{ textTransform: "none", borderColor: "#1FA49A", color: "#1FA49A", minWidth: "80px" }}
+                          >
+                            {itm.oldImage || itm.image ? "Change" : "Upload"}
+                            <input
+                              type="file"
+                              hidden
+                              name="image"
+                              onChange={(e) => {
+                                handleChangeForArrayType(
+                                  e as any,
+                                  idx,
+                                  "iconWithContent"
+                                );
+                              }}
+                            />
+                          </Button>
+                          {(itm.oldImage || itm.image) && (
                             <IconButton
-                              onClick={(e) => {
-                                e.stopPropagation();
+                              size="small"
+                              onClick={() => {
                                 setState({
                                   ...state,
                                   iconWithContent: state.iconWithContent.map((item: any, index) =>
                                     index === idx
-                                      ? { ...item, oldImage: null }
+                                      ? { ...item, image: null, oldImage: null }
                                       : { ...item }
                                   ),
                                 });
-                              }} // Clear image on click
-                              edge="end"
-                              aria-label="Clear"
+                              }}
                             >
-                              <ClearIcon />
+                              <ClearIcon fontSize="small" color="error" />
                             </IconButton>
-                            {itm?.oldImage ? (
-                              <>
-                                <img
-                                  height={30}
-                                  width={40}
-                                  src={handleFindImage(mediaUrls, itm?.oldImage)}
-                                />
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={5}>
-                    <TextField
-                      placeholder="Enter text"
-                      disabled={disable}
-                      type="text"
-                      fullWidth
-                      name="text"
-                      onChange={(e) => {
-                        handleChangeForArrayType(
-                          e as any,
-                          idx,
-                          "iconWithContent"
-                        );
-                      }}
-                      value={state.iconWithContent[idx].text}
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    {" "}
-                    <Button onClick={() => deleteAdditionData(itm._id)}>
-                      delete
-                    </Button>
-                  </Grid>
-                </>
-              ))}
+                          )}
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          placeholder="Label or text"
+                          disabled={disable}
+                          type="text"
+                          fullWidth
+                          name="text"
+                          onChange={(e) => {
+                            handleChangeForArrayType(
+                              e as any,
+                              idx,
+                              "iconWithContent"
+                            );
+                          }}
+                          value={state.iconWithContent[idx].text}
+                          sx={{ bgcolor: "#fff" }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={2} sx={{ textAlign: "right" }}>
+                        <IconButton
+                          color="error"
+                          onClick={() => deleteAdditionData(itm._id)}
+                          disabled={disable}
+                        >
+                          <SVG.Delete />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                ))}
+
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={addAdditionData}
+                  disabled={disable}
+                  sx={{ textTransform: "none", borderColor: "#1FA49A", color: "#1FA49A" }}
+                >
+                  + Add Additional Info
+                </Button>
+              </Grid>
 
               <Grid item xs={12}>
                 <Box sx={{ textAlign: "right" }}>
@@ -1046,16 +985,6 @@ const AddComponent = () => {
           </StyledManageForm>
         </CardContent>
       </Card>
-      <ImageGalleryModal
-        isOpen={isOpen}
-        onClose={handleClose}
-        onFileSelect={(value: any) => {
-          if (elementId) {
-            handleSelectedFile(elementId, value);
-          }
-        }}
-        inputId={""}
-      />
     </>
   );
 };

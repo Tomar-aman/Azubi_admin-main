@@ -38,22 +38,25 @@ const Cropper = ({
   clickable,
 }: Cropper) => {
   const elementId = useSelector((state: RootState) => state.user.elementId);
-  const onChange = ({ fileList: newFileList }: any) => {
-    /* add image size validation */
-    if (newFileList.length > 0) {
-      for (let i = 0; i < newFileList.length; i++) {
-        if (newFileList[i].size / 1024 >= 500) {
-          alert("size must be less than 500kb");
-          return;
-        }
+  const onChange = (info: any) => {
+    let { fileList: newFileList, file } = info;
+
+    // Handle removals
+    if (file.status === 'removed') {
+      if (file.uid && !file.originFileObj) {
+        setOldFile((pre: any) => [...pre, file.uid]);
       }
     }
-    const data = fileList.find((item: any) => {
-      if (item.status === "removed") {
-        return item.uid;
+
+    // Handle size validation for new uploads
+    if (file.status === 'uploading' || file.status === 'done' || !file.status) {
+      if (file.originFileObj && file.originFileObj.size / 1024 >= 500) {
+        alert(`${file.name} is too large (must be less than 500kb)`);
+        // Filter out the oversized file
+        newFileList = newFileList.filter((f: any) => f.uid !== file.uid);
       }
-    });
-    setOldFile((pre: any) => [...pre, data?.uid]);
+    }
+
     setFileList(newFileList);
   };
 
@@ -73,20 +76,17 @@ const Cropper = ({
     <div style={{ zIndex: "999" }}>
       <ImgCrop aspect={isA4 ? 1 / 1.414 : undefined} showGrid showReset>
         <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
           listType="picture-card"
           fileList={fileList}
           onChange={onChange}
           onPreview={onPreview}
           maxCount={maxCount ? maxCount : 10000}
           showUploadList={{ showRemoveIcon: true }}
-          openFileDialogOnClick={elementId ? true : false}
+          openFileDialogOnClick={true}
+          beforeUpload={() => false}
         >
           <Button
             id={id || "cropper"}
-            onClick={(e) => {
-              clickable();
-            }}
           >
             + Upload
           </Button>
