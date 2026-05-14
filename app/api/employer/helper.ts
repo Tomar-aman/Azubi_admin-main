@@ -112,7 +112,7 @@ export function transFormSignalApiData(
       label: apiData.industryName?.industryName,
     },
     contactPerson: apiData.contactPerson,
-    city: { id: apiData.city?._id, label: apiData.city.name },
+    city: { id: apiData.city?._id || "", label: apiData.city?.name || "" },
     status: apiData.status,
     jobTitle: apiData.jobTitle,
     website: apiData.website,
@@ -124,6 +124,6 @@ export function transFormSignalApiData(
     companyDescription: apiData.companyDescription,
     locationUrl: apiData.locationUrl,
     phoneNo: apiData.phoneNo,
-    companyLogo: apiData.companyLogo._id || "",
+    companyLogo: apiData.companyLogo?._id || "",
   };
 }
