@@ -140,7 +140,8 @@ const AddComponent = () => {
         }
       });
 
-      if (!values.companyLogo || values.companyLogo === "" || (Array.isArray(values.companyLogo) && values.companyLogo.length === 0)) {
+      const logo = (values as any).companyLogo;
+      if (!logo || logo === "" || (Array.isArray(logo) && logo.length === 0)) {
         delete (values as any).companyLogo;
       }
       try {
