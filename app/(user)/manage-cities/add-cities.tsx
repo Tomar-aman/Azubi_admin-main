@@ -125,13 +125,14 @@ const AddCities = (props: any) => {
             }
           }}
           renderInput={(params) => (
-            <TextField {...params} label="" placeholder="" />
+            <TextField 
+              {...params} 
+              label="" 
+              placeholder="" 
+              error={formik.touched.region && Boolean(formik.errors.region)}
+              helperText={formik.touched.region && (formik.errors.region as string)}
+            />
           )}
-
-          error={formik.touched.region && Boolean(formik.errors.region)}
-
-          helperText={formik.touched.region && (formik.errors.region as string)}
-
         />
         <FormControlLabel
           control={

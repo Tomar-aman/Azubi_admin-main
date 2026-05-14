@@ -470,12 +470,14 @@ const AddComponent = () => {
                       formik.values.industryName.label = value.label;
                     }
                   }}
-                  renderInput={(params) => <TextField {...params} label="" />}
-
-                  error={formik.touched.industryName && Boolean(formik.errors.industryName)}
-
-                  helperText={formik.touched.industryName && (formik.errors.industryName as string)}
-
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="" 
+                      error={formik.touched.industryName && Boolean(formik.errors.industryName)}
+                      helperText={formik.touched.industryName && (formik.errors.industryName as string)}
+                    />
+                  )}
                 />
               </Grid>
 
@@ -653,12 +655,13 @@ const AddComponent = () => {
                   }}
                   value={id ? "+49" + formik.values.phoneNo : "+49"}
                   onlyCountries={["de"]} // Allow only Germany
-
-                  error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
-
-                  helperText={formik.touched.phoneNo && (formik.errors.phoneNo as string)}
-
+                  containerStyle={formik.touched.phoneNo && Boolean(formik.errors.phoneNo) ? { border: "1px solid #d32f2f", borderRadius: "4px" } : {}}
                 />
+                {formik.touched.phoneNo && formik.errors.phoneNo && (
+                  <FormHelperText error sx={{ ml: "5px", color: "#d32f2f", fontWeight: "500" }}>
+                    {formik.errors.phoneNo as string}
+                  </FormHelperText>
+                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>
@@ -732,12 +735,14 @@ const AddComponent = () => {
                       formik.setFieldValue("city", value);
                     }
                   }}
-                  renderInput={(params) => <TextField {...params} label="" />}
-
-                  error={formik.touched.city && Boolean(formik.errors.city)}
-
-                  helperText={formik.touched.city && (formik.errors.city as string)}
-
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="" 
+                      error={formik.touched.city && Boolean(formik.errors.city)}
+                      helperText={formik.touched.city && (formik.errors.city as string)}
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12} lg={2}>

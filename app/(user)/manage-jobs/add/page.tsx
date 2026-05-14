@@ -751,13 +751,13 @@ const AddComponent: React.FC = () => {
                       return { id: item.id, label: item.name };
                     })}
                     renderInput={(params) => (
-                      <TextField {...params} placeholder="Select City" />
+                      <TextField 
+                        {...params} 
+                        placeholder="Select City" 
+                        error={formik.touched.newCity && Boolean(formik.errors.newCity)}
+                        helperText={formik.touched.newCity && (formik.errors.newCity as string)}
+                      />
                     )}
-
-                    error={formik.touched.newCity && Boolean(formik.errors.newCity)}
-
-                    helperText={formik.touched.newCity && (formik.errors.newCity as string)}
-
                   />
                   {/* end------ */}
                 </Grid>
@@ -805,13 +805,13 @@ const AddComponent: React.FC = () => {
                     } // Ensure options is never undefined
                     getOptionLabel={(option) => option?.label || ""}
                     renderInput={(params) => (
-                      <TextField {...params} placeholder="Select Region" />
+                      <TextField 
+                        {...params} 
+                        placeholder="Select Region" 
+                        error={formik.touched.region && Boolean(formik.errors.region)}
+                        helperText={formik.touched.region && (formik.errors.region as string)}
+                      />
                     )}
-
-                    error={formik.touched.region && Boolean(formik.errors.region)}
-
-                    helperText={formik.touched.region && (formik.errors.region as string)}
-
                   />
                 </Grid>
 
@@ -834,12 +834,14 @@ const AddComponent: React.FC = () => {
                         setIsCitySet(!isCitySet);
                       }
                     }}
-                    renderInput={(params) => <TextField {...params} label="" />}
-
-                    error={formik.touched.company && Boolean(formik.errors.company)}
-
-                    helperText={formik.touched.company && (formik.errors.company as string)}
-
+                    renderInput={(params) => (
+                      <TextField 
+                        {...params} 
+                        label="" 
+                        error={formik.touched.company && Boolean(formik.errors.company)}
+                        helperText={formik.touched.company && (formik.errors.company as string)}
+                      />
+                    )}
                   />
                 </Grid>
 
@@ -862,12 +864,14 @@ const AddComponent: React.FC = () => {
                         formik.values.industryName.label = value.label;
                       }
                     }}
-                    renderInput={(params) => <TextField {...params} label="" />}
-
-                    error={formik.touched.industryName && Boolean(formik.errors.industryName)}
-
-                    helperText={formik.touched.industryName && (formik.errors.industryName as string)}
-
+                    renderInput={(params) => (
+                      <TextField 
+                        {...params} 
+                        label="" 
+                        error={formik.touched.industryName && Boolean(formik.errors.industryName)}
+                        helperText={formik.touched.industryName && (formik.errors.industryName as string)}
+                      />
+                    )}
                   />
                 </Grid>
 
@@ -891,13 +895,13 @@ const AddComponent: React.FC = () => {
                           formik.setFieldValue("training", value);
                         }}
                         renderInput={(params) => (
-                          <TextField {...params} label="" />
+                          <TextField 
+                            {...params} 
+                            label="" 
+                            error={formik.touched.training && Boolean(formik.errors.training)}
+                            helperText={formik.touched.training && (formik.errors.training as string)}
+                          />
                         )}
-
-                        error={formik.touched.training && Boolean(formik.errors.training)}
-
-                        helperText={formik.touched.training && (formik.errors.training as string)}
-
                       />
                     </Grid>
 
@@ -919,13 +923,13 @@ const AddComponent: React.FC = () => {
                           formik.setFieldValue("federalState", value);
                         }}
                         renderInput={(params) => (
-                          <TextField {...params} label="" />
+                          <TextField 
+                            {...params} 
+                            label="" 
+                            error={formik.touched.federalState && Boolean(formik.errors.federalState)}
+                            helperText={formik.touched.federalState && (formik.errors.federalState as string)}
+                          />
                         )}
-
-                        error={formik.touched.federalState && Boolean(formik.errors.federalState)}
-
-                        helperText={formik.touched.federalState && (formik.errors.federalState as string)}
-
                       />
                     </Grid>
 
@@ -946,13 +950,13 @@ const AddComponent: React.FC = () => {
                           formik.setFieldValue("beginning", value);
                         }}
                         renderInput={(params) => (
-                          <TextField {...params} label="" />
+                          <TextField 
+                            {...params} 
+                            label="" 
+                            error={formik.touched.beginning && Boolean(formik.errors.beginning)}
+                            helperText={formik.touched.beginning && (formik.errors.beginning as string)}
+                          />
                         )}
-
-                        error={formik.touched.beginning && Boolean(formik.errors.beginning)}
-
-                        helperText={formik.touched.beginning && (formik.errors.beginning as string)}
-
                       />
                     </Grid>
                   </>
@@ -1347,13 +1351,13 @@ const AddComponent: React.FC = () => {
                       return { id: item.id, label: item.name };
                     })}
                     renderInput={(params) => (
-                      <TextField {...params} placeholder="Type of Job" />
+                      <TextField 
+                        {...params} 
+                        placeholder="Type of Job" 
+                        error={formik.touched.jobType && Boolean(formik.errors.jobType)}
+                        helperText={formik.touched.jobType && (formik.errors.jobType as string)}
+                      />
                     )}
-
-                    error={formik.touched.jobType && Boolean(formik.errors.jobType)}
-
-                    helperText={formik.touched.jobType && (formik.errors.jobType as string)}
-
                   />
                 </Grid>
 

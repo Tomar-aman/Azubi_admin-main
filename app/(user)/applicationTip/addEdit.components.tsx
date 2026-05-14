@@ -94,12 +94,13 @@ const AddEditApplicationTips = (props: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.description}
-
-          error={formik.touched.description && Boolean(formik.errors.description)}
-
-          helperText={formik.touched.description && (formik.errors.description as string)}
-
+          style={formik.touched.description && Boolean(formik.errors.description) ? { borderColor: "#d32f2f" } : {}}
         />
+        {formik.touched.description && formik.errors.description && (
+          <FormHelperText error sx={{ ml: "5px", color: "#d32f2f", fontWeight: "500" }}>
+            {formik.errors.description as string}
+          </FormHelperText>
+        )}
 
         <Stack
           direction={"row"}

@@ -519,12 +519,14 @@ const AddBanner = ({
                       formik.setFieldValue("city", value);
                     }
                   }}
-                  renderInput={(params) => <TextField {...params} label="" />}
-
-                  error={formik.touched.city && Boolean(formik.errors.city)}
-
-                  helperText={formik.touched.city && (formik.errors.city as string)}
-
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="" 
+                      error={formik.touched.city && Boolean(formik.errors.city)}
+                      helperText={formik.touched.city && (formik.errors.city as string)}
+                    />
+                  )}
                 />
               </Grid>
               {/* city field End */}
@@ -559,12 +561,14 @@ const AddBanner = ({
                       formik.values.industryName.label = value.label;
                     }
                   }}
-                  renderInput={(params) => <TextField {...params} label="" />}
-
-                  error={formik.touched.industryName && Boolean(formik.errors.industryName)}
-
-                  helperText={formik.touched.industryName && (formik.errors.industryName as string)}
-
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="" 
+                      error={formik.touched.industryName && Boolean(formik.errors.industryName)}
+                      helperText={formik.touched.industryName && (formik.errors.industryName as string)}
+                    />
+                  )}
                 />
               </Grid>
               {/*industry field end*/}
@@ -700,13 +704,13 @@ const AddBanner = ({
                         }
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="" />
+                        <TextField 
+                          {...params} 
+                          label="" 
+                          error={formik.touched.job && Boolean(formik.errors.job)}
+                          helperText={formik.touched.job && (formik.errors.job as string)}
+                        />
                       )}
-
-                      error={formik.touched.job && Boolean(formik.errors.job)}
-
-                      helperText={formik.touched.job && (formik.errors.job as string)}
-
                     />
                   </Grid>
                 </>

@@ -160,19 +160,19 @@ const AddEditContacts = (props: any) => {
           onBlur={formik.handleBlur}
           value={formik.values.message}
           style={{
-            border: "1px solid #646464",
+            border: formik.touched.message && Boolean(formik.errors.message) ? "1px solid #d32f2f" : "1px solid #646464",
             fontSize: "16px",
             fontWeight: "500",
             padding: "10px 12px",
             width: "100%",
             resize: "vertical",
           }}
-
-          error={formik.touched.message && Boolean(formik.errors.message)}
-
-          helperText={formik.touched.message && (formik.errors.message as string)}
-
         />
+        {formik.touched.message && formik.errors.message && (
+          <FormHelperText error sx={{ ml: "5px", color: "#d32f2f", fontWeight: "500" }}>
+            {formik.errors.message as string}
+          </FormHelperText>
+        )}
 
         <Stack
           direction={"row"}
