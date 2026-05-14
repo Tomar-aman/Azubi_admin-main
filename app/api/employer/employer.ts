@@ -115,17 +115,26 @@ export const addEmployer = async (
     prepareAdditionalData[`objects[${idx}][text]`] = obj.text;
   });
 
+  // Destructure companyLogo out so it doesn't get spread as null/empty into the data
+  const { companyLogo, ...restPayload } = payload as any;
+
+  const data: any = {
+    ...restPayload,
+    videoLink: JSON.stringify(payload.videoLink),
+    industryName: payload?.industryName?.id,
+    city: payload.city.id,
+    ...prepareAdditionalData,
+  };
+
+  // Only include companyLogo if it's a real value (e.g. a File object)
+  if (companyLogo && companyLogo !== "" && !(Array.isArray(companyLogo) && companyLogo.length === 0)) {
+    data.companyLogo = companyLogo;
+  }
+
   const response = await request({
     url: "/employer/",
     method: "post",
-    data: {
-      ...payload,
-      videoLink: JSON.stringify(payload.videoLink),
-      industryName: payload?.industryName?.id,
-      city: payload.city.id,
-      ...(payload.companyLogo && payload.companyLogo !== "" ? { companyLogo: payload.companyLogo } : {}),
-      ...prepareAdditionalData,
-    },
+    data,
     headers: {
       "Content-Type": "multipart/form-data",
     },
