@@ -478,13 +478,14 @@ const AddBanner = ({
                     }
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="" placeholder="" />
+                    <TextField 
+                      {...params} 
+                      label="" 
+                      placeholder="" 
+                      error={formik.touched.companyName && Boolean(formik.errors.companyName)}
+                      helperText={formik.touched.companyName && (formik.errors.companyName as string)}
+                    />
                   )}
-
-                  error={formik.touched.companyName && Boolean(formik.errors.companyName)}
-
-                  helperText={formik.touched.companyName && (formik.errors.companyName as string)}
-
                 />
               </Grid>
               {/* company Field End */}
