@@ -182,7 +182,7 @@ export default function AdminLayout({
             }}
           >
             {userId && isUserDomain && (
-              <Box sx={{ width: "100%", display: "flex", justifyContent: "center", pt: 3, pb: 2 }}>
+              <Box sx={{ width: "100%", display: "flex", justifyContent: "center", pt: 1, pb: 2 }}>
                 <QRCodeDownload value={userId} fileName={`qr_${currentUser?.username || "user"}`} displaySize={160} />
               </Box>
             )}
