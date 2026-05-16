@@ -10,7 +10,7 @@ export const transformJobsData = (rawJobs: any): Job[] => {
     const newStartingDate = new Date(rawJob.startDate);
     return {
       id: rawJob._id,
-      company: rawJob.company,
+      company: rawJob.companyName || rawJob.company,
       jobTitle: rawJob.jobTitle,
       startDate: isStartDate ? newStartingDate.toLocaleDateString() : "",
       email: rawJob.email,
@@ -24,6 +24,8 @@ export const transformJobsData = (rawJobs: any): Job[] => {
       date: createdAtDate.toLocaleDateString(),
       createdAt: createdAtDate.toLocaleDateString(),
       industryName: rawJob.industryName,
+      companyDetail: rawJob.company, // Store the nested object separately if needed
+      _id: rawJob._id,
     };
   });
 };

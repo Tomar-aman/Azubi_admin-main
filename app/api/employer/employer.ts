@@ -221,3 +221,31 @@ export const getCompaniesByCityIdApi = async (
   });
   return response;
 };
+
+export const getAllEmployersForFrontend = async (
+  payload: { searchValue?: string; isFillter?: string[]; slectedCity?: string[]; skip?: number }
+): Promise<SuccessResult<any> | ErrorResult> => {
+  const { searchValue, isFillter, slectedCity, skip } = payload;
+  const url = urlcat("/employer/get-all-emp-frontend", {
+    searchValue,
+    isFillter,
+    slectedCity,
+    skip,
+  });
+
+  const response = await request({
+    url,
+    method: "GET",
+  });
+  return response;
+};
+
+export const getCompanyDetail = async (
+  companyId: string
+): Promise<SuccessResult<any> | ErrorResult> => {
+  const response = await request({
+    url: `/employer/company-Detail/${companyId}`,
+    method: "GET",
+  });
+  return response;
+};

@@ -97,18 +97,24 @@ const ManageJobs = () => {
 
   const handleGetAllJobs = async () => {
     setLoading(true);
-    const payload: getAllJobsType = {
-      pageNo,
-      searchValue,
-      filter,
-      recordPerPage,
-    };
-    const response = await getAllJobs(payload);
-    if (response.remote === "success") {
-      setRowData(response.data.data.data);
-      setPageCount(response.data.data.count);
+    try {
+      const payload: getAllJobsType = {
+        pageNo,
+        searchValue,
+        filter,
+        recordPerPage,
+      };
+      const response = await getAllJobs(payload);
+      if (response.remote === "success") {
+        setRowData(response.data.data.data);
+        setPageCount(response.data.data.count);
+      }
+    } catch (error) {
+      console.error("Failed to fetch jobs:", error);
+      toast.error("Error loading jobs. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
 
@@ -135,13 +141,13 @@ const ManageJobs = () => {
           <p onClick={() => {
             handleEdit(rowData.id);
           }} style={{cursor: "pointer", color:'#2894A2' }}>
-            {rowData.company}
+            {rowData.company?.name || rowData.company}
           </p>
       ), // Adjust the href to match your dynamic route for companies
       jobTitle: rowData.jobTitle,
       startDate: rowData.startDate,
-      industry: rowData.industryName,
-      city: `${rowData.city?.[0]?.[0] || ""} ${rowData.city?.length > 1 ? `${rowData.city.length - 1} more` : ""}`,
+      industry: rowData.company?.industry || rowData.industryName,
+      city: `${rowData.city?.[0] ? rowData.city[0][0] : ""} ${rowData.city?.length > 1 ? `${rowData.city.length - 1} more` : ""}`,
       applications: rowData.count,
       status: (
         <div

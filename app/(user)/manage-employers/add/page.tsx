@@ -126,14 +126,12 @@ const AddComponent = () => {
     onSubmit: async (values) => {
       console.log("second");
       setIsDisable(true);
-      values.companyImages = fileList.map((item: any) => {
-        return item.originFileObj;
-      });
-      values.removedFile = oldFile.filter((item) => {
-        if (item !== "undefined" || item !== undefined) {
-          return item;
-        }
-      });
+      // Filter out existing images, only send new File objects
+      values.companyImages = fileList
+        .filter((item: any) => item.originFileObj)
+        .map((item: any) => item.originFileObj);
+
+      values.removedFile = oldFile.filter((item) => item && item !== "undefined");
 
       const logo = (values as any).companyLogo;
       if (!logo || logo === "" || (Array.isArray(logo) && logo.length === 0)) {

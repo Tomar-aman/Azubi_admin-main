@@ -439,7 +439,7 @@ const AddComponent: React.FC = () => {
       setFileList(newImage);
 
       if (response?.data?.data?.jobType) {
-        formik.setFieldValue("jobType", response?.data?.data?.jobType);
+        formik.setFieldValue("jobType", response?.data?.data?.jobType?._id || response?.data?.data?.jobType);
       }
       const date = response?.data?.data?.startDate?.split("T")[0];
       const industryValue = response.data.data.industryName;
@@ -894,6 +894,7 @@ const AddComponent: React.FC = () => {
                         onChange={(e, value: any) => {
                           formik.setFieldValue("training", value);
                         }}
+                        getOptionLabel={(option) => option?.label || ""}
                         renderInput={(params) => (
                           <TextField 
                             {...params} 
@@ -922,6 +923,7 @@ const AddComponent: React.FC = () => {
                           console.log({ value });
                           formik.setFieldValue("federalState", value);
                         }}
+                        getOptionLabel={(option) => option?.label || ""}
                         renderInput={(params) => (
                           <TextField 
                             {...params} 
@@ -949,6 +951,7 @@ const AddComponent: React.FC = () => {
                         onChange={(e, value: any) => {
                           formik.setFieldValue("beginning", value);
                         }}
+                        getOptionLabel={(option) => option?.label || ""}
                         renderInput={(params) => (
                           <TextField 
                             {...params} 
