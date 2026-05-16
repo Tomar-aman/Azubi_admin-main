@@ -18,8 +18,9 @@ export interface Job {
 export interface getAllJobsType {
   searchValue: string;
   pageNo: number;
-  filter: string;
+  filter?: string;
   recordPerPage: string;
+  isFrontend?: string;
 }
 export interface JobWithCount {
   data: Job[];

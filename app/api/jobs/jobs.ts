@@ -13,12 +13,13 @@ import { IconWithContent } from "@/app/(user)/manage-employers";
 export const getAllJobs = async (
   payload: getAllJobsType
 ): Promise<SuccessResult<JobWithCount> | ErrorResult> => {
-  const { searchValue, pageNo, filter, recordPerPage } = payload;
+  const { searchValue, pageNo, filter, recordPerPage, isFrontend } = payload;
   const url = urlcat("/job/", {
     searchValue,
     pageNo,
     filter,
     recordPerPage,
+    isFrontend,
   });
   const response = await request({
     url,

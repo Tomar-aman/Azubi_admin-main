@@ -33,8 +33,8 @@ export default function JobsPage() {
     const response = await getAllJobs({
       searchValue: searchValue,
       pageNo: 1,
-      recordPerPage: 100, // Increased to allow client-side filtering of more jobs
-      isFrontend: "true" as any,
+      recordPerPage: "100", // Increased to allow client-side filtering of more jobs
+      isFrontend: "true",
     });
 
     if (response.remote === "success") {
