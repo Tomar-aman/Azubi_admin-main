@@ -16,11 +16,13 @@ function AuthChecker() {
       if (token) {
         dispatch(setIsLogin(true));
         if (previousRoute) {
-          router.push(
-            previousRoute === "/" || previousRoute === "/reset-password"
-              ? "/dashboard"
-              : previousRoute
-          );
+          const isLoginOrReset =
+            previousRoute === "/" ||
+            previousRoute.startsWith("/?") ||
+            previousRoute === "/reset-password" ||
+            previousRoute.startsWith("/reset-password?");
+
+          router.push(isLoginOrReset ? "/dashboard" : previousRoute);
         }
       }
     }

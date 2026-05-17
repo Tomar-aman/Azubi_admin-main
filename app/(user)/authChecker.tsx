@@ -90,7 +90,11 @@ function AuthChecker() {
 
     // 3. Handle default redirect upon successful login
     if (previousRoute) {
-      const isInitialRedirect = previousRoute === "/" || previousRoute === "/reset-password";
+      const isInitialRedirect =
+        previousRoute === "/" ||
+        previousRoute.startsWith("/?") ||
+        previousRoute === "/reset-password" ||
+        previousRoute.startsWith("/reset-password?");
       if (isInitialRedirect) {
         if (permissions && !permissions.includes("dashboard")) {
           const fallbackRoute = getFirstAllowedRoute();
