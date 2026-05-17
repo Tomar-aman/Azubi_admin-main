@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useRouter, usePathname } from "next/navigation";
 import { MENU_DATA } from "../components/Sidebar/helper";
+import { setCurrentRoute } from "../redux/protectRoute/previousRouteSlice";
 
 function AuthChecker() {
   const dispatch = useDispatch();
@@ -41,6 +42,10 @@ function AuthChecker() {
   useEffect(() => {
     if (!isLogin || !currentUser) return;
 
+    const isSuperadmin = typeof window !== "undefined" && 
+      !window.location.hostname.includes(process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang") &&
+      !window.location.hostname.includes(process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang");
+
     // Helper to get first allowed route
     const getFirstAllowedRoute = () => {
       if (!permissions || permissions.length === 0) return "/";
@@ -56,8 +61,8 @@ function AuthChecker() {
       return null;
     };
 
-    // If permissions array exists (meaning restricted employee/user)
-    if (permissions) {
+    // If permissions array exists (meaning restricted employee/user) and not Superadmin
+    if (permissions && !isSuperadmin) {
       // Find if current path is allowed
       const matchingMenuItem = MENU_DATA.find((item) => {
         if (item.url && pathname.startsWith(item.url)) {
@@ -90,13 +95,16 @@ function AuthChecker() {
 
     // 3. Handle default redirect upon successful login
     if (previousRoute) {
+      // Clear previousRoute immediately to avoid redirecting again on subsequent pathname changes
+      dispatch(setCurrentRoute(""));
+
       const isInitialRedirect =
         previousRoute === "/" ||
         previousRoute.startsWith("/?") ||
         previousRoute === "/reset-password" ||
         previousRoute.startsWith("/reset-password?");
       if (isInitialRedirect) {
-        if (permissions && !permissions.includes("dashboard")) {
+        if (permissions && !isSuperadmin && !permissions.includes("dashboard")) {
           const fallbackRoute = getFirstAllowedRoute();
           if (fallbackRoute && pathname !== fallbackRoute) {
             router.push(fallbackRoute);

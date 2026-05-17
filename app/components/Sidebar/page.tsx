@@ -37,9 +37,13 @@ const SidebarMenu = () => {
     }
   };
 
+  const isSuperadmin = typeof window !== "undefined" && 
+    !window.location.hostname.includes(process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang") &&
+    !window.location.hostname.includes(process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang");
+
   const filteredMenuData = MENU_DATA.filter((item) => {
     if (item.label === "Log Out") return true;
-    if (!permissions) return true; // main admin, or old user
+    if (isSuperadmin || !permissions) return true; // main admin, or old user
     return permissions.includes(item.key as string);
   });
 
