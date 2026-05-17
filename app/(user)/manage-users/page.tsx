@@ -25,6 +25,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { QRCodeDownload } from "@/app/components/QRCodeDownload";
+import { getCompanyLoginUrl } from "@/app/ulits/managedLoginUrl";
 
 const COLUMNS = [
   { id: 1, name: "Username", key: "username" },
@@ -34,7 +35,8 @@ const COLUMNS = [
   { id: 5, name: "Added By", key: "addedBy" },
   { id: 6, name: "Created", key: "createdAt" },
   { id: 7, name: "QR Code", key: "qrCode" },
-  { id: 8, name: "Action", key: "action" },
+  { id: 8, name: "Company Login URL", key: "loginUrl" },
+  { id: 9, name: "Action", key: "action" },
 ];
 
 const ManageUsersPage = () => {
@@ -136,6 +138,19 @@ const ManageUsersPage = () => {
         value={user._id} 
         fileName={`qr_user_${user.username}`} 
       />
+    ),
+    loginUrl: (
+      <Button
+        component="a"
+        href={getCompanyLoginUrl(user.email)}
+        target="_blank"
+        rel="noopener noreferrer"
+        size="small"
+        variant="outlined"
+        sx={{ textTransform: "none", fontWeight: 700 }}
+      >
+        Open URL
+      </Button>
     ),
     action: (
       <Stack

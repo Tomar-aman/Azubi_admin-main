@@ -1099,6 +1099,23 @@ export const EditHomePageV2Contents = async (
 
     return response;
   }
+  if (operation === "adminLogo") {
+    const formData = new FormData();
+    for (let item in payload) {
+      if (payload[item]) formData.append(item, payload[item]);
+    }
+
+    const response = await request({
+      url: `/manage_content/home-page-v2/?operation=${operation}`,
+      method: "put",
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response;
+  }
   if (operation === "welcomeMessageForApp") {
     const response = await request({
       url: `/manage_content/home-page-v2/?operation=${operation}`,

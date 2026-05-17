@@ -80,6 +80,7 @@ function MagazinePage() {
       buttonText: "",
     },
     headerLogoSideImage: null,
+    adminLogo: null,
     welcomeMessageForApp: {
       heading: "",
       subHeading: "",
@@ -264,6 +265,16 @@ function MagazinePage() {
       await updateContent({ ...payload }, operation);
     }
 
+    if (operation === "adminLogo") {
+      const payload: any = {
+        adminLogo: state.adminLogo,
+      };
+      if (state.oldAdminLogo) {
+        payload.oldAdminLogo = state.oldAdminLogo;
+      }
+      await updateContent(payload, operation);
+    }
+
     if (operation === "welcomeMessageForApp") {
       await updateContent(state.welcomeMessageForApp, "welcomeMessageForApp");
     }
@@ -316,6 +327,11 @@ function MagazinePage() {
         ...state,
         oldHeaderSideImage: file._id,
       });
+    } else if (id === "adminLogo") {
+      setState({
+        ...state,
+        oldAdminLogo: file._id,
+      });
     }
   };
   const handleGetAllContent = async () => {
@@ -336,6 +352,7 @@ function MagazinePage() {
           textContainer,
           mailChimpSection,
           companyLogoHeading,
+          adminLogo,
           welcomeMessageForApp,
         } = response.data.data;
         setState({
@@ -361,6 +378,7 @@ function MagazinePage() {
             ? { ...mailChimpSection, image: null }
             : state.mailChimpSection,
           companyLogoHeading,
+          oldAdminLogo: adminLogo?._id || state.oldAdminLogo,
           welcomeMessageForApp: welcomeMessageForApp
             ? welcomeMessageForApp
             : state.welcomeMessageForApp,

@@ -669,10 +669,13 @@ export interface HomePage {
   logoGalleryColor: any;
   mailChimpSection: MailChimpSection | null;
   headerLogoSideImage: any;
+  adminLogo?: any;
   welcomeMessageForApp: WelcomeMessageForApp | null;
   sideImage: any;
   oldSideImage?: any;
   oldHeaderSideImage?: any;
+  oldAdminLogo?: any;
+  removeAdminLogo?: boolean;
 }
 
 export interface HomePageOperationField {
@@ -686,6 +689,7 @@ export interface HomePageOperationField {
   emailSection: string;
   companiesLogo: string;
   headerLogoSideImage: string;
+  adminLogo: string;
   welcomeMessageForApp: string;
 }
 

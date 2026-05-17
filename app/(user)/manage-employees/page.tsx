@@ -18,6 +18,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import { getEmployeeLoginUrl } from "@/app/ulits/managedLoginUrl";
 
 const COLUMNS = [
   { id: 1, name: "Name", key: "name" },
@@ -26,7 +27,8 @@ const COLUMNS = [
   { id: 4, name: "Permissions", key: "permissions" },
   { id: 5, name: "Status", key: "status" },
   { id: 6, name: "Added By", key: "addedBy" },
-  { id: 7, name: "Action", key: "action" },
+  { id: 7, name: "Employee Login URL", key: "loginUrl" },
+  { id: 8, name: "Action", key: "action" },
 ];
 
 const ManageEmployeesPage = () => {
@@ -124,6 +126,19 @@ const ManageEmployeesPage = () => {
       </span>
     ),
     addedBy: <span style={{ color: "#555", fontWeight: 500 }}>{emp.createdByName ?? "Superadmin"}</span>,
+    loginUrl: (
+      <Button
+        component="a"
+        href={getEmployeeLoginUrl(emp.email)}
+        target="_blank"
+        rel="noopener noreferrer"
+        size="small"
+        variant="outlined"
+        sx={{ textTransform: "none", fontWeight: 700 }}
+      >
+        Open URL
+      </Button>
+    ),
     action: (
       <Stack
         direction="row"

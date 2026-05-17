@@ -227,6 +227,11 @@ export const MENU_DATA: SidebarMenu[] = [
         label: "Landing-Page-gallery",
         url: "landing-page-gallery",
       },
+      {
+        id: 30,
+        label: "Admin Logo",
+        url: "admin-logo",
+      },
     ],
   },
   {

@@ -13,7 +13,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Image from "next/image";
 import React, { useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -27,6 +26,7 @@ import * as Yup from "yup";
 import { RotatingLines } from "react-loader-spinner";
 import { useDispatch } from "react-redux";
 import { setIsLoading } from "../redux/auth/authSlice";
+import { getManagedAdminLogoUrl } from "../api/manageContent/adminLogo";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -77,9 +77,15 @@ const Login = () => {
   });
 
   const [showBranding, setShowBranding] = useState<boolean | null>(null);
+  const [adminLogoUrl, setAdminLogoUrl] = useState("/logo.png");
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
+      const email = new URLSearchParams(window.location.search).get("email");
+      if (email) {
+        formik.setFieldValue("email", email);
+      }
+
       const host = window.location.hostname;
       const userDomain = process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang";
       const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
@@ -88,6 +94,9 @@ const Login = () => {
         setShowBranding(false);
       } else {
         setShowBranding(true);
+        getManagedAdminLogoUrl().then(setAdminLogoUrl).catch(() => {
+          setAdminLogoUrl("/logo.png");
+        });
       }
     }
   }, []);
@@ -180,12 +189,15 @@ const Login = () => {
                 sx={{ marginBottom: "25px", textAlign: "center" }}
               >
                 {showBranding && (
-                  <Image
-                    src="/logo.png"
-                    alt=""
-                    width={300}
-                    height={74}
-                    style={{ objectFit: "contain" }}
+                  <Box
+                    component="img"
+                    src={adminLogoUrl}
+                    alt="Logo"
+                    sx={{
+                      width: 140,
+                      height: 100,
+                      objectFit: "contain",
+                    }}
                   />
                 )}
               </Typography>

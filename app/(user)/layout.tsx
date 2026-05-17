@@ -11,7 +11,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { SVG } from "../components/icon";
 import SidebarMenu from "../components/Sidebar/page";
@@ -19,6 +18,7 @@ import AuthChecker from "./authChecker";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { QRCodeDownload } from "../components/QRCodeDownload";
+import { getManagedAdminLogoUrl } from "../api/manageContent/adminLogo";
 
 export default function AdminLayout({
   children,
@@ -30,6 +30,7 @@ export default function AdminLayout({
   const loading = useSelector((state: RootState) => state.auth.loading);
   const [showBranding, setShowBranding] = useState<boolean | null>(null);
   const [isUserDomain, setIsUserDomain] = useState(false);
+  const [adminLogoUrl, setAdminLogoUrl] = useState("/logo.png");
 
   // @ts-ignore
   const currentUser = useSelector((state: any) => state.user?.data);
@@ -49,6 +50,9 @@ export default function AdminLayout({
         setShowBranding(false);
       } else {
         setShowBranding(true);
+        getManagedAdminLogoUrl().then(setAdminLogoUrl).catch(() => {
+          setAdminLogoUrl("/logo.png");
+        });
       }
     }
   }, []);
@@ -93,12 +97,15 @@ export default function AdminLayout({
             }}
           >
             {showBranding && (
-              <Image
-                src="/logo.png"
+              <Box
+                component="img"
+                src={adminLogoUrl}
                 alt="Logo"
-                width={isToggle ? 200 : 44}
-                height={isToggle ? 70 : 44}
-                style={{ objectFit: "contain" }}
+                sx={{
+                  width: isToggle ? 200 : 44,
+                  height: isToggle ? 70 : 44,
+                  objectFit: "contain",
+                }}
               />
             )}
           </Typography>
