@@ -27,6 +27,11 @@ import { useRouter, useParams } from "next/navigation";
 import { getJobDetailById } from "@/app/api/jobs/jobs";
 import { getYoutubeEmbedUrl } from "@/app/ulits/youtube";
 
+const getImageUrl = (filepath: string) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL || "";
+  return `${baseUrl.replace(/\/$/, "")}/${filepath.replace(/^\//, "")}`;
+};
+
 export default function JobDetailPage() {
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -67,6 +72,8 @@ export default function JobDetailPage() {
 
   if (!job) return null;
 
+  const jobImages = Array.isArray(job.jobImages) ? job.jobImages : [];
+
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: "1200px", margin: "0 auto" }}>
       <Box sx={{ mb: 3, display: "flex", alignItems: "center" }}>
@@ -101,6 +108,31 @@ export default function JobDetailPage() {
             </Box>
 
             <Divider sx={{ my: 3 }} />
+
+            {jobImages.length > 0 && (
+              <Box sx={{ mb: 4 }}>
+                <Grid container spacing={2}>
+                  {jobImages.map((image: any) => (
+                    <Grid item xs={12} sm={jobImages.length === 1 ? 12 : 6} key={image._id}>
+                      <Box
+                        component="img"
+                        src={getImageUrl(image.filepath)}
+                        alt={job.jobTitle}
+                        sx={{
+                          width: "100%",
+                          aspectRatio: "16 / 10",
+                          objectFit: "cover",
+                          borderRadius: "16px",
+                          border: "1px solid #eee",
+                          bgcolor: "#f7f7f7",
+                          display: "block",
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            )}
 
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
               Job Description

@@ -272,11 +272,11 @@ const AddComponent: React.FC = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-      values.jobsImages = fileList.map((item: any) => {
-        return item.originFileObj;
-      });
+      values.jobsImages = fileList
+        .map((item: any) => item.originFileObj)
+        .filter(Boolean);
       values.removedFile = oldFile.filter((item) => {
-        if (item !== "undefined" || item !== undefined) {
+        if (item !== "undefined" && item !== undefined) {
           return item;
         }
       });

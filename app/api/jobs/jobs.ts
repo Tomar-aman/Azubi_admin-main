@@ -9,6 +9,13 @@ import { transformJobsData } from "./helper";
 import { Job, JobWithCount, UpdateJob, getAllJobsType } from "./jobs.types";
 import urlcat from "urlcat";
 import { IconWithContent } from "@/app/(user)/manage-employers";
+
+const normalizeJobImages = (jobImages: any[] = []) => {
+  return jobImages
+    .map((item) => item?.jobImages || item)
+    .filter((item) => item?._id && item?.filepath);
+};
+
 // Function to get all employers
 export const getAllJobs = async (
   payload: getAllJobsType
@@ -161,5 +168,8 @@ export const getJobDetailById = async (
     url: `/job/${id}`,
     method: "get",
   });
+  if (response.remote === "success") {
+    response.data.data.jobImages = normalizeJobImages(response.data.data.jobImages);
+  }
   return response;
 };
