@@ -102,14 +102,47 @@ const ManageEmployeesPage = () => {
     permissions: (
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
         {emp.permissions.length === 0 ? (
-          <Chip label="No permissions" size="small" />
+          <Chip
+            label="No permissions"
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "#646464",
+              borderColor: "#e0e0e0",
+              backgroundColor: "#f5f5f5",
+              fontSize: "12px",
+            }}
+          />
         ) : (
           emp.permissions.slice(0, 2).map((p) => (
-            <Chip key={p} label={p} size="small" color="info" variant="outlined" />
+            <Chip
+              key={p}
+              label={p}
+              size="small"
+              variant="outlined"
+              sx={{
+                color: "#0096A4",
+                borderColor: "#0096A4",
+                backgroundColor: "rgba(0, 150, 164, 0.05)",
+                fontWeight: 500,
+                fontSize: "12px",
+              }}
+            />
           ))
         )}
         {emp.permissions.length > 2 && (
-          <Chip label={`+${emp.permissions.length - 2} more`} size="small" />
+          <Chip
+            label={`+${emp.permissions.length - 2} more`}
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "#F1841D",
+              borderColor: "#F1841D",
+              backgroundColor: "rgba(241, 132, 29, 0.05)",
+              fontWeight: 500,
+              fontSize: "12px",
+            }}
+          />
         )}
       </Box>
     ),

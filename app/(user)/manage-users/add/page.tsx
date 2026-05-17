@@ -49,9 +49,18 @@ const AddUserPage = () => {
   const currentUser = useSelector((state: any) => state.user?.data);
   const userPermissions = currentUser?.permissions;
 
-  // Only allow assigning permissions that the current user actually has
+  const disallowedKeys = [
+    "manage-content",
+    "add-banner",
+    "admin-setting",
+    "contact",
+    "applicationTip",
+    "manage-users",
+  ];
+
+  // Only allow assigning permissions that the current user actually has, excluding restricted ones
   const availableTabs = SIDEBAR_TABS.filter(tab => 
-    !userPermissions || userPermissions.includes(tab.key)
+    (!userPermissions || userPermissions.includes(tab.key)) && !disallowedKeys.includes(tab.key)
   );
 
   const validationSchema = Yup.object({
@@ -116,7 +125,7 @@ const AddUserPage = () => {
   };
 
   const selectAll = () => {
-    formik.setFieldValue("permissions", SIDEBAR_TABS.map((t) => t.key));
+    formik.setFieldValue("permissions", availableTabs.map((t) => t.key));
   };
   const clearAll = () => {
     formik.setFieldValue("permissions", []);
