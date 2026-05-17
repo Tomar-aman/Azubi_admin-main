@@ -1,7 +1,8 @@
 "use client";
 
 import { SVG } from "@/app/components/icon";
-import { FormHelperText, 
+import {
+  FormHelperText,
   Box,
   Button,
   Container,
@@ -74,7 +75,7 @@ const Login = () => {
       setLoginLoading(false);
     },
   });
-  
+
   const [showBranding, setShowBranding] = useState<boolean | null>(null);
 
   React.useEffect(() => {
@@ -124,9 +125,44 @@ const Login = () => {
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
+          position: "relative",
           padding: "50px 0px",
         }}
       >
+        {showBranding && (
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{
+              position: "absolute",
+              top: { xs: 16, md: 24 },
+              right: { xs: 16, md: 32 },
+              zIndex: 1,
+            }}
+          >
+            <Button
+              variant="text"
+              onClick={() => router.push("/companies")}
+              sx={{ fontWeight: 700, textTransform: "none" }}
+            >
+              Companies
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => router.push("/jobs")}
+              sx={{
+                bgcolor: "#1FA49A",
+                borderRadius: "10px",
+                fontWeight: 700,
+                textTransform: "none",
+                boxShadow: "none",
+                "&:hover": { bgcolor: "#178d85", boxShadow: "none" },
+              }}
+            >
+              Jobs
+            </Button>
+          </Stack>
+        )}
         <Container>
           <Grid container spacing={2} alignItems={"center"}>
             <Grid

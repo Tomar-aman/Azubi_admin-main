@@ -30,7 +30,7 @@ export default function AdminLayout({
   const loading = useSelector((state: RootState) => state.auth.loading);
   const [showBranding, setShowBranding] = useState<boolean | null>(null);
   const [isUserDomain, setIsUserDomain] = useState(false);
-  
+
   // @ts-ignore
   const currentUser = useSelector((state: any) => state.user?.data);
   const userId = currentUser?._id;
@@ -40,11 +40,11 @@ export default function AdminLayout({
       const host = window.location.hostname;
       const userDomain = process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang";
       const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
-      
+
       if (host.includes(userDomain)) {
         setIsUserDomain(true);
       }
-      
+
       if (host.includes(userDomain) || host.includes(employeeDomain)) {
         setShowBranding(false);
       } else {
@@ -75,7 +75,7 @@ export default function AdminLayout({
           background: "#e5f3f3",
           color: "#000",
           boxShadow: "none",
-          padding: "19px 18px",
+          padding: "8px 18px",
         }}
       >
         {!loading && <AuthChecker />}
@@ -89,15 +89,16 @@ export default function AdminLayout({
               width: isToggle ? "259px" : "37px",
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
             }}
           >
             {showBranding && (
               <Image
-                src={isToggle ? "/logo.png" : "/logo.png"}
-                alt=""
-                width={isToggle ? 210 : 28}
-                height={isToggle ? 44 : 30.7}
-                style={{objectFit:"contain"}}
+                src="/logo.png"
+                alt="Logo"
+                width={isToggle ? 200 : 44}
+                height={isToggle ? 70 : 44}
+                style={{ objectFit: "contain" }}
               />
             )}
           </Typography>
@@ -162,7 +163,7 @@ export default function AdminLayout({
           </div> */}
         </Toolbar>
       </AppBar>
-      <Box sx={{ display: "flex", flexGrow: 1, background:"#e5f3f3", overflow: "hidden" }}>
+      <Box sx={{ display: "flex", flexGrow: 1, background: "#e5f3f3", overflow: "hidden" }}>
         {isToggle ? (
           <Box
             sx={{
