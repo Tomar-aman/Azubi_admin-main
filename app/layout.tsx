@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Azubi</title>
+        <title>Home Work</title>
       </head>
       <Provider store={store}>
         <ThemeCustomization>

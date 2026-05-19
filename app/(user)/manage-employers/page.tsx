@@ -33,6 +33,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import { QRCodeDownload } from "@/app/components/QRCodeDownload";
 interface RowData {
   id: string;
   date: string;
@@ -197,6 +198,12 @@ const ManageEmployee = () => {
         >
           {statusToggleId === rowData.id ? "Processing..." : rowData.status}
         </div>
+      ),
+      qrCode: (
+        <QRCodeDownload 
+          value={rowData.id} 
+          fileName={`qr_employer_${rowData.companyName}`} 
+        />
       ),
       action: (
         <Stack
