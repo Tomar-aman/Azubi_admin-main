@@ -142,6 +142,28 @@ type Documents = {
 };
 const re =
   /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+
+const getEmbedUrl = (url: string) => {
+  if (!url) return "";
+  if (url.includes("youtube.com/embed/")) {
+    return url;
+  }
+  let videoId = "";
+  try {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match && match[2].length === 11) {
+      videoId = match[2];
+    }
+  } catch (e) {
+    console.error("Error parsing youtube url", e);
+  }
+  if (videoId) {
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  return url;
+};
+
 const AddComponent: React.FC = () => {
   const route = useRouter();
   const dispatch = useDispatch();
@@ -1261,7 +1283,7 @@ const AddComponent: React.FC = () => {
                               title="Preview"
                               width="200"
                               height="110"
-                              src={link}
+                              src={getEmbedUrl(link)}
                             ></iframe>
                           </Box>
                         ) : (
