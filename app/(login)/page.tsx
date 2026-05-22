@@ -25,7 +25,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { RotatingLines } from "react-loader-spinner";
 import { useDispatch } from "react-redux";
-import { setIsLoading } from "../redux/auth/authSlice";
+import { setIsLoading, setIsLogin } from "../redux/auth/authSlice";
 import { getManagedAdminLogoUrl } from "../api/manageContent/adminLogo";
 
 const Login = () => {
@@ -67,6 +67,7 @@ const Login = () => {
         localStorage.setItem("x-access", result.data.data.accessToken);
         localStorage.setItem("x-refresh", result.data.data.refreshToken);
 
+        dispatch(setIsLogin(true));
         router.push("/dashboard");
       } else {
         console.error("Login failed:", result);
