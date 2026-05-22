@@ -12,6 +12,7 @@ function LocalStorageEvent() {
     dispatch(setIsLogin(!!token));
   };
   useEffect(() => {
+    checkLoginStatus();
     dispatch(
       setCurrentRoute(window.location.pathname + window.location.search)
     );

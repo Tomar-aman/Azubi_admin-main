@@ -12,6 +12,8 @@ import {
 import Image from "next/image";
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export default function PublicLayout({
   children,
@@ -20,6 +22,7 @@ export default function PublicLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const isLogin = useSelector((state: RootState) => state.auth.isLogin);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
@@ -79,20 +82,37 @@ export default function PublicLayout({
             </Button>
           </Stack>
 
-          <Button
-            variant="contained"
-            onClick={() => router.push("/")}
-            sx={{
-              bgcolor: "#1FA49A",
-              borderRadius: "10px",
-              px: 3,
-              fontWeight: 600,
-              textTransform: "none",
-              "&:hover": { bgcolor: "#168a81" },
-            }}
-          >
-            Login
-          </Button>
+          {isLogin ? (
+            <Button
+              variant="contained"
+              onClick={() => router.push("/dashboard")}
+              sx={{
+                bgcolor: "#1FA49A",
+                borderRadius: "10px",
+                px: 3,
+                fontWeight: 600,
+                textTransform: "none",
+                "&:hover": { bgcolor: "#168a81" },
+              }}
+            >
+              Back to Dashboard
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={() => router.push("/")}
+              sx={{
+                bgcolor: "#1FA49A",
+                borderRadius: "10px",
+                px: 3,
+                fontWeight: 600,
+                textTransform: "none",
+                "&:hover": { bgcolor: "#168a81" },
+              }}
+            >
+              Login
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
 
