@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import IModal from "@/app/components/modal.components";
 import AddCities from "./add-cities";
 import { QRCodeDownload } from "@/app/components/QRCodeDownload";
+import { useSelector } from "react-redux";
 import { useDebounce } from "@uidotdev/usehooks";
 import {
   City,
@@ -38,6 +39,20 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 const ManageCities = () => {
+  // @ts-ignore
+  const currentUser = useSelector((state: any) => state.user?.data);
+  const [isEmployee, setIsEmployee] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname;
+      const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
+      if (host.includes(employeeDomain) || (currentUser && currentUser.position !== undefined)) {
+        setIsEmployee(true);
+      }
+    }
+  }, [currentUser]);
+
   const [isDeleteModal, setDeleteModal] = useState(false);
   const [isAddCity, setIsAddCity] = useState(false);
   const [pageCount, setPageCount] = useState<number>(0);
@@ -284,6 +299,11 @@ const ManageCities = () => {
       return () => clearTimeout(timeoutId);
     }
   }, [error]);
+
+  const visibleColumns = isEmployee
+    ? COLUMS_DATA.filter((col) => col.key !== "qrCode")
+    : COLUMS_DATA;
+
   return (
     <>
       <Title heading="Manage Cities" />
@@ -343,7 +363,7 @@ const ManageCities = () => {
       </Stack>
       <Box sx={{ overflow: "hidden", position: "relative" }}>
         <CustomTable
-          columns={COLUMS_DATA}
+          columns={visibleColumns}
           rows={rowData?.map((row) => CityTableRow(row)) || []}
           pageCount={pageCount}
           setRecordPerPage={setRecordPerPage}
