@@ -13,9 +13,20 @@ function LocalStorageEvent() {
   };
   useEffect(() => {
     checkLoginStatus();
-    dispatch(
-      setCurrentRoute(window.location.pathname + window.location.search)
-    );
+    
+    const currentPath = window.location.pathname;
+    const isPublicRoute = 
+      currentPath === "/" ||
+      currentPath.startsWith("/jobs") ||
+      currentPath.startsWith("/companies") ||
+      currentPath.startsWith("/reset-password");
+
+    if (!isPublicRoute) {
+      dispatch(
+        setCurrentRoute(window.location.pathname + window.location.search)
+      );
+    }
+
     window.addEventListener("storage", checkLoginStatus);
     return () => {
       window.removeEventListener("storage", checkLoginStatus);
