@@ -41,8 +41,14 @@ const SidebarMenu = () => {
     !window.location.hostname.includes(process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang") &&
     !window.location.hostname.includes(process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang");
 
+  const isManagedEmployee = typeof window !== "undefined" && 
+    window.location.hostname.includes(process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang");
+
   const filteredMenuData = MENU_DATA.filter((item) => {
     if (item.label === "Log Out") return true;
+    if (item.key === "public-jobs" || item.key === "public-companies") {
+      return isManagedEmployee;
+    }
     if (isSuperadmin || !permissions) return true; // main admin, or old user
     return permissions.includes(item.key as string);
   });
@@ -61,7 +67,7 @@ const SidebarMenu = () => {
                 className={pathname?.includes(`${item.url}`) ? "activeBg" : ""}
                 autoFocus={false}
                 disableRipple={true}
-                {...(item.url ? { component: Link, href: `${item.url}` } : {})}
+                {...(item.url ? { component: Link, href: `${item.url}`, target: item.target } : {})}
                 sx={{
                   minHeight: 48,
 

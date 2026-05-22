@@ -5,6 +5,7 @@ export interface SidebarMenu {
   label: string;
   url?: string;
   key?: string;
+  target?: string;
 
   children?: {
     id: number;
@@ -47,6 +48,22 @@ export const MENU_DATA: SidebarMenu[] = [
     label: "Manage Jobs",
     url: "/manage-jobs",
     key: "manage-jobs",
+  },
+  {
+    id: 101,
+    icon: SVG.JobsIcon,
+    label: "Job",
+    url: "/jobs",
+    key: "public-jobs",
+    target: "_blank",
+  },
+  {
+    id: 102,
+    icon: SVG.GroupUser,
+    label: "Companies",
+    url: "/companies",
+    key: "public-companies",
+    target: "_blank",
   },
   {
     id: 4,
