@@ -88,7 +88,8 @@ const SidebarMenu = () => {
                     },
                     "& .MuiTypography-body1": {
                       fontWeight: 600,
-                      whiteSpace: "nowrap",
+                      whiteSpace: "pre-line",
+                      lineHeight: 1.2,
                     },
                   },
                 }}
@@ -111,7 +112,13 @@ const SidebarMenu = () => {
                 >
                   <item.icon />
                 </ListItemIcon>
-                <ListItemText primary={item.label} />
+                <ListItemText
+                  primary={
+                    <span style={{ display: "block", whiteSpace: "pre-line", lineHeight: 1.2 }}>
+                      {item.label}
+                    </span>
+                  }
+                />
                 {item.children ? (
                   <ListItemIcon sx={{ minWidth: "auto", color: "inherit" }}>
                     <SVG.ArrowDown />

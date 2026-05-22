@@ -24,7 +24,7 @@ export const MENU_DATA: SidebarMenu[] = [
   {
     id: 14,
     icon: SVG.GroupUser,
-    label: "Manage Users",
+    label: "Manage Companies",
     url: "/manage-users",
     key: "manage-users",
   },
@@ -38,7 +38,7 @@ export const MENU_DATA: SidebarMenu[] = [
   {
     id: 2,
     icon: SVG.GroupUser,
-    label: "Manage Employers",
+    label: "Manage Employers\n +create companies",
     url: "/manage-employers",
     key: "manage-employers",
   },
