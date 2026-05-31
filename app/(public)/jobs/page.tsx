@@ -14,16 +14,20 @@ import {
   Chip,
   Stack,
   Button,
+  MenuItem,
 } from "@mui/material";
 import { Search as SearchIcon, LocationOn as LocationIcon, Work as WorkIcon } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { getAllJobs } from "@/app/api/jobs/jobs";
+import { getRegions } from "@/app/api/regions/region";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+  const [regions, setRegions] = useState<any[]>([]);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const router = useRouter();
 
   const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -47,9 +51,32 @@ export default function JobsPage() {
     fetchJobs();
   }, [searchValue]);
 
+  useEffect(() => {
+    const fetchRegions = async () => {
+      const res = await getRegions();
+      if (res.remote === "success") {
+        setRegions(res.data.data);
+      }
+    };
+    fetchRegions();
+  }, []);
+
   const filteredJobs = jobs.filter((job) => {
-    if (!selectedLetter) return true;
-    return job.jobTitle.toUpperCase().startsWith(selectedLetter);
+    const matchesLetter = !selectedLetter || job.jobTitle.toUpperCase().startsWith(selectedLetter);
+    
+    let matchesRegion = true;
+    if (selectedRegion) {
+      if (typeof job.region === "string") {
+        matchesRegion = job.region === selectedRegion;
+      } else if (job.region && typeof job.region === "object") {
+        const regionId = job.region.id || job.region._id || job.region;
+        matchesRegion = regionId === selectedRegion;
+      } else {
+        matchesRegion = false;
+      }
+    }
+    
+    return matchesLetter && matchesRegion;
   });
 
   const handleJobClick = (id: string) => {
@@ -62,27 +89,76 @@ export default function JobsPage() {
         <Typography variant="h4" sx={{ fontWeight: 700, color: "#1FA49A" }}>
           Explore Jobs
         </Typography>
-        <TextField
-          placeholder="Search jobs..."
-          variant="outlined"
-          size="small"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          sx={{
-            width: { xs: "100%", sm: "350px" },
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
-              bgcolor: "#f8fdfd",
-            },
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: "#1FA49A" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ width: { xs: "100%", md: "600px" } }}>
+          <TextField
+            placeholder="Search jobs..."
+            variant="outlined"
+            size="small"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            sx={{
+              flexGrow: 1,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "12px",
+                bgcolor: "#f8fdfd",
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1FA49A",
+                },
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: "#1FA49A" }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            select
+            value={selectedRegion || ""}
+            onChange={(e) => setSelectedRegion(e.target.value || null)}
+            variant="outlined"
+            size="small"
+            sx={{
+              width: { xs: "100%", sm: "220px" },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "12px",
+                bgcolor: "#f8fdfd",
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1FA49A",
+                },
+              },
+            }}
+            SelectProps={{
+              displayEmpty: true,
+              renderValue: (value: any) => {
+                if (!value) {
+                  return (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#666" }}>
+                      <LocationIcon sx={{ fontSize: 18, color: "#1FA49A" }} />
+                      All Regions
+                    </Box>
+                  );
+                }
+                const selected = regions.find((r) => r.id === value);
+                return (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <LocationIcon sx={{ fontSize: 18, color: "#1FA49A" }} />
+                    {selected ? selected.name : "All Regions"}
+                  </Box>
+                );
+              },
+            }}
+          >
+            <MenuItem value="">All Regions</MenuItem>
+            {regions.map((reg) => (
+              <MenuItem key={reg.id} value={reg.id}>
+                {reg.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Stack>
       </Box>
 
       {/* Alphabet Filter */}

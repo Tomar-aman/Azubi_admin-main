@@ -47,10 +47,19 @@ const AddEmployeePage = () => {
   const currentUser = useSelector((state: any) => state.user?.data);
   const userPermissions = currentUser?.permissions;
 
-  // Only allow assigning permissions that the current user actually has
-  // (if userPermissions is undefined, it's the main admin who has access to all)
+  const disallowedKeys = [
+    "manage-content",
+    "add-banner",
+    "admin-setting",
+    "contact",
+    "applicationTip",
+    "manage-users",
+    "manage-employees",
+  ];
+
+  // Only allow assigning permissions that the current user actually has, excluding restricted ones
   const availableTabs = SIDEBAR_TABS.filter(tab => 
-    !userPermissions || userPermissions.includes(tab.key)
+    (!userPermissions || userPermissions.includes(tab.key)) && !disallowedKeys.includes(tab.key)
   );
 
   const validationSchema = Yup.object({

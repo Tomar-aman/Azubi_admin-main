@@ -25,6 +25,7 @@ export const transformJobsData = (rawJobs: any): Job[] => {
       createdAt: createdAtDate.toLocaleDateString(),
       industryName: rawJob.industryName,
       companyDetail: rawJob.company, // Store the nested object separately if needed
+      region: rawJob.region,
       _id: rawJob._id,
     };
   });

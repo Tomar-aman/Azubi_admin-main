@@ -13,10 +13,12 @@ import {
   Button,
   Stack,
   Skeleton,
+  MenuItem,
 } from "@mui/material";
 import { Search as SearchIcon, LocationOn as LocationIcon } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { getAllEmployersForFrontend } from "@/app/api/employer/employer";
+import { getRegions } from "@/app/api/regions/region";
 
 const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -25,6 +27,8 @@ export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+  const [regions, setRegions] = useState<any[]>([]);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const router = useRouter();
 
   const fetchCompanies = async () => {
@@ -44,9 +48,32 @@ export default function CompaniesPage() {
     fetchCompanies();
   }, [searchValue]);
 
+  useEffect(() => {
+    const fetchRegions = async () => {
+      const res = await getRegions();
+      if (res.remote === "success") {
+        setRegions(res.data.data);
+      }
+    };
+    fetchRegions();
+  }, []);
+
   const filteredCompanies = companies.filter((company) => {
-    if (!selectedLetter) return true;
-    return company.companyName.toUpperCase().startsWith(selectedLetter);
+    const matchesLetter = !selectedLetter || company.companyName.toUpperCase().startsWith(selectedLetter);
+    
+    let matchesRegion = true;
+    if (selectedRegion) {
+      if (typeof company.region === "string") {
+        matchesRegion = company.region === selectedRegion;
+      } else if (company.region && typeof company.region === "object") {
+        const regionId = company.region.id || company.region._id || company.region;
+        matchesRegion = regionId === selectedRegion;
+      } else {
+        matchesRegion = false;
+      }
+    }
+    
+    return matchesLetter && matchesRegion;
   });
 
   const handleCompanyClick = (id: string) => {
@@ -59,27 +86,76 @@ export default function CompaniesPage() {
         <Typography variant="h4" sx={{ fontWeight: 700, color: "#1FA49A" }}>
           Companies
         </Typography>
-        <TextField
-          placeholder="Search companies..."
-          variant="outlined"
-          size="small"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          sx={{
-            width: { xs: "100%", sm: "300px" },
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
-              bgcolor: "#f8fdfd",
-            },
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: "#1FA49A" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ width: { xs: "100%", md: "600px" } }}>
+          <TextField
+            placeholder="Search companies..."
+            variant="outlined"
+            size="small"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            sx={{
+              flexGrow: 1,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "12px",
+                bgcolor: "#f8fdfd",
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1FA49A",
+                },
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: "#1FA49A" }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            select
+            value={selectedRegion || ""}
+            onChange={(e) => setSelectedRegion(e.target.value || null)}
+            variant="outlined"
+            size="small"
+            sx={{
+              width: { xs: "100%", sm: "220px" },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "12px",
+                bgcolor: "#f8fdfd",
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1FA49A",
+                },
+              },
+            }}
+            SelectProps={{
+              displayEmpty: true,
+              renderValue: (value: any) => {
+                if (!value) {
+                  return (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#666" }}>
+                      <LocationIcon sx={{ fontSize: 18, color: "#1FA49A" }} />
+                      All Regions
+                    </Box>
+                  );
+                }
+                const selected = regions.find((r) => r.id === value);
+                return (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <LocationIcon sx={{ fontSize: 18, color: "#1FA49A" }} />
+                    {selected ? selected.name : "All Regions"}
+                  </Box>
+                );
+              },
+            }}
+          >
+            <MenuItem value="">All Regions</MenuItem>
+            {regions.map((reg) => (
+              <MenuItem key={reg.id} value={reg.id}>
+                {reg.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Stack>
       </Box>
 
       {/* Alphabet Filter */}
