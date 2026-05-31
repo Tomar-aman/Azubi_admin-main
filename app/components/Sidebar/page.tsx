@@ -47,7 +47,7 @@ const SidebarMenu = () => {
   const filteredMenuData = MENU_DATA.filter((item) => {
     if (item.label === "Log Out") return true;
     if (item.key === "public-jobs" || item.key === "public-companies") {
-      return isManagedEmployee;
+      return false;
     }
     if (isSuperadmin || !permissions) return true; // main admin, or old user
     return permissions.includes(item.key as string);

@@ -4,6 +4,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -12,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { SVG } from "../components/icon";
 import SidebarMenu from "../components/Sidebar/page";
 import AuthChecker from "./authChecker";
@@ -30,6 +32,7 @@ export default function AdminLayout({
   const loading = useSelector((state: RootState) => state.auth.loading);
   const [showBranding, setShowBranding] = useState<boolean | null>(null);
   const [isUserDomain, setIsUserDomain] = useState(false);
+  const [isEmployeeDomain, setIsEmployeeDomain] = useState(false);
   const [adminLogoUrl, setAdminLogoUrl] = useState("/logo.png");
 
   // @ts-ignore
@@ -44,6 +47,10 @@ export default function AdminLayout({
 
       if (host.includes(userDomain)) {
         setIsUserDomain(true);
+      }
+
+      if (host.includes(employeeDomain)) {
+        setIsEmployeeDomain(true);
       }
 
       if (host.includes(userDomain) || host.includes(employeeDomain)) {
@@ -121,6 +128,80 @@ export default function AdminLayout({
               <SVG.Menu />
             </IconButton>
           </Box>
+          {isEmployeeDomain && (
+            <Stack direction="row" spacing={2} sx={{ mr: 2 }}>
+              <Button
+                component={Link}
+                href="/jobs"
+                target="_blank"
+                startIcon={<SVG.JobsIcon />}
+                sx={{
+                  color: "#646464",
+                  fontWeight: 600,
+                  textTransform: "none",
+                  fontSize: "15px",
+                  borderRadius: "20px",
+                  px: 2.5,
+                  py: 1,
+                  border: "1px solid transparent",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  "& svg": {
+                    width: "20px",
+                    height: "20px",
+                    fill: "#646464",
+                    transition: "fill 0.3s ease",
+                  },
+                  "&:hover": {
+                    backgroundColor: "#e5f3f3",
+                    color: "#0096A4",
+                    borderColor: "#0096A4",
+                    transform: "translateY(-1px)",
+                    boxShadow: "0 4px 12px rgba(0, 150, 164, 0.1)",
+                    "& svg": {
+                      fill: "#0096A4",
+                    },
+                  },
+                }}
+              >
+                Job
+              </Button>
+              <Button
+                component={Link}
+                href="/companies"
+                target="_blank"
+                startIcon={<SVG.GroupUser />}
+                sx={{
+                  color: "#646464",
+                  fontWeight: 600,
+                  textTransform: "none",
+                  fontSize: "15px",
+                  borderRadius: "20px",
+                  px: 2.5,
+                  py: 1,
+                  border: "1px solid transparent",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  "& svg": {
+                    width: "20px",
+                    height: "20px",
+                    fill: "#646464",
+                    transition: "fill 0.3s ease",
+                  },
+                  "&:hover": {
+                    backgroundColor: "#e5f3f3",
+                    color: "#0096A4",
+                    borderColor: "#0096A4",
+                    transform: "translateY(-1px)",
+                    boxShadow: "0 4px 12px rgba(0, 150, 164, 0.1)",
+                    "& svg": {
+                      fill: "#0096A4",
+                    },
+                  },
+                }}
+              >
+                Companies
+              </Button>
+            </Stack>
+          )}
           {/* <div>
             <Stack
               direction={"row"}
