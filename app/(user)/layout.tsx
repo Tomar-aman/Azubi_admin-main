@@ -32,7 +32,6 @@ export default function AdminLayout({
   const loading = useSelector((state: RootState) => state.auth.loading);
   const [showBranding, setShowBranding] = useState<boolean | null>(null);
   const [isUserDomain, setIsUserDomain] = useState(false);
-  const [isEmployeeDomain, setIsEmployeeDomain] = useState(false);
   const [adminLogoUrl, setAdminLogoUrl] = useState("/logo.png");
 
   // @ts-ignore
@@ -47,10 +46,6 @@ export default function AdminLayout({
 
       if (host.includes(userDomain)) {
         setIsUserDomain(true);
-      }
-
-      if (host.includes(employeeDomain)) {
-        setIsEmployeeDomain(true);
       }
 
       if (host.includes(userDomain) || host.includes(employeeDomain)) {
@@ -128,8 +123,7 @@ export default function AdminLayout({
               <SVG.Menu />
             </IconButton>
           </Box>
-          {isEmployeeDomain && (
-            <Stack direction="row" spacing={2} sx={{ mr: 2 }}>
+          <Stack direction="row" spacing={2} sx={{ mr: 2 }}>
               <Button
                 component={Link}
                 href="/jobs"
@@ -163,7 +157,7 @@ export default function AdminLayout({
                   },
                 }}
               >
-                Job
+                Jobs
               </Button>
               <Button
                 component={Link}
@@ -201,7 +195,6 @@ export default function AdminLayout({
                 Companies
               </Button>
             </Stack>
-          )}
           {/* <div>
             <Stack
               direction={"row"}

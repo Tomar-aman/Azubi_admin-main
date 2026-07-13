@@ -2,15 +2,7 @@
 
 import { getDashBoardData } from "@/app/api/auth/auth";
 import Title from "@/app/components/title.components";
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import DashboardCard from "./dashboardCard";
 import { GetCount } from "@/app/api/auth/auth.types";
 import { useEffect, useState } from "react";
@@ -45,13 +37,14 @@ const Dashboard = () => {
               id="1"
               title="Total Employer"
               count={Number(dashboardData?.employer) ?? 1}
-              
+              route="/manage-employers"
             />
-            
+
             <DashboardCard
               id="2"
               title="Total Jobs"
               count={Number(dashboardData?.jobs) ?? 1}
+              route="/manage-jobs"
             />
 
 

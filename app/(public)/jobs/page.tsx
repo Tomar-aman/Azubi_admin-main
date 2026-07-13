@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Grid,
@@ -9,17 +9,26 @@ import {
   InputAdornment,
   Card,
   CardContent,
-  Avatar,
   Skeleton,
-  Chip,
   Stack,
   Button,
   MenuItem,
+  Paper,
+  Divider,
 } from "@mui/material";
-import { Search as SearchIcon, LocationOn as LocationIcon, Work as WorkIcon } from "@mui/icons-material";
+import {
+  Search as SearchIcon,
+  LocationOn as LocationIcon,
+  Apartment as ApartmentIcon,
+  ArrowForward as ArrowForwardIcon,
+} from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { getAllJobs } from "@/app/api/jobs/jobs";
 import { getRegions } from "@/app/api/regions/region";
+import { getCity } from "@/app/api/city/city";
+
+const TEAL = "#0097A7";
+const TEAL_DARK = "#00808e";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
@@ -27,7 +36,9 @@ export default function JobsPage() {
   const [searchValue, setSearchValue] = useState("");
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [regions, setRegions] = useState<any[]>([]);
+  const [cities, setCities] = useState<any[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const router = useRouter();
 
   const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -52,248 +63,420 @@ export default function JobsPage() {
   }, [searchValue]);
 
   useEffect(() => {
-    const fetchRegions = async () => {
-      const res = await getRegions();
-      if (res.remote === "success") {
-        setRegions(res.data.data);
+    const fetchFilters = async () => {
+      const [regionRes, cityRes] = await Promise.all([getRegions(), getCity()]);
+      if (regionRes.remote === "success") {
+        setRegions(regionRes.data.data);
+      }
+      if (cityRes.remote === "success") {
+        setCities(cityRes.data.data);
       }
     };
-    fetchRegions();
+    fetchFilters();
   }, []);
 
+  // Helper: normalise a region reference (string id or populated object) to an id
+  const regionIdOf = (region: any): string | null => {
+    if (!region) return null;
+    if (typeof region === "string") return region;
+    return region.id || region._id || null;
+  };
+
+  // Narrow the city dropdown to the selected region, falling back to all cities
+  // if the region link can't be resolved (keeps the filter usable regardless).
+  const cityOptions = useMemo(() => {
+    if (!selectedRegion) return cities;
+    const narrowed = cities.filter(
+      (c) => regionIdOf(c.region) === selectedRegion,
+    );
+    return narrowed.length ? narrowed : cities;
+  }, [cities, selectedRegion]);
+
   const filteredJobs = jobs.filter((job) => {
-    const matchesLetter = !selectedLetter || job.jobTitle.toUpperCase().startsWith(selectedLetter);
-    
+    const matchesLetter =
+      !selectedLetter || job.jobTitle?.toUpperCase().startsWith(selectedLetter);
+
     let matchesRegion = true;
     if (selectedRegion) {
-      if (typeof job.region === "string") {
-        matchesRegion = job.region === selectedRegion;
-      } else if (job.region && typeof job.region === "object") {
-        const regionId = job.region.id || job.region._id || job.region;
-        matchesRegion = regionId === selectedRegion;
-      } else {
-        matchesRegion = false;
-      }
+      matchesRegion = regionIdOf(job.region) === selectedRegion;
     }
-    
-    return matchesLetter && matchesRegion;
+
+    let matchesCity = true;
+    if (selectedCity) {
+      matchesCity = Array.isArray(job.city)
+        ? job.city.includes(selectedCity)
+        : job.city === selectedCity;
+    }
+
+    return matchesLetter && matchesRegion && matchesCity;
   });
 
   const handleJobClick = (id: string) => {
     router.push(`/jobs/${id}`);
   };
 
+  const selectSx = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+      bgcolor: "#fff",
+      "& fieldset": { borderColor: "#e0e0e0" },
+      "&:hover fieldset": { borderColor: TEAL },
+      "&.Mui-focused fieldset": { borderColor: TEAL },
+    },
+  };
+
   return (
-    <Box sx={{ p: 1 }}>
-      <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: "#1FA49A" }}>
-          Explore Jobs
+    <Box
+      sx={{
+        mt: { xs: -2, md: -4 },
+        mx: { xs: -2, md: -4 },
+        mb: { xs: -2, md: -4 },
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100%",
+      }}
+    >
+      {/* Hero */}
+      <Box
+        sx={{
+          bgcolor: TEAL,
+          px: { xs: 2, md: 5 },
+          pt: 3,
+          pb: { xs: 5, md: 8 },
+          textAlign: "center",
+        }}
+      >
+        <Stack
+          direction="row"
+          spacing={4}
+          justifyContent="flex-end"
+          sx={{ mb: { xs: 3, md: 5 } }}
+        >
+          <Button
+            onClick={() => router.push("/companies")}
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+              textTransform: "none",
+              fontSize: "1rem",
+              "&:hover": { bgcolor: "transparent", opacity: 0.85 },
+            }}
+          >
+            Companies
+          </Button>
+          <Button
+            onClick={() => router.push("/jobs")}
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+              textTransform: "none",
+              fontSize: "1rem",
+              "&:hover": { bgcolor: "transparent", opacity: 0.85 },
+            }}
+          >
+            Jobs
+          </Button>
+        </Stack>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 800,
+            color: "#fff",
+            mb: 1.5,
+            fontSize: { xs: "2rem", md: "2.75rem" },
+          }}
+        >
+          Find Your Dream Job
         </Typography>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ width: { xs: "100%", md: "600px" } }}>
+        <Typography
+          sx={{
+            color: "rgba(255,255,255,0.9)",
+            mb: { xs: 3, md: 4 },
+            fontSize: "1.05rem",
+          }}
+        >
+          Browse through thousands of open positions
+        </Typography>
+
+        <Paper
+          elevation={0}
+          sx={{
+            maxWidth: "900px",
+            mx: "auto",
+            p: 1,
+            borderRadius: "16px",
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 1,
+            alignItems: "stretch",
+          }}
+        >
           <TextField
-            placeholder="Search jobs..."
+            placeholder="Search jobs by title, keyword..."
             variant="outlined"
-            size="small"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            sx={{
-              flexGrow: 1,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "12px",
-                bgcolor: "#f8fdfd",
-                "&.Mui-focused fieldset": {
-                  borderColor: "#1FA49A",
-                },
-              },
-            }}
+            sx={{ flexGrow: 1, ...selectSx }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: "#1FA49A" }} />
+                  <SearchIcon sx={{ color: TEAL }} />
                 </InputAdornment>
               ),
             }}
           />
+
           <TextField
             select
             value={selectedRegion || ""}
-            onChange={(e) => setSelectedRegion(e.target.value || null)}
+            onChange={(e) => {
+              setSelectedRegion(e.target.value || null);
+              setSelectedCity(null);
+            }}
             variant="outlined"
-            size="small"
-            sx={{
-              width: { xs: "100%", sm: "220px" },
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "12px",
-                bgcolor: "#f8fdfd",
-                "&.Mui-focused fieldset": {
-                  borderColor: "#1FA49A",
-                },
-              },
+            sx={{ width: { xs: "100%", md: "230px" }, ...selectSx }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationIcon sx={{ color: TEAL }} />
+                </InputAdornment>
+              ),
             }}
             SelectProps={{
               displayEmpty: true,
               renderValue: (value: any) => {
-                if (!value) {
-                  return (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#666" }}>
-                      <LocationIcon sx={{ fontSize: 18, color: "#1FA49A" }} />
-                      All Regions
-                    </Box>
-                  );
-                }
                 const selected = regions.find((r) => r.id === value);
                 return (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <LocationIcon sx={{ fontSize: 18, color: "#1FA49A" }} />
-                    {selected ? selected.name : "All Regions"}
-                  </Box>
+                  <Typography sx={{ color: selected ? "#333" : "#9e9e9e" }}>
+                    {selected ? selected.name : "Region auswählen"}
+                  </Typography>
                 );
               },
             }}
           >
-            <MenuItem value="">All Regions</MenuItem>
+            <MenuItem value="">Alle Regionen</MenuItem>
             {regions.map((reg) => (
               <MenuItem key={reg.id} value={reg.id}>
                 {reg.name}
               </MenuItem>
             ))}
           </TextField>
-        </Stack>
-      </Box>
 
-      {/* Alphabet Filter */}
-      <Box sx={{ mb: 4, overflowX: "auto", pb: 1 }}>
-        <Stack direction="row" spacing={1}>
-          <Button
-            size="small"
-            variant={selectedLetter === null ? "contained" : "outlined"}
-            onClick={() => setSelectedLetter(null)}
-            sx={{
-              minWidth: "40px",
-              borderRadius: "8px",
-              textTransform: "none",
-              bgcolor: selectedLetter === null ? "#1FA49A" : "transparent",
-              color: selectedLetter === null ? "#fff" : "#1FA49A",
-              borderColor: "#1FA49A",
-              "&:hover": {
-                bgcolor: selectedLetter === null ? "#168a81" : "rgba(31, 164, 154, 0.04)",
-                borderColor: "#1FA49A",
-              },
+          <TextField
+            select
+            value={selectedCity || ""}
+            onChange={(e) => setSelectedCity(e.target.value || null)}
+            variant="outlined"
+            sx={{ width: { xs: "100%", md: "230px" }, ...selectSx }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationIcon sx={{ color: TEAL }} />
+                </InputAdornment>
+              ),
+            }}
+            SelectProps={{
+              displayEmpty: true,
+              renderValue: (value: any) => (
+                <Typography sx={{ color: value ? "#333" : "#9e9e9e" }}>
+                  {value || "Stadt auswählen"}
+                </Typography>
+              ),
             }}
           >
-            All
-          </Button>
-          {ALPHABETS.map((letter) => (
-            <Button
-              key={letter}
-              size="small"
-              variant={selectedLetter === letter ? "contained" : "outlined"}
-              onClick={() => setSelectedLetter(letter)}
-              sx={{
-                minWidth: "40px",
-                borderRadius: "8px",
-                textTransform: "none",
-                bgcolor: selectedLetter === letter ? "#1FA49A" : "transparent",
-                color: selectedLetter === letter ? "#fff" : "#1FA49A",
-                borderColor: "#1FA49A",
-                "&:hover": {
-                  bgcolor: selectedLetter === letter ? "#168a81" : "rgba(31, 164, 154, 0.04)",
-                  borderColor: "#1FA49A",
-                },
-              }}
-            >
-              {letter}
-            </Button>
-          ))}
-        </Stack>
+            <MenuItem value="">Alle Städte</MenuItem>
+            {cityOptions.map((city) => (
+              <MenuItem key={city.id} value={city.name}>
+                {city.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Paper>
       </Box>
 
-      <Grid container spacing={3}>
-        {loading
-          ? Array.from(new Array(6)).map((_, index) => (
+      {/* Body */}
+      <Box
+        sx={{
+          bgcolor: "#f4f6f8",
+          px: { xs: 2, md: 6 },
+          py: { xs: 4, md: 5 },
+          flexGrow: 1,
+        }}
+      >
+        {/* Alphabet Filter */}
+        <Typography
+          sx={{
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            color: "#7b8794",
+            fontSize: "0.8rem",
+            mb: 2,
+          }}
+        >
+          FILTER BY JOB TITLE
+        </Typography>
+        <Box sx={{ mb: 4 }}>
+          <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
+            {ALPHABETS.map((letter) => {
+              const active = selectedLetter === letter;
+              return (
+                <Button
+                  key={letter}
+                  onClick={() =>
+                    setSelectedLetter(active ? null : letter)
+                  }
+                  sx={{
+                    minWidth: "42px",
+                    width: "42px",
+                    height: "42px",
+                    p: 0,
+                    borderRadius: "8px",
+                    fontWeight: 700,
+                    textTransform: "none",
+                    bgcolor: active ? TEAL : "#fff",
+                    color: active ? "#fff" : "#4a5568",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+                    "&:hover": {
+                      bgcolor: active ? TEAL_DARK : "#eef7f8",
+                      color: active ? "#fff" : TEAL,
+                    },
+                  }}
+                >
+                  {letter}
+                </Button>
+              );
+            })}
+          </Stack>
+        </Box>
+
+        <Grid container spacing={3}>
+          {loading ? (
+            Array.from(new Array(6)).map((_, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <Skeleton variant="rectangular" height={220} sx={{ borderRadius: "16px" }} />
+                <Skeleton
+                  variant="rectangular"
+                  height={220}
+                  sx={{ borderRadius: "16px" }}
+                />
               </Grid>
             ))
-          : filteredJobs.map((job) => (
+          ) : filteredJobs.length ? (
+            filteredJobs.map((job) => (
               <Grid item xs={12} sm={6} md={4} key={job._id}>
                 <Card
                   onClick={() => handleJobClick(job._id)}
+                  elevation={0}
                   sx={{
                     borderRadius: "16px",
                     cursor: "pointer",
                     height: "100%",
                     transition: "transform 0.2s, box-shadow 0.2s",
-                    border: "1px solid #eef7f6",
+                    border: "1px solid #edf1f4",
                     display: "flex",
                     flexDirection: "column",
                     "&:hover": {
                       transform: "translateY(-4px)",
-                      boxShadow: "0 12px 24px rgba(31, 164, 154, 0.12)",
+                      boxShadow: "0 12px 24px rgba(0, 151, 167, 0.12)",
                     },
                   }}
                 >
-                  <CardContent sx={{ p: 3, flexGrow: 1 }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                      <Avatar
-                        src={
-                          job.company?.logo
-                            ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${job.company.logo}`
-                            : ""
-                        }
-                        alt={job.company?.name}
-                        sx={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: "10px",
-                          bgcolor: "#eef7f6",
-                          color: "#1FA49A",
-                        }}
-                      >
-                        {job.company?.name?.charAt(0)}
-                      </Avatar>
-                      <Chip
-                        label={job.jobType || "Job"}
-                        size="small"
-                        sx={{
-                          bgcolor: "rgba(31, 164, 154, 0.1)",
-                          color: "#1FA49A",
-                          fontWeight: 600,
-                          borderRadius: "6px",
-                        }}
-                      />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: "#333", mb: 0.5 }}>
+                  <CardContent
+                    sx={{
+                      p: 3,
+                      flexGrow: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 800,
+                        color: "#1a2b3c",
+                        mb: 2,
+                        lineHeight: 1.3,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        minHeight: "3.9em",
+                      }}
+                    >
                       {job.jobTitle}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666", mb: 2, fontWeight: 500 }}>
-                      {job.company?.name}
-                    </Typography>
-                    
-                    <Stack spacing={1} sx={{ mt: "auto" }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#888" }}>
-                        <LocationIcon sx={{ fontSize: 16 }} />
-                        <Typography variant="caption">{job.city?.join(", ") || "Multiple Locations"}</Typography>
+
+                    <Stack spacing={1.2} sx={{ mb: 2 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 1,
+                          color: "#5a6b7b",
+                        }}
+                      >
+                        <ApartmentIcon sx={{ fontSize: 18, mt: "1px" }} />
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {typeof job.company === "string"
+                            ? job.company
+                            : job.company?.name ||
+                              job.companyDetail?.name ||
+                              "—"}
+                        </Typography>
                       </Box>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#888" }}>
-                        <WorkIcon sx={{ fontSize: 16 }} />
-                        <Typography variant="caption">{job.company?.industry || "Industry"}</Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 1,
+                          color: "#8a97a3",
+                        }}
+                      >
+                        <LocationIcon sx={{ fontSize: 18, mt: "1px" }} />
+                        <Typography variant="body2">
+                          {[
+                            job.address,
+                            job.zipCode,
+                            Array.isArray(job.city)
+                              ? job.city.filter(Boolean).join(", ")
+                              : job.city,
+                          ]
+                            .filter(Boolean)
+                            .join(", ") || "Multiple Locations"}
+                        </Typography>
                       </Box>
                     </Stack>
+
+                    <Box sx={{ mt: "auto" }}>
+                      <Divider sx={{ mb: 1.5 }} />
+                      <Button
+                        endIcon={<ArrowForwardIcon />}
+                        sx={{
+                          p: 0,
+                          color: TEAL,
+                          fontWeight: 700,
+                          textTransform: "none",
+                          fontSize: "0.95rem",
+                          "&:hover": { bgcolor: "transparent", color: TEAL_DARK },
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
-            ))}
-        {!loading && jobs.length === 0 && (
-          <Grid item xs={12}>
-            <Box sx={{ textAlign: "center", py: 8 }}>
-              <Typography variant="h6" color="textSecondary">
-                No jobs found
-              </Typography>
-            </Box>
-          </Grid>
-        )}
-      </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Box sx={{ textAlign: "center", py: 8 }}>
+                <Typography variant="h6" color="textSecondary">
+                  No jobs found
+                </Typography>
+              </Box>
+            </Grid>
+          )}
+        </Grid>
+      </Box>
     </Box>
   );
 }
