@@ -139,8 +139,7 @@ const Login = () => {
           padding: "50px 0px",
         }}
       >
-        {showBranding && (
-          <Stack
+        <Stack
             direction="row"
             spacing={1.5}
             sx={{
@@ -172,7 +171,6 @@ const Login = () => {
               Jobs
             </Button>
           </Stack>
-        )}
         <Container>
           <Grid container spacing={2} alignItems={"center"}>
             <Grid

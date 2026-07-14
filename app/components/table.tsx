@@ -63,8 +63,14 @@ interface Props {
   selectable?: boolean;
   /** Currently selected row ids (uses each row's `id`). */
   selectedIds?: string[];
-  /** Called with the new list of selected ids when the selection changes. */
-  onSelectionChange?: (ids: string[]) => void;
+  /**
+   * Called when the selection changes. Accepts either the next list of ids or
+   * a functional updater (so it can be wired straight to a `setState` setter);
+   * the updater form keeps rapid successive clicks from clobbering each other.
+   */
+  onSelectionChange?: (
+    value: string[] | ((prev: string[]) => string[]),
+  ) => void;
 }
 const CustomTable = (props: Props) => {
   const selectedIds = props.selectedIds || [];
@@ -82,24 +88,22 @@ const CustomTable = (props: Props) => {
 
   const handleSelectAll = () => {
     if (!props.onSelectionChange) return;
-    if (allSelected) {
-      props.onSelectionChange(
-        selectedIds.filter((id) => !pageIds.includes(id)),
-      );
-    } else {
-      props.onSelectionChange(
-        Array.from(new Set([...selectedIds, ...pageIds])),
-      );
-    }
+    props.onSelectionChange((prev) => {
+      const allSel =
+        pageIds.length > 0 && pageIds.every((id) => prev.includes(id));
+      return allSel
+        ? prev.filter((id) => !pageIds.includes(id))
+        : Array.from(new Set([...prev, ...pageIds]));
+    });
   };
 
   const handleSelectRow = (id: string) => {
     if (!props.onSelectionChange) return;
-    if (selectedIds.includes(id)) {
-      props.onSelectionChange(selectedIds.filter((sid) => sid !== id));
-    } else {
-      props.onSelectionChange([...selectedIds, id]);
-    }
+    props.onSelectionChange((prev) =>
+      prev.includes(id)
+        ? prev.filter((sid) => sid !== id)
+        : [...prev, id],
+    );
   };
 
   const colSpan = props.columns.length + (props.selectable ? 1 : 0);
@@ -122,12 +126,18 @@ const CustomTable = (props: Props) => {
           <TableHead>
             <TableRow>
               {props.selectable && (
-                <StyledTableCell padding="checkbox">
+                <StyledTableCell
+                  padding="checkbox"
+                  onClick={handleSelectAll}
+                  sx={{ cursor: "pointer", width: 56 }}
+                >
                   <Checkbox
                     checked={allSelected}
                     indeterminate={someSelected}
-                    onChange={handleSelectAll}
+                    readOnly
+                    tabIndex={-1}
                     sx={{
+                      pointerEvents: "none",
                       color: "#0096A4",
                       "&.Mui-checked": { color: "#0096A4" },
                       "&.MuiCheckbox-indeterminate": { color: "#0096A4" },
@@ -149,15 +159,30 @@ const CustomTable = (props: Props) => {
                   row.id !== undefined && row.id !== null
                     ? String(row.id)
                     : undefined;
+                const isSelected =
+                  rowId !== undefined && selectedIds.includes(rowId);
                 return (
-                  <StyledTableRow key={index}>
+                  <StyledTableRow
+                    key={index}
+                    sx={
+                      isSelected
+                        ? { backgroundColor: "rgba(0,150,164,0.08) !important" }
+                        : undefined
+                    }
+                  >
                     {props.selectable && (
-                      <StyledTableCell padding="checkbox">
+                      <StyledTableCell
+                        padding="checkbox"
+                        onClick={() => rowId !== undefined && handleSelectRow(rowId)}
+                        sx={{ cursor: rowId !== undefined ? "pointer" : "default", width: 56 }}
+                      >
                         {rowId !== undefined && (
                           <Checkbox
-                            checked={selectedIds.includes(rowId)}
-                            onChange={() => handleSelectRow(rowId)}
+                            checked={isSelected}
+                            readOnly
+                            tabIndex={-1}
                             sx={{
+                              pointerEvents: "none",
                               color: "#0096A4",
                               "&.Mui-checked": { color: "#0096A4" },
                             }}
