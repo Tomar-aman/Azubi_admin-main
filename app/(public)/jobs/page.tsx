@@ -226,6 +226,7 @@ export default function JobsPage() {
             }}
           />
 
+          {/* Region filter hidden (kept, not removed)
           <TextField
             select
             value={selectedRegion || ""}
@@ -261,6 +262,7 @@ export default function JobsPage() {
               </MenuItem>
             ))}
           </TextField>
+          */}
 
           <TextField
             select

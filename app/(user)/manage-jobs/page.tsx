@@ -29,12 +29,15 @@ const ManageJobs = () => {
   const [deleteTableRowData, setDeleteTableRowData] = useState<Job>();
   const [mount, setMount] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-  
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBulkDelete, setIsBulkDelete] = useState(false);
+
   const handleDeleteModal = () => {
     setDeleteModal(true);
   };
   const handleClose = () => {
     setDeleteModal(false);
+    setIsBulkDelete(false);
   };
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -63,8 +66,32 @@ const ManageJobs = () => {
     handleClose();
     setIsDeleteLoading(false);
   };
+  const handleBulkDelete = async () => {
+    setIsDeleteLoading(true);
+    try {
+      const results = await Promise.all(
+        selectedIds.map((id) => deleteJOb(id)),
+      );
+      const failed = results.filter((r) => r.remote !== "success").length;
+      if (failed) {
+        toast.error(`Failed to delete ${failed} job(s)`);
+      } else {
+        toast.info(`${selectedIds.length} job(s) deleted successfully!`);
+      }
+      setSelectedIds([]);
+      await handleGetAllJobs();
+    } catch (error) {
+      toast.error("Error deleting jobs");
+      console.log("handleBulkDelete", error);
+    }
+    setIsBulkDelete(false);
+    handleClose();
+    setIsDeleteLoading(false);
+  };
   const onConfirm = () => {
-    if (deleteTableRowData) {
+    if (isBulkDelete) {
+      handleBulkDelete();
+    } else if (deleteTableRowData) {
       handleDelete(deleteTableRowData);
     }
   };
@@ -97,6 +124,7 @@ const ManageJobs = () => {
 
   const handleGetAllJobs = async () => {
     setLoading(true);
+    setSelectedIds([]);
     try {
       const payload: getAllJobsType = {
         pageNo,
@@ -249,18 +277,39 @@ const ManageJobs = () => {
           ]}
         />
 
-        <Button
-          LinkComponent={Link}
-          href="/manage-jobs/add"
-          disableRipple={true}
-          sx={{
-            fontSize: "20px",
-            color: "#646464",
-            "&:hover": { color: "#0096A4" },
-          }}
-        >
-          <SVG.AddIcon className="svgActive" style={{ marginRight: "8px" }} /> Add
-        </Button>
+        <Stack direction="row" spacing={1} alignItems="center">
+          {selectedIds.length > 0 && (
+            <Button
+              onClick={() => {
+                setIsBulkDelete(true);
+                handleDeleteModal();
+              }}
+              disableRipple={true}
+              variant="contained"
+              sx={{
+                bgcolor: "#d32f2f",
+                textTransform: "none",
+                borderRadius: "8px",
+                "&:hover": { bgcolor: "#b71c1c" },
+              }}
+            >
+              Delete Selected ({selectedIds.length})
+            </Button>
+          )}
+
+          <Button
+            LinkComponent={Link}
+            href="/manage-jobs/add"
+            disableRipple={true}
+            sx={{
+              fontSize: "20px",
+              color: "#646464",
+              "&:hover": { color: "#0096A4" },
+            }}
+          >
+            <SVG.AddIcon className="svgActive" style={{ marginRight: "8px" }} /> Add
+          </Button>
+        </Stack>
       </Stack>
 
 
@@ -275,6 +324,9 @@ const ManageJobs = () => {
           setPageNo={setPageNo}
           pageNo={pageNo}
           loading={loading}
+          selectable
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
         />
       </Box>
       <DeleteModal

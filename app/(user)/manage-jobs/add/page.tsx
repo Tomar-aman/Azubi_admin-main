@@ -784,6 +784,7 @@ const AddComponent: React.FC = () => {
                   {/* end------ */}
                 </Grid>
 
+                {/* Region field hidden (kept, not removed)
                 <Grid item xs={12} lg={2}>
                   <label>Region</label>
                 </Grid>
@@ -836,6 +837,7 @@ const AddComponent: React.FC = () => {
                     )}
                   />
                 </Grid>
+                */}
 
                 <Grid item xs={12} lg={2}>
                   <label>Company</label>

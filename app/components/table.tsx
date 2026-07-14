@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Checkbox,
   Paper,
   Table,
   TableBody,
@@ -58,8 +59,51 @@ interface Props {
   setPageNo: (payload: number) => void;
   pageNo: number;
   rows: Record<string, string | number | ReactElement | boolean | undefined>[];
+  /** Enable a leading checkbox column for multi-row selection. */
+  selectable?: boolean;
+  /** Currently selected row ids (uses each row's `id`). */
+  selectedIds?: string[];
+  /** Called with the new list of selected ids when the selection changes. */
+  onSelectionChange?: (ids: string[]) => void;
 }
 const CustomTable = (props: Props) => {
+  const selectedIds = props.selectedIds || [];
+
+  // Ids of the rows currently rendered (only rows that expose an `id`).
+  const pageIds = props.rows
+    .map((row) => row.id)
+    .filter((id): id is string | number => id !== undefined && id !== null)
+    .map((id) => String(id));
+
+  const allSelected =
+    pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+  const someSelected =
+    pageIds.some((id) => selectedIds.includes(id)) && !allSelected;
+
+  const handleSelectAll = () => {
+    if (!props.onSelectionChange) return;
+    if (allSelected) {
+      props.onSelectionChange(
+        selectedIds.filter((id) => !pageIds.includes(id)),
+      );
+    } else {
+      props.onSelectionChange(
+        Array.from(new Set([...selectedIds, ...pageIds])),
+      );
+    }
+  };
+
+  const handleSelectRow = (id: string) => {
+    if (!props.onSelectionChange) return;
+    if (selectedIds.includes(id)) {
+      props.onSelectionChange(selectedIds.filter((sid) => sid !== id));
+    } else {
+      props.onSelectionChange([...selectedIds, id]);
+    }
+  };
+
+  const colSpan = props.columns.length + (props.selectable ? 1 : 0);
+
   return (
     <>
       <TableContainer
@@ -77,6 +121,20 @@ const CustomTable = (props: Props) => {
         >
           <TableHead>
             <TableRow>
+              {props.selectable && (
+                <StyledTableCell padding="checkbox">
+                  <Checkbox
+                    checked={allSelected}
+                    indeterminate={someSelected}
+                    onChange={handleSelectAll}
+                    sx={{
+                      color: "#0096A4",
+                      "&.Mui-checked": { color: "#0096A4" },
+                      "&.MuiCheckbox-indeterminate": { color: "#0096A4" },
+                    }}
+                  />
+                </StyledTableCell>
+              )}
               {props.columns.map((data) => (
                 <StyledTableCell width={data.width} key={data.key}>
                   {data.name}
@@ -86,22 +144,42 @@ const CustomTable = (props: Props) => {
           </TableHead>
           <TableBody sx={{ position: "relative" }}>
             {!props.loading &&
-              props.rows.map((row, index) => (
-                <StyledTableRow key={index}>
-                  {props.columns.map((column) => {
-                    return (
-                      <StyledTableCell key={column.key}>
-                        {row[column.key]}
+              props.rows.map((row, index) => {
+                const rowId =
+                  row.id !== undefined && row.id !== null
+                    ? String(row.id)
+                    : undefined;
+                return (
+                  <StyledTableRow key={index}>
+                    {props.selectable && (
+                      <StyledTableCell padding="checkbox">
+                        {rowId !== undefined && (
+                          <Checkbox
+                            checked={selectedIds.includes(rowId)}
+                            onChange={() => handleSelectRow(rowId)}
+                            sx={{
+                              color: "#0096A4",
+                              "&.Mui-checked": { color: "#0096A4" },
+                            }}
+                          />
+                        )}
                       </StyledTableCell>
-                    );
-                  })}
-                </StyledTableRow>
-              ))}
+                    )}
+                    {props.columns.map((column) => {
+                      return (
+                        <StyledTableCell key={column.key}>
+                          {row[column.key]}
+                        </StyledTableCell>
+                      );
+                    })}
+                  </StyledTableRow>
+                );
+              })}
 
             {props.loading && (
               <StyledTableRow>
                 <StyledTableCell
-                  colSpan={props.columns.length}
+                  colSpan={colSpan}
                   style={{
                     height: "calc(100vh - 293px)",
                     background: "#fff",

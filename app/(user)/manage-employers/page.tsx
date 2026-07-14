@@ -60,6 +60,8 @@ const ManageEmployee = () => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [statusToggleId, setStatusToggleId] = useState("");
   const [isUserDomain, setIsUserDomain] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBulkDelete, setIsBulkDelete] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -84,11 +86,13 @@ const ManageEmployee = () => {
   };
   const handleClose = () => {
     setDeleteModal(false);
+    setIsBulkDelete(false);
   };
 
-  
+
   const handleGetAllEmployer = async () => {
     setIsLoading(true);
+    setSelectedIds([]);
     const payload: getAllEmployerType = {
       pageNo,
       searchValue,
@@ -156,8 +160,32 @@ const ManageEmployee = () => {
   const handleDeleteTableRowData = (rowData: RowData) => {
     setDeleteTableRowData(rowData);
   };
+  const handleBulkDelete = async () => {
+    setIsDeleteLoading(true);
+    try {
+      const results = await Promise.all(
+        selectedIds.map((id) => deleteEmployer(id)),
+      );
+      const failed = results.filter((r) => r.remote !== "success").length;
+      if (failed) {
+        toast.error(`Failed to delete ${failed} employer(s)`);
+      } else {
+        toast.info(`${selectedIds.length} employer(s) deleted successfully!`);
+      }
+      setSelectedIds([]);
+      await handleGetAllEmployer();
+    } catch (error) {
+      toast.error("Error deleting employers");
+      console.log("handleBulkDelete", error);
+    }
+    setIsBulkDelete(false);
+    handleClose();
+    setIsDeleteLoading(false);
+  };
   const onConfirm = () => {
-    if (deleteTableRowData) {
+    if (isBulkDelete) {
+      handleBulkDelete();
+    } else if (deleteTableRowData) {
       handleDelete(deleteTableRowData);
     }
   };
@@ -282,20 +310,41 @@ const ManageEmployee = () => {
             { name: "Company Name", value: "companyName" },
           ]}
         />
-        {!(isUserDomain && pageCount >= 1) && (
-          <Link href="/manage-employers/add?action=false">
+        <Stack direction="row" spacing={1} alignItems="center">
+          {selectedIds.length > 0 && (
             <Button
+              onClick={() => {
+                setIsBulkDelete(true);
+                handleDeleteModal();
+              }}
               disableRipple={true}
+              variant="contained"
               sx={{
-                fontSize: "20px",
-                color: "#646464",
-                "&:hover": { color: "#0096A4" },
+                bgcolor: "#d32f2f",
+                textTransform: "none",
+                borderRadius: "8px",
+                "&:hover": { bgcolor: "#b71c1c" },
               }}
             >
-              <SVG.AddIcon className="svgActive" style={{ marginRight: "8px" }} /> Add
+              Delete Selected ({selectedIds.length})
             </Button>
-          </Link>
-        )}
+          )}
+
+          {!(isUserDomain && pageCount >= 1) && (
+            <Link href="/manage-employers/add?action=false">
+              <Button
+                disableRipple={true}
+                sx={{
+                  fontSize: "20px",
+                  color: "#646464",
+                  "&:hover": { color: "#0096A4" },
+                }}
+              >
+                <SVG.AddIcon className="svgActive" style={{ marginRight: "8px" }} /> Add
+              </Button>
+            </Link>
+          )}
+        </Stack>
       </Stack>
       <Box sx={{ overflow: "hidden", position: "relative" }}>
         <CustomTable
@@ -307,6 +356,9 @@ const ManageEmployee = () => {
           setPageNo={setPageNo}
           pageNo={pageNo}
           loading={loading}
+          selectable
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
         />
       </Box>
       <DeleteModal
