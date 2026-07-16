@@ -79,13 +79,13 @@ export const MENU_DATA: SidebarMenu[] = [
     url: "/manage-type-of-job",
     key: "manage-type-of-job",
   },
-  {
-    id: 6,
-    icon: SVG.CitiesIcon,
-    label: "Manage Regions",
-    url: "/manage-regions",
-    key: "manage-regions",
-  },
+  // {
+  //   id: 6,
+  //   icon: SVG.CitiesIcon,
+  //   label: "Manage Regions",
+  //   url: "/manage-regions",
+  //   key: "manage-regions",
+  // },
   {
     id: 7,
     icon: SVG.CitiesIcon,

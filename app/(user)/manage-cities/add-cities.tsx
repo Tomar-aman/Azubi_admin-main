@@ -27,7 +27,7 @@ const AddCities = (props: any) => {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("City is required"),
-    region: yup.string().required("Region is required"),
+    // region: yup.string().required("Region is required"),
     startTime: yup.date(),
     endTime: yup.date(),
     address: yup.string(),
@@ -104,7 +104,7 @@ const AddCities = (props: any) => {
 
         />
 
-        <FormLabel>Select Region</FormLabel>
+        {/* <FormLabel>Select Region</FormLabel>
         <Autocomplete
           disablePortal
           disableClearable={true}
@@ -133,7 +133,7 @@ const AddCities = (props: any) => {
               helperText={formik.touched.region && (formik.errors.region as string)}
             />
           )}
-        />
+        /> */}
         <FormControlLabel
           control={
             <Checkbox

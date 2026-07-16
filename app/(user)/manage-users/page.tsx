@@ -53,6 +53,7 @@ const ManageUsersPage = () => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [togglingId, setTogglingId] = useState("");
   const [mount, setMount] = useState(false);
+  const [isEmployeeDomain, setIsEmployeeDomain] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -213,6 +214,16 @@ const ManageUsersPage = () => {
     setMount(true);
   }, [searchValue]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname;
+      const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
+      if (host.includes(employeeDomain)) {
+        setIsEmployeeDomain(true);
+      }
+    }
+  }, []);
+
   return (
     <>
       <Title heading="Manage Users" />
@@ -235,7 +246,7 @@ const ManageUsersPage = () => {
       </Stack>
       <Box sx={{ overflow: "hidden", position: "relative" }}>
         <CustomTable
-          columns={COLUMNS}
+          columns={isEmployeeDomain ? COLUMNS.filter(col => col.key !== "qrCode") : COLUMNS}
           rows={rows.map(buildRow)}
           pageCount={pageCount}
           setRecordPerPage={setRecordPerPage}
