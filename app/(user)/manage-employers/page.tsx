@@ -60,6 +60,7 @@ const ManageEmployee = () => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [statusToggleId, setStatusToggleId] = useState("");
   const [isUserDomain, setIsUserDomain] = useState(false);
+  const [isEmployeeDomain, setIsEmployeeDomain] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
 
@@ -67,8 +68,12 @@ const ManageEmployee = () => {
     if (typeof window !== "undefined") {
       const host = window.location.hostname;
       const userDomain = process.env.NEXT_PUBLIC_MANAGED_USER_DOMAIN || "kundenzugang";
+      const employeeDomain = process.env.NEXT_PUBLIC_MANAGED_EMPLOYEE_DOMAIN || "wohnzugang";
       if (host.includes(userDomain)) {
         setIsUserDomain(true);
+      }
+      if (host.includes(employeeDomain)) {
+        setIsEmployeeDomain(true);
       }
     }
   }, []);
@@ -204,10 +209,10 @@ const ManageEmployee = () => {
       companyName: (
         <p onClick={() => {
           navigateToAdd(rowData.id);
-        }} style={{cursor: "pointer", color: "#2894A2" }}>
+        }} style={{ cursor: "pointer", color: "#2894A2" }}>
           {rowData.companyName}
         </p>
-    ), // Adjust the href to match your dynamic route for companies
+      ), // Adjust the href to match your dynamic route for companies
       email: rowData.email,
       contact: rowData.contact,
       industry: rowData.industry || "",
@@ -228,9 +233,9 @@ const ManageEmployee = () => {
         </div>
       ),
       qrCode: (
-        <QRCodeDownload 
-          value={rowData.id} 
-          fileName={`qr_employer_${rowData.companyName}`} 
+        <QRCodeDownload
+          value={rowData.id}
+          fileName={`qr_employer_${rowData.companyName}`}
         />
       ),
       action: (
@@ -348,7 +353,7 @@ const ManageEmployee = () => {
       </Stack>
       <Box sx={{ overflow: "hidden", position: "relative" }}>
         <CustomTable
-          columns={COLUM_DATA}
+          columns={isEmployeeDomain ? COLUM_DATA.filter(col => col.key !== "qrCode") : COLUM_DATA}
           rows={rowData?.map((row) => handleTableRow(row)) || []}
           pageCount={pageCount}
           setRecordPerPage={setRecordPerPage}

@@ -112,7 +112,7 @@ export default function AdminLayout({
             )}
           </Typography>
           <Box sx={{ flexGrow: 1 }}>
-            <IconButton
+            {/* <IconButton
               size="large"
               edge="start"
               color="inherit"
@@ -121,7 +121,7 @@ export default function AdminLayout({
               onClick={() => handleToggle()}
             >
               <SVG.Menu />
-            </IconButton>
+            </IconButton> */}
           </Box>
           <Stack direction="row" spacing={2} sx={{ mr: 2 }}>
               <Button
