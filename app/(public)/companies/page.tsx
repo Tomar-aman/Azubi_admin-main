@@ -221,7 +221,7 @@ export default function CompaniesPage() {
             }}
           />
 
-          <TextField
+          {/* <TextField
             select
             value={selectedRegion || ""}
             onChange={(e) => {
@@ -255,7 +255,7 @@ export default function CompaniesPage() {
                 {reg.name}
               </MenuItem>
             ))}
-          </TextField>
+          </TextField> */}
 
           <TextField
             select
