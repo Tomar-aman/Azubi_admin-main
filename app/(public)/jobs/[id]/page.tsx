@@ -5,7 +5,6 @@ import {
   Box,
   Typography,
   Grid,
-  Chip,
   Button,
   Divider,
   Paper,
@@ -17,6 +16,8 @@ import {
   LocationOn as LocationIcon,
   Apartment as ApartmentIcon,
   Email as EmailIcon,
+  Language as WebIcon,
+  Phone as PhoneIcon,
   InsertDriveFile as FileIcon,
   Download as DownloadIcon,
   OpenInNew as OpenInNewIcon,
@@ -25,9 +26,7 @@ import { useRouter, useParams } from "next/navigation";
 import { getJobDetailById } from "@/app/api/jobs/jobs";
 import { getYoutubeEmbedUrl } from "@/app/ulits/youtube";
 
-const TEAL = "#0097A7";
-const TEAL_DARK = "#00808e";
-const HERO_GRADIENT = "linear-gradient(115deg, #10a5a2 0%, #077885 100%)";
+const TEAL = "#1FA49A";
 const NAVY = "#1a2b3c";
 
 const getImageUrl = (filepath: string) => {
@@ -57,23 +56,17 @@ export default function JobDetailPage() {
     }
   }, [id]);
 
-  const fullBleed = {
-    mt: { xs: -2, md: -4 },
-    mx: { xs: -2, md: -4 },
-    mb: { xs: -2, md: -4 },
-  };
-
   if (loading) {
     return (
-      <Box sx={{ ...fullBleed, bgcolor: "#f4f6f8", minHeight: "100%" }}>
-        <Box sx={{ background: HERO_GRADIENT, height: 220 }} />
-        <Box sx={{ px: { xs: 2, md: 6 }, mt: { xs: -8, md: -12 } }}>
+      <Box sx={{ minHeight: "100vh", bgcolor: "#F5F7F9" }}>
+        <Box sx={{ bgcolor: TEAL, height: 56 }} />
+        <Box sx={{ px: { xs: 2, md: 6 }, py: 4, maxWidth: "1200px", mx: "auto" }}>
           <Grid container spacing={4}>
             <Grid item xs={12} md={8}>
-              <Skeleton variant="rectangular" height={420} sx={{ borderRadius: "24px" }} />
+              <Skeleton variant="rectangular" height={500} sx={{ borderRadius: "16px" }} />
             </Grid>
             <Grid item xs={12} md={4}>
-              <Skeleton variant="rectangular" height={300} sx={{ borderRadius: "24px" }} />
+              <Skeleton variant="rectangular" height={350} sx={{ borderRadius: "16px" }} />
             </Grid>
           </Grid>
         </Box>
@@ -84,13 +77,16 @@ export default function JobDetailPage() {
   if (!job) return null;
 
   const jobImages = Array.isArray(job.jobImages) ? job.jobImages : [];
-
   const companyName = job.company?.companyName || "—";
-  const companyLogo = job.company?.companyLogo
-    ? getImageUrl(job.company.companyLogo)
-    : "";
+  const companyLogo = job.company?.companyLogo ? getImageUrl(job.company.companyLogo) : "";
   const industry = job.industryName?.industryName || "";
   const employmentType = job.jobType?.jobTypeName || "";
+
+  // Build employment type tags (comma-separated → individual labels)
+  const employmentTags = employmentType
+    ? employmentType.split(",").map((t: string) => t.trim()).filter(Boolean)
+    : [];
+
   const cityNames = Array.isArray(job.cityDetail)
     ? job.cityDetail.map((c: any) => c?.name).filter(Boolean).join(", ")
     : "";
@@ -99,22 +95,16 @@ export default function JobDetailPage() {
       .filter(Boolean)
       .join(", ") || "N/A";
 
-  const videoUrl =
-    Array.isArray(job.videoLink) && job.videoLink[0] ? job.videoLink[0] : null;
+  const videoUrl = Array.isArray(job.videoLink) && job.videoLink[0] ? job.videoLink[0] : null;
 
   const documents = Array.isArray(job.attachments)
     ? job.attachments.filter((a: any) => a?.document?.filepath)
     : [];
 
-  // Map: prefer an embedded iframe code, then a genuinely embeddable map url,
-  // else build a key-less Google Maps embed from the resolved address (share
-  // links like maps.app.goo.gl can't be iframed, so they fall back to this).
-  const isEmbedCode =
-    typeof job.embeddedCode === "string" && job.embeddedCode.includes("<iframe");
+  const isEmbedCode = typeof job.embeddedCode === "string" && job.embeddedCode.includes("<iframe");
   const mapLink = job.locationUrl || job.mapUrl || "";
   const isEmbeddableUrl =
-    typeof job.mapUrl === "string" &&
-    /(output=embed|\/maps\/embed|\/embed)/.test(job.mapUrl);
+    typeof job.mapUrl === "string" && /(output=embed|\/maps\/embed|\/embed)/.test(job.mapUrl);
   const mapSrc = isEmbeddableUrl
     ? job.mapUrl
     : `https://maps.google.com/maps?q=${encodeURIComponent(
@@ -122,107 +112,76 @@ export default function JobDetailPage() {
       )}&z=15&output=embed`;
   const showMap = isEmbedCode || locationText !== "N/A" || isEmbeddableUrl;
 
-  const overviewRows = [
-    { label: "Employment Type", value: employmentType },
-    { label: "Industry", value: industry },
-    { label: "Start", value: job.beginning?.beginningName },
-    { label: "Region", value: job.regionDetail?.name },
-    { label: "Posted", value: new Date(job.createdAt).toLocaleDateString() },
-  ].filter((r) => r.value);
-
+  // Sidebar contact rows
   const contactRows = [
-    { label: "Email", value: job.email, icon: <EmailIcon sx={{ color: TEAL }} /> },
+    { label: "EMAIL", value: job.email, icon: <EmailIcon sx={{ fontSize: 18 }} /> },
+    { label: "WEBSITE", value: job.company?.website, icon: <WebIcon sx={{ fontSize: 18 }} /> },
+    { label: "PHONE", value: job.company?.phoneNo, icon: <PhoneIcon sx={{ fontSize: 18 }} /> },
     {
-      label: "Additional Email",
+      label: "ADDITIONAL EMAIL",
       value: job.additionalEmail,
-      icon: <EmailIcon sx={{ color: TEAL }} />,
+      icon: <EmailIcon sx={{ fontSize: 18 }} />,
     },
   ].filter((r) => r.value);
 
   return (
-    <Box sx={{ ...fullBleed, bgcolor: "#f4f6f8", minHeight: "100%" }}>
-      {/* Hero */}
-      <Box
-        sx={{
-          background: HERO_GRADIENT,
-          px: { xs: 2, md: 6 },
-          pt: { xs: 3, md: 4 },
-          pb: { xs: 10, md: 16 },
-        }}
-      >
+    <Box sx={{ minHeight: "100vh", bgcolor: "#F5F7F9" }}>
+      {/* Header Bar */}
+      <Box sx={{ bgcolor: TEAL, py: 1.5, px: { xs: 2, md: 6 } }}>
         <Button
           onClick={() => router.push("/jobs")}
           startIcon={<ArrowBackIcon />}
           sx={{
             color: "#fff",
-            fontWeight: 700,
             textTransform: "none",
-            fontSize: "1.05rem",
-            bgcolor: "rgba(255,255,255,0.15)",
-            borderRadius: "12px",
-            px: 2.5,
-            py: 1,
-            "&:hover": { bgcolor: "rgba(255,255,255,0.28)" },
+            fontWeight: 600,
+            fontSize: "14px",
+            "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
           }}
         >
           Back To Jobs
         </Button>
       </Box>
 
-      {/* Body (pulled up to overlap the hero) */}
-      <Box
-        sx={{
-          px: { xs: 2, md: 6 },
-          mt: { xs: -8, md: -12 },
-          pb: 6,
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
+      {/* Page Body */}
+      <Box sx={{ px: { xs: 2, md: 6 }, py: 4, maxWidth: "1200px", mx: "auto" }}>
         <Grid container spacing={4}>
-          {/* Main card */}
-          <Grid item xs={12} md={8}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 3, md: 5 },
-                borderRadius: "24px",
-                bgcolor: "#fff",
-                boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
-              }}
-            >
-              <Chip
-                label={employmentType || "Job"}
-                sx={{
-                  bgcolor: "rgba(0,151,167,0.12)",
-                  color: TEAL,
-                  fontWeight: 700,
-                  borderRadius: "8px",
-                  mb: 2,
-                }}
-              />
 
+          {/* Left Column — Main Card */}
+          <Grid item xs={12} md={8}>
+            <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, borderRadius: "16px" }}>
+
+              {/* Employment type tags (teal text, comma-separated) */}
+              {employmentTags.length > 0 && (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mb: 1.5 }}>
+                  {employmentTags.map((tag: string, idx: number) => (
+                    <Typography
+                      key={tag}
+                      sx={{ color: TEAL, fontWeight: 600, fontSize: "13px" }}
+                    >
+                      {tag}{idx < employmentTags.length - 1 ? "," : ""}
+                    </Typography>
+                  ))}
+                </Box>
+              )}
+
+              {/* Job Title */}
               <Typography
-                variant="h3"
-                sx={{
-                  fontWeight: 800,
-                  color: NAVY,
-                  mb: 3,
-                  lineHeight: 1.2,
-                  fontSize: { xs: "1.6rem", md: "2.3rem" },
-                }}
+                variant="h4"
+                sx={{ fontWeight: 800, color: NAVY, mb: 2, lineHeight: 1.2 }}
               >
                 {job.jobTitle}
               </Typography>
 
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2.5 }}>
+              {/* Company row: logo + name */}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+                {/* Logo box */}
                 <Box
                   sx={{
-                    width: 84,
-                    height: 84,
-                    borderRadius: "16px",
-                    border: "1px solid #eef2f4",
-                    boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
+                    width: 72,
+                    height: 72,
+                    borderRadius: "12px",
+                    border: "1px solid #e8eef2",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -236,17 +195,19 @@ export default function JobDetailPage() {
                       component="img"
                       src={companyLogo}
                       alt={companyName}
-                      sx={{ width: "100%", height: "100%", objectFit: "contain", p: 1 }}
+                      sx={{ width: "80%", height: "80%", objectFit: "contain" }}
                     />
                   ) : (
-                    <ApartmentIcon sx={{ fontSize: 40, color: TEAL }} />
+                    <ApartmentIcon sx={{ fontSize: 32, color: "#bbb" }} />
                   )}
                 </Box>
+
+                {/* Company name */}
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1,
+                    gap: 0.75,
                     color: TEAL,
                     cursor: job.company?._id ? "pointer" : "default",
                   }}
@@ -254,26 +215,24 @@ export default function JobDetailPage() {
                     job.company?._id && router.push(`/companies/${job.company._id}`)
                   }
                 >
-                  <ApartmentIcon sx={{ fontSize: 20 }} />
-                  <Typography sx={{ fontWeight: 700, fontSize: "1.05rem" }}>
+                  <ApartmentIcon sx={{ fontSize: 17 }} />
+                  <Typography sx={{ fontWeight: 600, fontSize: "14px" }}>
                     {companyName}
                   </Typography>
                 </Box>
               </Box>
 
-              <Divider sx={{ my: 4 }} />
+              <Divider sx={{ mb: 3 }} />
 
               {/* Location */}
               <Box sx={{ mb: 4 }}>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
-                  <LocationIcon sx={{ color: TEAL, mt: "2px" }} />
+                <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}>
+                  <LocationIcon sx={{ color: TEAL, mt: "2px", fontSize: 20 }} />
                   <Box sx={{ flexGrow: 1 }}>
-                    <Typography
-                      sx={{ color: "#8a97a3", fontSize: "0.85rem", fontWeight: 600 }}
-                    >
+                    <Typography sx={{ color: "#8a97a3", fontSize: "12px", fontWeight: 700, mb: 0.25 }}>
                       Location
                     </Typography>
-                    <Typography sx={{ fontWeight: 600, color: NAVY }}>
+                    <Typography sx={{ fontWeight: 600, color: NAVY, fontSize: "14px" }}>
                       {locationText}
                     </Typography>
                   </Box>
@@ -282,14 +241,15 @@ export default function JobDetailPage() {
                       href={mapLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      endIcon={<OpenInNewIcon sx={{ fontSize: "16px !important" }} />}
+                      endIcon={<OpenInNewIcon sx={{ fontSize: "14px !important" }} />}
                       size="small"
                       sx={{
                         color: TEAL,
                         fontWeight: 700,
                         textTransform: "none",
+                        fontSize: "13px",
                         flexShrink: 0,
-                        "&:hover": { bgcolor: "transparent", color: TEAL_DARK },
+                        "&:hover": { bgcolor: "transparent" },
                       }}
                     >
                       Open in Maps
@@ -297,20 +257,16 @@ export default function JobDetailPage() {
                   )}
                 </Box>
 
-                {showMap &&
-                  (isEmbedCode ? (
+                {/* Map */}
+                {showMap && (
+                  isEmbedCode ? (
                     <Box
                       sx={{
                         mt: 2,
                         borderRadius: "12px",
                         overflow: "hidden",
                         border: "1px solid #eef2f4",
-                        "& iframe": {
-                          width: "100%",
-                          height: 220,
-                          border: 0,
-                          display: "block",
-                        },
+                        "& iframe": { width: "100%", height: 200, border: 0, display: "block" },
                       }}
                       dangerouslySetInnerHTML={{ __html: job.embeddedCode }}
                     />
@@ -321,25 +277,21 @@ export default function JobDetailPage() {
                         borderRadius: "12px",
                         overflow: "hidden",
                         border: "1px solid #eef2f4",
-                        height: 220,
+                        height: 200,
                       }}
                     >
                       <iframe
                         src={mapSrc}
                         title="Location map"
                         loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          border: 0,
-                          display: "block",
-                        }}
+                        style={{ width: "100%", height: "100%", border: 0, display: "block" }}
                       />
                     </Box>
-                  ))}
+                  )
+                )}
               </Box>
 
-              {/* Images */}
+              {/* Job Images */}
               {jobImages.length > 0 && (
                 <Box sx={{ mb: 4 }}>
                   <Grid container spacing={2}>
@@ -358,9 +310,8 @@ export default function JobDetailPage() {
                             width: "100%",
                             aspectRatio: "16 / 10",
                             objectFit: "cover",
-                            borderRadius: "16px",
+                            borderRadius: "12px",
                             border: "1px solid #eef2f4",
-                            bgcolor: "#f7f7f7",
                             display: "block",
                           }}
                         />
@@ -371,34 +322,42 @@ export default function JobDetailPage() {
               )}
 
               {/* Description */}
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: 800, mb: 2, color: NAVY }}
-              >
-                Job Description
+              <Typography sx={{ fontWeight: 800, fontSize: "16px", color: NAVY, mb: 2 }}>
+                Beschreibung
               </Typography>
               <Box
-                sx={{ color: "#555", lineHeight: 1.8 }}
+                sx={{
+                  color: "#4a4a4a",
+                  lineHeight: 1.9,
+                  fontSize: "14px",
+                  "& h2, & h3, & h4, & strong": { color: NAVY, fontWeight: 700 },
+                  "& ul": { pl: 2.5, mb: 2 },
+                  "& li": { mb: 0.75 },
+                  "& p": { mb: 1.5 },
+                  "& a": { color: TEAL },
+                }}
                 dangerouslySetInnerHTML={{
                   __html: job.jobDescription || "No description provided.",
                 }}
               />
 
+              {/* Location Field */}
               {job.locationField && (
                 <Box sx={{ mt: 4 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: NAVY }}>
+                  <Typography sx={{ fontWeight: 800, fontSize: "16px", color: NAVY, mb: 2 }}>
                     Location Details
                   </Typography>
                   <Box
-                    sx={{ color: "#555", lineHeight: 1.8 }}
+                    sx={{ color: "#4a4a4a", lineHeight: 1.9, fontSize: "14px" }}
                     dangerouslySetInnerHTML={{ __html: job.locationField }}
                   />
                 </Box>
               )}
 
+              {/* Documents */}
               {documents.length > 0 && (
                 <Box sx={{ mt: 4 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: NAVY }}>
+                  <Typography sx={{ fontWeight: 800, fontSize: "16px", color: NAVY, mb: 2 }}>
                     Documents
                   </Typography>
                   <Stack spacing={1.5}>
@@ -414,26 +373,17 @@ export default function JobDetailPage() {
                           alignItems: "center",
                           gap: 1.5,
                           p: 1.5,
-                          borderRadius: "12px",
+                          borderRadius: "10px",
                           border: "1px solid #eef2f4",
                           bgcolor: "#f7fafb",
                           textDecoration: "none",
                           color: NAVY,
                           transition: "all 0.2s",
-                          "&:hover": {
-                            borderColor: TEAL,
-                            bgcolor: "rgba(0,151,167,0.06)",
-                          },
+                          "&:hover": { borderColor: TEAL, bgcolor: "rgba(31,164,154,0.06)" },
                         }}
                       >
                         <FileIcon sx={{ color: TEAL }} />
-                        <Typography
-                          sx={{
-                            fontWeight: 600,
-                            flexGrow: 1,
-                            wordBreak: "break-word",
-                          }}
-                        >
+                        <Typography sx={{ fontWeight: 600, flexGrow: 1, wordBreak: "break-word", fontSize: "14px" }}>
                           {att.document.fileName || "Document"}
                         </Typography>
                         <DownloadIcon sx={{ color: "#8a97a3" }} />
@@ -443,15 +393,16 @@ export default function JobDetailPage() {
                 </Box>
               )}
 
+              {/* Video */}
               {videoUrl && (
                 <Box sx={{ mt: 4 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: NAVY }}>
+                  <Typography sx={{ fontWeight: 800, fontSize: "16px", color: NAVY, mb: 2 }}>
                     Company Video
                   </Typography>
                   <Box
                     sx={{
                       position: "relative",
-                      borderRadius: "16px",
+                      borderRadius: "12px",
                       overflow: "hidden",
                       pt: "56.25%",
                     }}
@@ -474,84 +425,92 @@ export default function JobDetailPage() {
             </Paper>
           </Grid>
 
-          {/* Sidebar */}
+          {/* Right Column — Sidebar */}
           <Grid item xs={12} md={4}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 2.5, md: 3 },
-                borderRadius: "24px",
-                bgcolor: "#fff",
-                boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
-              }}
-            >
+            <Paper elevation={0} sx={{ p: 3, borderRadius: "16px" }}>
               <Stack spacing={3}>
+
                 {/* Job Overview */}
-                <Box
-                  sx={{
-                    bgcolor: "#f7fafb",
-                    border: "1px solid #eef2f4",
-                    borderRadius: "16px",
-                    p: 2.5,
-                  }}
-                >
-                  <Typography sx={{ fontWeight: 800, color: NAVY, mb: 1.5 }}>
+                <Box>
+                  <Typography sx={{ fontWeight: 800, color: NAVY, mb: 2, fontSize: "14px" }}>
                     Job Overview
                   </Typography>
-                  {overviewRows.map((row, idx) => (
-                    <Box
-                      key={row.label}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "baseline",
-                        gap: 2,
-                        py: 1.4,
-                        borderBottom:
-                          idx === overviewRows.length - 1
-                            ? "none"
-                            : "1px dashed #d7e0e5",
-                      }}
-                    >
-                      <Typography
-                        sx={{ color: "#6b7a86", fontSize: "0.9rem", flexShrink: 0 }}
-                      >
-                        {row.label}
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: NAVY,
-                          fontWeight: 700,
-                          fontSize: "0.9rem",
-                          textAlign: "right",
-                        }}
-                      >
-                        {row.value}
-                      </Typography>
-                    </Box>
-                  ))}
+                  <Stack spacing={2}>
+                    {employmentType && (
+                      <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                        <Typography sx={{ color: "#8a97a3", fontSize: "12px", fontWeight: 600, flexShrink: 0 }}>
+                          Employment Type
+                        </Typography>
+                        <Typography sx={{ color: NAVY, fontWeight: 700, fontSize: "12px", textAlign: "right" }}>
+                          {employmentType}
+                        </Typography>
+                      </Box>
+                    )}
+                    {industry && (
+                      <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                        <Typography sx={{ color: "#8a97a3", fontSize: "12px", fontWeight: 600, flexShrink: 0 }}>
+                          Industry
+                        </Typography>
+                        <Typography sx={{ color: NAVY, fontWeight: 700, fontSize: "12px", textAlign: "right" }}>
+                          {industry}
+                        </Typography>
+                      </Box>
+                    )}
+                    {job.beginning?.beginningName && (
+                      <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                        <Typography sx={{ color: "#8a97a3", fontSize: "12px", fontWeight: 600, flexShrink: 0 }}>
+                          Start
+                        </Typography>
+                        <Typography sx={{ color: NAVY, fontWeight: 700, fontSize: "12px", textAlign: "right" }}>
+                          {job.beginning.beginningName}
+                        </Typography>
+                      </Box>
+                    )}
+                    {job.regionDetail?.name && (
+                      <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                        <Typography sx={{ color: "#8a97a3", fontSize: "12px", fontWeight: 600, flexShrink: 0 }}>
+                          Region
+                        </Typography>
+                        <Typography sx={{ color: NAVY, fontWeight: 700, fontSize: "12px", textAlign: "right" }}>
+                          {job.regionDetail.name}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Stack>
                 </Box>
+
+                <Divider />
 
                 {/* Contact Information */}
                 {contactRows.length > 0 && (
-                  <Box
-                    sx={{
-                      bgcolor: "#f7fafb",
-                      border: "1px solid #eef2f4",
-                      borderRadius: "16px",
-                      p: 2.5,
-                    }}
-                  >
-                    <Typography sx={{ fontWeight: 800, color: NAVY, mb: 2 }}>
+                  <Box>
+                    <Typography sx={{ fontWeight: 800, color: NAVY, mb: 2, fontSize: "14px" }}>
                       Contact Information
                     </Typography>
-                    <Stack spacing={2}>
+                    <Stack spacing={2.5}>
                       {contactRows.map((row) => (
-                        <Box key={row.label} sx={{ display: "flex", gap: 1.5 }}>
-                          {row.icon}
+                        <Box key={row.label} sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}>
+                          <Box
+                            sx={{
+                              bgcolor: "#e6f3f3",
+                              p: 0.75,
+                              borderRadius: "6px",
+                              display: "flex",
+                              color: TEAL,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {row.icon}
+                          </Box>
                           <Box sx={{ minWidth: 0 }}>
                             <Typography
-                              sx={{ color: "#8a97a3", fontSize: "0.8rem", fontWeight: 600 }}
+                              sx={{
+                                color: "#8a97a3",
+                                fontSize: "10px",
+                                fontWeight: 700,
+                                letterSpacing: "0.5px",
+                                mb: 0.25,
+                              }}
                             >
                               {row.label}
                             </Typography>
@@ -559,6 +518,7 @@ export default function JobDetailPage() {
                               sx={{
                                 color: NAVY,
                                 fontWeight: 600,
+                                fontSize: "13px",
                                 wordBreak: "break-word",
                               }}
                             >
@@ -571,6 +531,7 @@ export default function JobDetailPage() {
                   </Box>
                 )}
 
+                {/* View Company Profile Button */}
                 {job.company?._id && (
                   <Button
                     fullWidth
@@ -579,11 +540,12 @@ export default function JobDetailPage() {
                     sx={{
                       color: TEAL,
                       borderColor: TEAL,
-                      borderRadius: "12px",
-                      py: 1.3,
+                      borderRadius: "10px",
+                      py: 1.2,
                       fontWeight: 700,
                       textTransform: "none",
-                      "&:hover": { borderColor: TEAL_DARK, bgcolor: "rgba(0,151,167,0.06)" },
+                      fontSize: "14px",
+                      "&:hover": { borderColor: TEAL, bgcolor: "rgba(31,164,154,0.06)" },
                     }}
                   >
                     View Company Profile
@@ -592,6 +554,7 @@ export default function JobDetailPage() {
               </Stack>
             </Paper>
           </Grid>
+
         </Grid>
       </Box>
     </Box>

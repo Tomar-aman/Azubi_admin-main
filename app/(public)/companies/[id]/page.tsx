@@ -72,116 +72,254 @@ export default function CompanyDetailPage() {
   const { employer, jobs } = data;
 
   return (
-    <Box sx={{ p: { xs: 1, md: 2 } }}>
-      <Box sx={{ mb: 3, display: "flex", alignItems: "center" }}>
-        <IconButton onClick={() => router.back()} sx={{ mr: 2, bgcolor: "#f5f5f5" }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          Company Profile
-        </Typography>
+    <Box sx={{ minHeight: "100vh", bgcolor: "#F5F7F9" }}>
+      {/* Header Bar */}
+      <Box sx={{ bgcolor: "#1FA49A", py: 2, px: { xs: 2, md: 6 } }}>
+        <Button
+          onClick={() => router.back()}
+          startIcon={<ArrowBackIcon />}
+          sx={{
+            color: "#fff",
+            textTransform: "none",
+            fontWeight: 600,
+            fontSize: "14px",
+            "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+          }}
+        >
+          Back To Companies
+        </Button>
       </Box>
 
-      {/* Hero Section */}
-      <Paper
-        elevation={0}
-        sx={{
-          p: { xs: 3, md: 5 },
-          borderRadius: "32px",
-          bgcolor: "#1FA49A",
-          color: "#fff",
-          mb: 4,
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: -50,
-            right: -50,
-            width: "300px",
-            height: "300px",
-            background: "rgba(255,255,255,0.1)",
-            borderRadius: "50%",
-          }}
-        />
-        <Grid container spacing={4} alignItems="center">
-          <Grid item>
-            <Avatar
-              src={employer.companyLogo ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${employer.companyLogo}` : ""}
-              sx={{
-                width: { xs: 100, md: 150 },
-                height: { xs: 100, md: 150 },
-                borderRadius: "24px",
-                border: "6px solid rgba(255,255,255,0.2)",
-                bgcolor: "#fff",
-              }}
-            >
-              {employer.companyName?.charAt(0)}
-            </Avatar>
-          </Grid>
-          <Grid item xs={12} sm>
-            <Typography variant="h2" sx={{ fontWeight: 800, mb: 1, fontSize: { xs: "2rem", md: "3.5rem" } }}>
-              {employer.companyName}
-            </Typography>
-            <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: "wrap", gap: 1 }}>
-              <Chip
-                icon={<WorkIcon sx={{ fontSize: "14px !important", color: "#fff !important" }} />}
-                label={employer.industryName?.industryName || "Industry"}
-                sx={{ bgcolor: "rgba(255,255,255,0.2)", color: "#fff", fontWeight: 600 }}
-              />
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <LocationIcon sx={{ fontSize: 18 }} />
-                <Typography variant="body2">{employer.address}</Typography>
+      {/* Main Content Area */}
+      <Box sx={{ p: { xs: 2, md: 6 }, maxWidth: "1200px", mx: "auto" }}>
+        <Grid container spacing={4}>
+          
+          {/* Left Column (Main Card + Jobs) */}
+          <Grid item xs={12} md={8}>
+            
+            {/* Main Company Details Card */}
+            <Paper elevation={0} sx={{ p: { xs: 3, md: 5 }, borderRadius: "16px", mb: 4 }}>
+              
+              {/* Header Section of Card */}
+              <Box sx={{ display: "flex", gap: 3, mb: 4, alignItems: "flex-start", flexWrap: { xs: "wrap", sm: "nowrap" } }}>
+                <Box
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: "16px",
+                    border: "1px solid #eee",
+                    boxShadow: "0px 4px 12px rgba(0,0,0,0.05)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    bgcolor: "#fff",
+                    overflow: "hidden",
+                    flexShrink: 0
+                  }}
+                >
+                  {employer.companyLogo ? (
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${employer.companyLogo}`}
+                      alt={employer.companyName}
+                      style={{ width: "80%", height: "80%", objectFit: "contain" }}
+                    />
+                  ) : (
+                    <Avatar sx={{ width: "100%", height: "100%", borderRadius: 0, bgcolor: "#fff", color: "#888", fontSize: "2rem", fontWeight: 700 }}>
+                      {employer.companyName?.charAt(0)}
+                    </Avatar>
+                  )}
+                </Box>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: "#1a1a1a", mb: 1.5 }}>
+                    {employer.companyName}
+                  </Typography>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    <Chip
+                      icon={<WorkIcon sx={{ fontSize: "14px !important", color: "#1FA49A !important" }} />}
+                      label={employer.industryName?.industryName || "Industry"}
+                      size="small"
+                      sx={{ bgcolor: "#e6f3f3", color: "#1FA49A", fontWeight: 600, borderRadius: "8px" }}
+                    />
+                    <Chip
+                      icon={<LocationIcon sx={{ fontSize: "14px !important", color: "#1FA49A !important" }} />}
+                      label={employer.address}
+                      size="small"
+                      sx={{ bgcolor: "#e6f3f3", color: "#1FA49A", fontWeight: 600, borderRadius: "8px" }}
+                    />
+                  </Stack>
+                </Box>
               </Box>
-            </Stack>
-          </Grid>
-        </Grid>
-      </Paper>
 
-      <Grid container spacing={4}>
-        {/* Sidebar Info */}
-        <Grid item xs={12} md={4}>
-          <Stack spacing={3}>
-            <Paper elevation={0} sx={{ p: 4, borderRadius: "24px", border: "1px solid #eee" }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>Contact Details</Typography>
-              <Stack spacing={2.5}>
-                {employer.website && (
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <WebIcon sx={{ color: "#1FA49A" }} />
+              {/* Description */}
+              <Box
+                sx={{
+                  color: "#4a4a4a",
+                  lineHeight: 1.8,
+                  fontSize: "13px",
+                  "& h2, & h3, & h4": { color: "#1a1a1a", fontWeight: 700, mt: 4, mb: 2, fontSize: "15px" },
+                  "& ul": { pl: 2, mb: 3 },
+                  "& li": { mb: 1 }
+                }}
+                dangerouslySetInnerHTML={{ __html: employer.companyDescription || "No description provided." }}
+              />
+
+              {/* Gallery (if any) */}
+              {employer.companyImages && employer.companyImages.length > 0 && (
+                <Box sx={{ mt: 5 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: "#1a1a1a", mb: 2, fontSize: "15px" }}>
+                    Gallery
+                  </Typography>
+                  <Grid container spacing={2}>
+                    {employer.companyImages.map((img: string, idx: number) => (
+                      <Grid item xs={6} sm={3} key={idx}>
+                        <Box
+                          sx={{
+                            width: "100%",
+                            paddingTop: "100%",
+                            position: "relative",
+                            borderRadius: "12px",
+                            overflow: "hidden"
+                          }}
+                        >
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${img}`}
+                            alt={`Gallery image ${idx + 1}`}
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover"
+                            }}
+                          />
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              )}
+            </Paper>
+
+            {/* Open Positions Section */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: "#1a1a1a", fontSize: "18px" }}>
+                Offene Stellen
+              </Typography>
+            </Box>
+
+            <Stack spacing={2}>
+              {jobs && jobs.length > 0 ? (
+                jobs.map((job: any) => (
+                  <Paper
+                    key={job._id}
+                    elevation={0}
+                    sx={{
+                      p: 3,
+                      borderRadius: "16px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      border: "1px solid transparent",
+                      transition: "0.2s",
+                      "&:hover": { borderColor: "#1FA49A", boxShadow: "0 4px 12px rgba(0,139,139,0.05)" }
+                    }}
+                  >
                     <Box>
-                      <Typography variant="caption" sx={{ color: "#999" }}>Website</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 600, display: "block" }}>{employer.website}</Typography>
+                      <Typography variant="h6" sx={{ fontWeight: 800, color: "#1a1a1a", mb: 1, fontSize: "15px" }}>
+                        {job.jobTitle}
+                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#888" }}>
+                        <LocationIcon sx={{ fontSize: 16 }} />
+                        <Typography variant="body2">{job.city?.name}</Typography>
+                      </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1.5 }}>
+                      <Chip
+                        label={job.jobType?.jobTypeName || "Job"}
+                        size="small"
+                        sx={{ bgcolor: "#f5f7f9", color: "#666", fontWeight: 700, borderRadius: "6px", fontSize: "11px", letterSpacing: "0.5px", textTransform: "uppercase" }}
+                      />
+                      <Button
+                        variant="contained"
+                        onClick={() => router.push(`/jobs/${job._id}`)}
+                        sx={{
+                          bgcolor: "#1FA49A",
+                          color: "#fff",
+                          textTransform: "none",
+                          fontWeight: 700,
+                          borderRadius: "8px",
+                          px: 3,
+                          fontSize: "13px",
+                          boxShadow: "none",
+                          "&:hover": { bgcolor: "#1a8c83", boxShadow: "none" }
+                        }}
+                      >
+                        Details ansehen
+                      </Button>
+                    </Box>
+                  </Paper>
+                ))
+              ) : (
+                <Typography variant="body1" color="textSecondary" sx={{ fontStyle: "italic" }}>
+                  No open positions currently available.
+                </Typography>
+              )}
+            </Stack>
+
+          </Grid>
+
+          {/* Right Column (Contact Info) */}
+          <Grid item xs={12} md={4}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: "16px" }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, mb: 3, color: "#1a1a1a", fontSize: "15px" }}>
+                Contact Information
+              </Typography>
+              <Stack spacing={3}>
+                <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+                  <Box sx={{ bgcolor: "#e6f3f3", p: 1, borderRadius: "8px", display: "flex" }}>
+                    <EmailIcon sx={{ color: "#008B8B", fontSize: 20 }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: "#888", fontWeight: 700, display: "block", mb: 0.5, letterSpacing: "0.5px" }}>EMAIL</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{employer.email}</Typography>
+                  </Box>
+                </Box>
+                
+                <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+                  <Box sx={{ bgcolor: "#e6f3f3", p: 1, borderRadius: "8px", display: "flex" }}>
+                    <PhoneIcon sx={{ color: "#008B8B", fontSize: 20 }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: "#888", fontWeight: 700, display: "block", mb: 0.5, letterSpacing: "0.5px" }}>PHONE</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{employer.phoneNo}</Typography>
+                  </Box>
+                </Box>
+
+                {employer.website && (
+                  <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+                    <Box sx={{ bgcolor: "#e6f3f3", p: 1, borderRadius: "8px", display: "flex" }}>
+                      <WebIcon sx={{ color: "#008B8B", fontSize: 20 }} />
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: "#888", fontWeight: 700, display: "block", mb: 0.5, letterSpacing: "0.5px" }}>WEBSITE</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{employer.website}</Typography>
                     </Box>
                   </Box>
                 )}
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <EmailIcon sx={{ color: "#1FA49A" }} />
-                  <Box>
-                    <Typography variant="caption" sx={{ color: "#999" }}>Email</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600, display: "block" }}>{employer.email}</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <PhoneIcon sx={{ color: "#1FA49A" }} />
-                  <Box>
-                    <Typography variant="caption" sx={{ color: "#999" }}>Phone</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600, display: "block" }}>{employer.phoneNo}</Typography>
-                  </Box>
-                </Box>
               </Stack>
             </Paper>
 
+            {/* Video Box if it exists */}
             {employer.videoLink && employer.videoLink.length > 0 && employer.videoLink[0] !== "" && (
-              <Paper elevation={0} sx={{ p: 4, borderRadius: "24px", border: "1px solid #eee", bgcolor: "#fcfdfd" }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Company Video</Typography>
+              <Paper elevation={0} sx={{ p: 3, borderRadius: "16px", mt: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: "#1a1a1a", fontSize: "15px" }}>Company Video</Typography>
                 <Box
                   sx={{
                     position: "relative",
-                    borderRadius: "16px",
+                    borderRadius: "12px",
                     overflow: "hidden",
-                    pt: "56.25%", // 16:9 Aspect Ratio
+                    pt: "56.25%", 
                   }}
                 >
                   <iframe
@@ -192,70 +330,10 @@ export default function CompanyDetailPage() {
                 </Box>
               </Paper>
             )}
-          </Stack>
-        </Grid>
-
-        {/* Main Content: About & Jobs */}
-        <Grid item xs={12} md={8}>
-          <Paper elevation={0} sx={{ p: 4, borderRadius: "24px", border: "1px solid #eee", mb: 4 }}>
-            <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>About Company</Typography>
-            <Box
-              sx={{ color: "#555", lineHeight: 1.8, fontSize: "1.1rem" }}
-              dangerouslySetInnerHTML={{ __html: employer.companyDescription || "No description provided." }}
-            />
-          </Paper>
-
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" sx={{ fontWeight: 700 }}>Open Positions ({jobs?.length || 0})</Typography>
-          </Box>
-
-          <Grid container spacing={2}>
-            {jobs && jobs.length > 0 ? (
-              jobs.map((job: any) => (
-                <Grid item xs={12} key={job._id}>
-                  <Card
-                    onClick={() => router.push(`/jobs/${job._id}`)}
-                    sx={{
-                      borderRadius: "16px",
-                      border: "1px solid #eee",
-                      cursor: "pointer",
-                      transition: "0.2s",
-                      "&:hover": { bgcolor: "#f9fdfd", borderColor: "#1FA49A" },
-                    }}
-                  >
-                    <CardContent sx={{ p: 3 }}>
-                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Box>
-                          <Typography variant="h6" sx={{ fontWeight: 700 }}>{job.jobTitle}</Typography>
-                          <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#888" }}>
-                              <LocationIcon sx={{ fontSize: 16 }} />
-                              <Typography variant="caption">{job.city?.name}</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#888" }}>
-                              <WorkIcon sx={{ fontSize: 16 }} />
-                              <Typography variant="caption">{job.jobType?.jobTypeName}</Typography>
-                            </Box>
-                          </Stack>
-                        </Box>
-                        <Button variant="outlined" sx={{ borderRadius: "8px", textTransform: "none", borderColor: "#1FA49A", color: "#1FA49A" }}>
-                          Details
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))
-            ) : (
-              <Grid item xs={12}>
-                <Typography variant="body1" color="textSecondary" sx={{ fontStyle: "italic" }}>
-                  No open positions currently available.
-                </Typography>
-              </Grid>
-            )}
           </Grid>
+
         </Grid>
-      </Grid>
+      </Box>
     </Box>
   );
 }
