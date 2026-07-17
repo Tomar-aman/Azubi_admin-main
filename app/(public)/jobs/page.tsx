@@ -21,6 +21,7 @@ import {
   LocationOn as LocationIcon,
   Apartment as ApartmentIcon,
   ArrowForward as ArrowForwardIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { getAllJobs } from "@/app/api/jobs/jobs";
@@ -328,17 +329,48 @@ export default function JobsPage() {
         }}
       >
         {/* Alphabet Filter */}
-        <Typography
+        <Box
           sx={{
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            color: "#7b8794",
-            fontSize: "0.8rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
             mb: 2,
           }}
         >
-          FILTER BY JOB TITLE
-        </Typography>
+          <Typography
+            sx={{
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              color: "#7b8794",
+              fontSize: "0.8rem",
+            }}
+          >
+            FILTER BY JOB TITLE
+          </Typography>
+          {(searchValue || selectedLetter || selectedCity || selectedRegion) && (
+            <Button
+              onClick={() => {
+                setSearchValue("");
+                setSelectedLetter(null);
+                setSelectedCity(null);
+                setSelectedRegion(null);
+              }}
+              startIcon={<CloseIcon sx={{ fontSize: "16px !important" }} />}
+              size="small"
+              sx={{
+                color: TEAL,
+                fontWeight: 700,
+                textTransform: "none",
+                fontSize: "0.8rem",
+                flexShrink: 0,
+                "&:hover": { bgcolor: "rgba(0,151,167,0.08)" },
+              }}
+            >
+              Clear search &amp; filters
+            </Button>
+          )}
+        </Box>
         <Box sx={{ mb: 4 }}>
           <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
             {ALPHABETS.map((letter) => {
