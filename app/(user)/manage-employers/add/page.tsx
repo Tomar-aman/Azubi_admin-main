@@ -740,6 +740,7 @@ const AddComponent = () => {
                   disabled={disable}
                   maxCount={1}
                   isA4={false}
+                  aspect={1}
                 />
                 {formik.touched.companyLogo && Boolean(formik.errors.companyLogo) && (
                   <FormHelperText error sx={{ ml: 1, mt: 0 }}>CompanyLogo is Required</FormHelperText>
@@ -799,6 +800,7 @@ const AddComponent = () => {
                   fileList={fileList}
                   setFileList={setFileList}
                   setOldFile={setOldFile}
+                  aspect={1}
                 />
               </Grid>
               <Grid item xs={12} lg={2}>

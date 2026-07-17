@@ -24,6 +24,8 @@ export interface Cropper {
   disabled: boolean;
   maxCount?: number;
   isA4?: boolean;
+  /** Fixed crop aspect ratio (e.g. 1 for a 1:1 square). Overrides isA4/free. */
+  aspect?: number;
   id?: string;
   clickable?: any;
 }
@@ -34,6 +36,7 @@ const Cropper = ({
   disabled,
   maxCount,
   isA4 = false,
+  aspect,
   id,
   clickable,
 }: Cropper) => {
@@ -74,7 +77,7 @@ const Cropper = ({
   };
   return (
     <div style={{ zIndex: "999" }}>
-      <ImgCrop aspect={isA4 ? 1 / 1.414 : undefined} showGrid showReset>
+      <ImgCrop aspect={aspect ?? (isA4 ? 1 / 1.414 : undefined)} showGrid showReset>
         <Upload
           listType="picture-card"
           fileList={fileList}

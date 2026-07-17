@@ -1343,6 +1343,7 @@ const AddComponent: React.FC = () => {
                         fileList={fileList}
                         setFileList={setFileList}
                         setOldFile={setOldFile}
+                        aspect={1}
                       />
                     </span>
                   </Box>
