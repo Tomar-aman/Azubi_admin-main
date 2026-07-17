@@ -23,6 +23,16 @@ function AuthChecker() {
   // 1. Fetch current user if logged in
   useEffect(() => {
     if (!isLogin) {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("x-access") : null;
+      if (token) {
+        // A session token exists but Redux state was reset (e.g. a page
+        // reload) — restore the logged-in state instead of bouncing to login.
+        import("@/app/redux/auth/authSlice").then(({ setIsLogin }) => {
+          dispatch(setIsLogin(true));
+        });
+        return;
+      }
       router.push("/");
     } else {
       import("@/app/api/user/user").then(({ getCurrentUser }) => {

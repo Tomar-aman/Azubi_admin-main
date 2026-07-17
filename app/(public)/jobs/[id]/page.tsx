@@ -101,16 +101,46 @@ export default function JobDetailPage() {
     ? job.attachments.filter((a: any) => a?.document?.filepath)
     : [];
 
-  const isEmbedCode = typeof job.embeddedCode === "string" && job.embeddedCode.includes("<iframe");
-  const mapLink = job.locationUrl || job.mapUrl || "";
-  const isEmbeddableUrl =
-    typeof job.mapUrl === "string" && /(output=embed|\/maps\/embed|\/embed)/.test(job.mapUrl);
-  const mapSrc = isEmbeddableUrl
-    ? job.mapUrl
-    : `https://maps.google.com/maps?q=${encodeURIComponent(
-        locationText !== "N/A" ? locationText : companyName,
+  // Turn whatever Google Maps URL was pasted on the job into something that
+  // actually renders inside an iframe. A plain share/place link can't be
+  // embedded, so we extract coordinates or a place/query and rebuild a
+  // key-less embeddable URL, falling back to the address when we can't parse it.
+  const buildEmbedSrc = (url: string, fallbackQuery: string): string => {
+    const addressEmbed = fallbackQuery
+      ? `https://maps.google.com/maps?q=${encodeURIComponent(fallbackQuery)}&z=15&output=embed`
+      : "";
+    if (!url) return addressEmbed;
+    if (/\/maps\/embed/.test(url) || /output=embed/.test(url)) return url;
+    const coord =
+      url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ||
+      url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
+      url.match(/[?&](?:q|ll|sll)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (coord) {
+      return `https://maps.google.com/maps?q=${coord[1]},${coord[2]}&z=15&output=embed`;
+    }
+    const place = url.match(/\/place\/([^/@]+)/);
+    if (place) {
+      const q = decodeURIComponent(place[1].replace(/\+/g, " "));
+      return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=15&output=embed`;
+    }
+    const q = url.match(/[?&]q=([^&]+)/);
+    if (q) {
+      return `https://maps.google.com/maps?q=${encodeURIComponent(
+        decodeURIComponent(q[1]),
       )}&z=15&output=embed`;
-  const showMap = isEmbedCode || locationText !== "N/A" || isEmbeddableUrl;
+    }
+    // Unparseable (e.g. a maps.app.goo.gl short link) — use the address instead.
+    return addressEmbed;
+  };
+
+  const isEmbedCode =
+    typeof job.embeddedCode === "string" && job.embeddedCode.includes("<iframe");
+  const addressForMap = locationText !== "N/A" ? locationText : companyName;
+  const mapSrc = job.mapUrl
+    ? buildEmbedSrc(job.mapUrl, addressForMap)
+    : "";
+  const mapLink = job.mapUrl || "";
+  const showMap = isEmbedCode || Boolean(mapSrc);
 
   // Sidebar contact rows
   const contactRows = [
@@ -258,15 +288,15 @@ export default function JobDetailPage() {
                 </Box>
 
                 {/* Map */}
-                {showMap && (
-                  isEmbedCode ? (
+                {showMap &&
+                  (isEmbedCode ? (
                     <Box
                       sx={{
                         mt: 2,
                         borderRadius: "12px",
                         overflow: "hidden",
                         border: "1px solid #eef2f4",
-                        "& iframe": { width: "100%", height: 200, border: 0, display: "block" },
+                        "& iframe": { width: "100%", height: 220, border: 0, display: "block" },
                       }}
                       dangerouslySetInnerHTML={{ __html: job.embeddedCode }}
                     />
@@ -277,7 +307,7 @@ export default function JobDetailPage() {
                         borderRadius: "12px",
                         overflow: "hidden",
                         border: "1px solid #eef2f4",
-                        height: 200,
+                        height: 220,
                       }}
                     >
                       <iframe
@@ -287,8 +317,7 @@ export default function JobDetailPage() {
                         style={{ width: "100%", height: "100%", border: 0, display: "block" }}
                       />
                     </Box>
-                  )
-                )}
+                  ))}
               </Box>
 
               {/* Job Images */}
@@ -340,19 +369,6 @@ export default function JobDetailPage() {
                   __html: job.jobDescription || "No description provided.",
                 }}
               />
-
-              {/* Location Field */}
-              {job.locationField && (
-                <Box sx={{ mt: 4 }}>
-                  <Typography sx={{ fontWeight: 800, fontSize: "16px", color: NAVY, mb: 2 }}>
-                    Location Details
-                  </Typography>
-                  <Box
-                    sx={{ color: "#4a4a4a", lineHeight: 1.9, fontSize: "14px" }}
-                    dangerouslySetInnerHTML={{ __html: job.locationField }}
-                  />
-                </Box>
-              )}
 
               {/* Documents */}
               {documents.length > 0 && (

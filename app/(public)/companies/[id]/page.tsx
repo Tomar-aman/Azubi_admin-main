@@ -93,13 +93,13 @@ export default function CompanyDetailPage() {
       {/* Main Content Area */}
       <Box sx={{ p: { xs: 2, md: 6 }, maxWidth: "1200px", mx: "auto" }}>
         <Grid container spacing={4}>
-          
+
           {/* Left Column (Main Card + Jobs) */}
           <Grid item xs={12} md={8}>
-            
+
             {/* Main Company Details Card */}
             <Paper elevation={0} sx={{ p: { xs: 3, md: 5 }, borderRadius: "16px", mb: 4 }}>
-              
+
               {/* Header Section of Card */}
               <Box sx={{ display: "flex", gap: 3, mb: 4, alignItems: "flex-start", flexWrap: { xs: "wrap", sm: "nowrap" } }}>
                 <Box
@@ -133,7 +133,7 @@ export default function CompanyDetailPage() {
                   <Typography variant="h4" sx={{ fontWeight: 800, color: "#1a1a1a", mb: 1.5 }}>
                     {employer.companyName}
                   </Typography>
-                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                  <Stack direction="column" spacing={1} alignItems="flex-start">
                     <Chip
                       icon={<WorkIcon sx={{ fontSize: "14px !important", color: "#1FA49A !important" }} />}
                       label={employer.industryName?.industryName || "Industry"}
@@ -141,10 +141,10 @@ export default function CompanyDetailPage() {
                       sx={{ bgcolor: "#e6f3f3", color: "#1FA49A", fontWeight: 600, borderRadius: "8px" }}
                     />
                     <Chip
-                      icon={<LocationIcon sx={{ fontSize: "14px !important", color: "#1FA49A !important" }} />}
+                      icon={<LocationIcon sx={{ fontSize: "14px !important", color: "#000000 !important" }} />}
                       label={employer.address}
                       size="small"
-                      sx={{ bgcolor: "#e6f3f3", color: "#1FA49A", fontWeight: 600, borderRadius: "8px" }}
+                      sx={{ bgcolor: "#e6f3f3", color: "#000", fontWeight: 600, borderRadius: "8px" }}
                     />
                   </Stack>
                 </Box>
@@ -285,7 +285,7 @@ export default function CompanyDetailPage() {
                     <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{employer.email}</Typography>
                   </Box>
                 </Box>
-                
+
                 <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
                   <Box sx={{ bgcolor: "#e6f3f3", p: 1, borderRadius: "8px", display: "flex" }}>
                     <PhoneIcon sx={{ color: "#008B8B", fontSize: 20 }} />
@@ -319,7 +319,7 @@ export default function CompanyDetailPage() {
                     position: "relative",
                     borderRadius: "12px",
                     overflow: "hidden",
-                    pt: "56.25%", 
+                    pt: "56.25%",
                   }}
                 >
                   <iframe

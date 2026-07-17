@@ -1122,36 +1122,35 @@ const AddComponent: React.FC = () => {
 
                   />
                 </Grid>
-                <Grid item xs={12} lg={2}>
-                  <label>Location</label>
-                </Grid>
-                <Grid item xs={10}>
-                  <TextField
-                    placeholder=""
-                    type="url"
-                    fullWidth
-                    {...formik.getFieldProps("locationField")}
-
-                    error={formik.touched.locationField && Boolean(formik.errors.locationField)}
-
-                    helperText={formik.touched.locationField && (formik.errors.locationField as string)}
-
-                  />
-                </Grid>
-                <Grid item xs={12} lg={2}>
-                  <label>Location Url</label>
-                </Grid>
-                <Grid item xs={10}>
-                  <TextField
-                    placeholder=""
-                    type="url"
-                    fullWidth
-                    {...formik.getFieldProps("locationUrl")}
-                  />
-                  {/* {formik.touched.locationUrl && Boolean(formik.errors.locationUrl) && (
-                  <FormHelperText error sx={{ ml: 1, mt: 0 }}>{formik.errors.locationUrl as string}</FormHelperText>
-                )} */}
-                </Grid>
+                {/* Location & Location Url fields hidden (kept, not removed) */}
+                {false && (
+                  <>
+                    <Grid item xs={12} lg={2}>
+                      <label>Location</label>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <TextField
+                        placeholder=""
+                        type="url"
+                        fullWidth
+                        {...formik.getFieldProps("locationField")}
+                        error={formik.touched.locationField && Boolean(formik.errors.locationField)}
+                        helperText={formik.touched.locationField && (formik.errors.locationField as string)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} lg={2}>
+                      <label>Location Url</label>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <TextField
+                        placeholder=""
+                        type="url"
+                        fullWidth
+                        {...formik.getFieldProps("locationUrl")}
+                      />
+                    </Grid>
+                  </>
+                )}
                 <Grid item xs={12} lg={2}>
                   <label>Zip Code</label>
                 </Grid>

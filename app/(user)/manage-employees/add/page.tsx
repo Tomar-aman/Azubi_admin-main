@@ -226,15 +226,15 @@ const AddEmployeePage = () => {
                 <Grid item xs={12} lg={2}><label>Phone No.</label></Grid>
                 <Grid item xs={12} lg={10}>
                   <PhoneInput
-                    regions={"europe"}
-                    showDropdown={false}
+                    country={"de"} // Default country: Germany (+49)
                     placeholder="Enter phone number"
+                    enableLongNumbers // allow long numbers / leading zeros (e.g. 000...)
+                    value={formik.values.phoneNo}
                     onChange={(value) => {
-                      formik.setFieldValue("phoneNo", value);
+                      // Store the full international number (with country code)
+                      formik.setFieldValue("phoneNo", value ? "+" + value : "");
                     }}
-                    countryCodeEditable={false}
-                    value={formik.values.phoneNo ?? "+49"}
-                    onlyCountries={["de"]}
+                    inputProps={{ name: "phoneNo" }}
                   />
                 </Grid>
 

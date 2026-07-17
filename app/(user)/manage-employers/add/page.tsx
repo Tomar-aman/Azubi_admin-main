@@ -131,7 +131,7 @@ const AddComponent = () => {
       email: "",
       website: "",
       mapUrl: "",
-      phoneNo: "+49",
+      phoneNo: "",
       address: "",
       zipCode: "",
       city: { id: "", label: "Select City" },
@@ -614,23 +614,20 @@ const AddComponent = () => {
               </Grid>
               <Grid item xs={10}>
                 <PhoneInput
-                  regions={"europe"}
+                  country={"de"} // Default country: Germany (+49)
                   disabled={disable}
-                  showDropdown={false}
                   placeholder="Enter phone number"
-                  onChange={(value, countrydata, event) => {
-                    console.log({ value });
-                    const temp = value.slice(2);
-                    formik.setFieldValue("phoneNo", temp);
-                    event.target.value = "+49" + temp;
+                  enableLongNumbers // allow long numbers / leading zeros (e.g. 000...)
+                  value={formik.values.phoneNo}
+                  onChange={(value) => {
+                    // Store the full international number (with country code)
+                    formik.setFieldValue("phoneNo", value ? "+" + value : "");
                   }}
-                  countryCodeEditable={false}
                   onBlur={(e) => {
                     e.target.name = "phoneNo";
                     formik.handleBlur(e);
                   }}
-                  value={id ? "+49" + formik.values.phoneNo : "+49"}
-                  onlyCountries={["de"]} // Allow only Germany
+                  inputProps={{ name: "phoneNo" }}
                   containerStyle={formik.touched.phoneNo && Boolean(formik.errors.phoneNo) ? { border: "1px solid #d32f2f", borderRadius: "4px" } : {}}
                 />
                 {formik.touched.phoneNo && formik.errors.phoneNo && (

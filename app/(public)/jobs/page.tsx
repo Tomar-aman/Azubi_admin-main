@@ -39,7 +39,12 @@ export default function JobsPage() {
   const [cities, setCities] = useState<any[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("x-access"));
+  }, []);
 
   const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -175,6 +180,23 @@ export default function JobsPage() {
             }}
           >
             Jobs
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => router.push(isLoggedIn ? "/dashboard" : "/")}
+            sx={{
+              bgcolor: "#fff",
+              color: TEAL,
+              fontWeight: 700,
+              textTransform: "none",
+              fontSize: "1rem",
+              borderRadius: "10px",
+              px: 2.5,
+              boxShadow: "none",
+              "&:hover": { bgcolor: "#f0f0f0", boxShadow: "none" },
+            }}
+          >
+            {isLoggedIn ? "Back to Dashboard" : "Back to Login"}
           </Button>
         </Stack>
         <Typography
