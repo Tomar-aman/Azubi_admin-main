@@ -14,6 +14,7 @@ import { FormHelperText,
 } from "@mui/material";
 import { SVG } from "@/app/components/icon";
 import Title from "@/app/components/title.components";
+import PhoneNumberField from "@/app/components/phoneNumberField";
 import { useRouter } from "next/navigation";
 import { StyledManageForm } from "@/app/components/form.styled";
 import { EmployerFormType } from "@/app/api/employer/employer.types";
@@ -611,15 +612,12 @@ const AddComponent = () => {
                 <label>Phone No.</label>
               </Grid>
               <Grid item xs={10}>
-                {/* Free-text phone field: special characters (| \ - etc.) allowed. */}
-                <TextField
-                  type="text"
-                  fullWidth
-                  disabled={disable}
-                  placeholder="Enter phone number"
+                {/* Country-code dropdown + free-text number (special characters allowed). */}
+                <PhoneNumberField
                   name="phoneNo"
+                  disabled={disable}
                   value={formik.values.phoneNo}
-                  onChange={formik.handleChange}
+                  onChange={(v) => formik.setFieldValue("phoneNo", v)}
                   onBlur={formik.handleBlur}
                   error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
                   helperText={formik.touched.phoneNo && (formik.errors.phoneNo as string)}

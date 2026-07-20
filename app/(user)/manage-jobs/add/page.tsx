@@ -17,6 +17,7 @@ import { FormHelperText,
 } from "@mui/material";
 import { SVG } from "@/app/components/icon";
 import Title from "@/app/components/title.components";
+import PhoneNumberField from "@/app/components/phoneNumberField";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useRouter } from "next/navigation";
 import { StyledManageForm } from "@/app/components/form.styled";
@@ -78,6 +79,11 @@ export interface NewJob {
   attachments?: any;
   status?: boolean;
   industryName: { id: string; label: string };
+  // Multi-select industries. `industryName` (above) is kept as the legacy
+  // single value for backward compatibility.
+  industries: { id: string; label: string }[];
+  // Multi-select job types. `jobType` (below) is kept as the legacy single value.
+  jobTypes: { id: string; label: string }[];
   training?: { id: string; label: string };
   federalState?: { id: string; label: string };
   beginning?: { id: string; label: string };
@@ -119,6 +125,8 @@ export interface NewJobResponse {
   federalState?: { _id: string; name: string };
   beginning?: { _id: string; name: string };
   industryName: { _id: string; industryName: string };
+  industries?: { _id: string; industryName: string }[];
+  jobTypes?: { _id: string; jobTypeName?: string; name?: string }[];
   id?: string;
   videoLink?: string[];
   jobImages?: any;
@@ -219,22 +227,17 @@ const AddComponent: React.FC = () => {
     address: Yup.string().required("address is required"),
     mapUrl: Yup.string(),
     zipCode: Yup.number(),
-    jobType: Yup.string().required("Job Type is required"),
+    jobTypes: Yup.array()
+      .min(1, "Job Type is required")
+      .required("Job Type is required"),
     locationField: Yup.string(),
     locationUrl: Yup.string(),
     jobDescription: Yup.string()
       .min(1, "company Description is required")
       .required("company Description is required"),
-    industryName: Yup.object().test(
-      "isIndustry",
-      "industry name is required",
-      (value: any) => {
-        if (value.id && value.label) {
-          return true;
-        }
-        return false;
-      }
-    ),
+    industries: Yup.array()
+      .min(1, "industry name is required")
+      .required("industry name is required"),
     training: Yup.mixed().nullable().optional(),
     // .test(
     //   "isTraining",
@@ -289,6 +292,8 @@ const AddComponent: React.FC = () => {
       zipCode: "",
       jobDescription: "",
       industryName: { id: "", label: "Select Industry" },
+      industries: [],
+      jobTypes: [],
       training: { id: "", label: "Select Training" },
       federalState: { id: "", label: "Select Federal State" },
       beginning: { id: "", label: "Select Beginning" },
@@ -469,8 +474,25 @@ const AddComponent: React.FC = () => {
       );
       setFileList(newImage);
 
-      if (response?.data?.data?.jobType) {
-        formik.setFieldValue("jobType", response?.data?.data?.jobType?._id || response?.data?.data?.jobType);
+      // Prefill multi-select job types. Prefer the new `jobTypes` array; fall
+      // back to the legacy single `jobType` for jobs saved before multi-select.
+      const jobTypesData = response?.data?.data?.jobTypes;
+      if (Array.isArray(jobTypesData) && jobTypesData.length) {
+        formik.setFieldValue(
+          "jobTypes",
+          jobTypesData.map((item) => ({
+            id: item._id,
+            label: item.jobTypeName || item.name || "",
+          }))
+        );
+      } else if (response?.data?.data?.jobType) {
+        const legacyJobType = response.data.data.jobType;
+        formik.setFieldValue("jobTypes", [
+          {
+            id: legacyJobType?._id || legacyJobType,
+            label: legacyJobType?.jobTypeName || legacyJobType?.name || "",
+          },
+        ]);
       }
       const date = response?.data?.data?.startDate?.split("T")[0];
       const industryValue = response.data.data.industryName;
@@ -525,10 +547,22 @@ const AddComponent: React.FC = () => {
       formik.setFieldValue("zipCode", response.data.data.zipCode);
       formik.setFieldValue("jobDescription", response.data.data.jobDescription);
       formik.setFieldValue("embeddedCode", response.data.data.embeddedCode);
-      formik.setFieldValue("industryName", {
-        id: industryValue._id,
-        label: industryValue.industryName,
-      });
+      // Prefill multi-select industries. Prefer the new `industries` array;
+      // fall back to the legacy single `industryName` for older jobs.
+      const industriesData = response?.data?.data?.industries;
+      if (Array.isArray(industriesData) && industriesData.length) {
+        formik.setFieldValue(
+          "industries",
+          industriesData.map((item) => ({
+            id: item._id,
+            label: item.industryName,
+          }))
+        );
+      } else if (industryValue?._id) {
+        formik.setFieldValue("industries", [
+          { id: industryValue._id, label: industryValue.industryName },
+        ]);
+      }
       setIsDesktopView(response?.data?.data?.isDesktopView || false);
       if (response?.data?.data?.isDesktopView) {
         const { training, federalState, beginning } = response.data.data;
@@ -680,7 +714,11 @@ const AddComponent: React.FC = () => {
     const response = await getEmployerById(id);
     if (response.remote === "success") {
       formik.setFieldValue("email", response.data.data.email);
-      formik.setFieldValue("industryName", response.data.data.industryName);
+      // Prefill the multi-select industries with the company's own industry.
+      const companyIndustry = response.data.data.industryName;
+      if (companyIndustry?.id) {
+        formik.setFieldValue("industries", [companyIndustry]);
+      }
       formik.setFieldValue("address", response.data.data.address);
       formik.setFieldValue("zipCode", response.data.data.zipCode);
     }
@@ -888,26 +926,27 @@ const AddComponent: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} lg={10}>
                   <Autocomplete
+                    multiple
                     disablePortal
                     fullWidth
                     disableClearable={true}
-                    id="combo-box-demo"
-                    value={formik.values.industryName}
+                    id="industries-multi"
+                    value={formik.values.industries}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
                     options={industries?.map((item) => {
                       return { id: item.id, label: item.name };
                     })}
                     onChange={(e, value: any) => {
-                      if (value) {
-                        formik.values.industryName.id = value.id;
-                        formik.values.industryName.label = value.label;
-                      }
+                      formik.setFieldValue("industries", value || []);
                     }}
                     renderInput={(params) => (
-                      <TextField 
-                        {...params} 
-                        label="" 
-                        error={formik.touched.industryName && Boolean(formik.errors.industryName)}
-                        helperText={formik.touched.industryName && (formik.errors.industryName as string)}
+                      <TextField
+                        {...params}
+                        placeholder="Select Industries"
+                        error={formik.touched.industries && Boolean(formik.errors.industries)}
+                        helperText={formik.touched.industries && (formik.errors.industries as string)}
                       />
                     )}
                   />
@@ -1116,14 +1155,11 @@ const AddComponent: React.FC = () => {
                   <label>Phone Number</label>
                 </Grid>
                 <Grid item xs={10}>
-                  <TextField
-                    placeholder="Enter phone number"
-                    type="text"
-                    fullWidth
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.phoneNumber}
+                  <PhoneNumberField
                     name="phoneNumber"
+                    value={formik.values.phoneNumber}
+                    onChange={(v) => formik.setFieldValue("phoneNumber", v)}
+                    onBlur={formik.handleBlur}
                     error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                     helperText={formik.touched.phoneNumber && (formik.errors.phoneNumber as string)}
                   />
@@ -1402,33 +1438,27 @@ const AddComponent: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} lg={10}>
                   <Autocomplete
+                    multiple
                     disablePortal
                     fullWidth
                     disableClearable={true}
-                    id="combo-box-demo"
-                    value={
-                      jobTypes.find((item) => item.id === formik.values.jobType)
-                        ? {
-                            id: formik.values.jobType,
-                            label:
-                              jobTypes.find(
-                                (item) => item.id === formik.values.jobType
-                              )?.name || "",
-                          }
-                        : { id: "", label: "" }
+                    id="jobtypes-multi"
+                    value={formik.values.jobTypes}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
                     }
-                    onChange={(event, value) => {
-                      formik.setFieldValue("jobType", value.id);
+                    onChange={(event, value: any) => {
+                      formik.setFieldValue("jobTypes", value || []);
                     }}
                     options={jobTypes?.map((item) => {
                       return { id: item.id, label: item.name };
                     })}
                     renderInput={(params) => (
-                      <TextField 
-                        {...params} 
-                        placeholder="Type of Job" 
-                        error={formik.touched.jobType && Boolean(formik.errors.jobType)}
-                        helperText={formik.touched.jobType && (formik.errors.jobType as string)}
+                      <TextField
+                        {...params}
+                        placeholder="Type of Job"
+                        error={formik.touched.jobTypes && Boolean(formik.errors.jobTypes)}
+                        helperText={formik.touched.jobTypes && (formik.errors.jobTypes as string)}
                       />
                     )}
                   />

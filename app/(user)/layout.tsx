@@ -126,8 +126,7 @@ export default function AdminLayout({
           <Stack direction="row" spacing={2} sx={{ mr: 2 }}>
               <Button
                 component={Link}
-                href="/jobs"
-                target="_blank"
+                href="/manage-jobs"
                 startIcon={<SVG.JobsIcon />}
                 sx={{
                   color: "#646464",
@@ -161,8 +160,7 @@ export default function AdminLayout({
               </Button>
               <Button
                 component={Link}
-                href="/companies"
-                target="_blank"
+                href="/manage-employers"
                 startIcon={<SVG.GroupUser />}
                 sx={{
                   color: "#646464",

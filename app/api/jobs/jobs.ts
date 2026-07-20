@@ -51,15 +51,32 @@ export const updateJob = async (
     desktopViewPayload.beginning = (payload as NewJob).beginning?.id;
     desktopViewPayload.federalState = (payload as NewJob).federalState?.id;
   }
-  const { training, federalState, beginning, ...rest } = payload as NewJob;
-  Object.entries({
+  const {
+    training,
+    federalState,
+    beginning,
+    industries,
+    jobTypes,
+    industryName: _legacyIndustry,
+    jobType: _legacyJobType,
+    ...rest
+  } = payload as NewJob;
+  const updateEntries: any = {
     ...rest,
     company: payload.company?.id,
-    industryName: payload.industryName?.id,
     ...desktopViewPayload,
     region: payload.region,
     city: payload.city?.id,
-  }).forEach(([key, value]) => {
+  };
+  // Multi-select: send id arrays only when provided, so partial updates (e.g.
+  // status toggle) don't wipe the job's existing industries/job types.
+  if (industries) {
+    updateEntries.industries = industries.map((i) => i.id);
+  }
+  if (jobTypes) {
+    updateEntries.jobTypes = jobTypes.map((j) => j.id);
+  }
+  Object.entries(updateEntries).forEach(([key, value]) => {
     if (
       !value &&
       value !== false &&
@@ -120,11 +137,20 @@ export const addJob = async (
     desktopViewPayload.beginning = payload.beginning?.id;
     desktopViewPayload.federalState = payload.federalState?.id;
   }
+  const {
+    industries = [],
+    jobTypes = [],
+    industryName: _legacyIndustry,
+    jobType: _legacyJobType,
+    ...restPayload
+  } = payload;
   Object.entries({
-    ...payload,
+    ...restPayload,
     company: payload.company.id,
-
-    industryName: payload.industryName.id,
+    // Multi-select: send id arrays; the backend derives the legacy single
+    // industryName/jobType from the first selection for frontend compatibility.
+    industries: industries.map((i) => i.id),
+    jobTypes: jobTypes.map((j) => j.id),
     ...desktopViewPayload,
     city: payload?.city?.id,
     region: payload.region,
