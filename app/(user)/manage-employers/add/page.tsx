@@ -15,6 +15,8 @@ import { FormHelperText,
 import { SVG } from "@/app/components/icon";
 import Title from "@/app/components/title.components";
 import PhoneNumberField from "@/app/components/phoneNumberField";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { StyledManageForm } from "@/app/components/form.styled";
 import { EmployerFormType } from "@/app/api/employer/employer.types";
@@ -166,7 +168,8 @@ const AddComponent = () => {
             state.iconWithContent
           );
           if (data.remote === "success") {
-            route.push("/manage-employers");
+            // Stay on the edit page after saving; just confirm success.
+            toast.success("Company updated successfully!");
           } else {
             const backendError = Object.values(data.error.errors.data);
             setError(
@@ -176,7 +179,8 @@ const AddComponent = () => {
         } else {
           const response = await addEmployer(values, state.iconWithContent);
           if (response.remote === "success") {
-            route.push("/manage-employers");
+            window.location.href = "/manage-employers";
+            return;
           } else {
             const backendError = Object.values(response.error.errors.data);
             setError(
@@ -990,6 +994,7 @@ const AddComponent = () => {
           </StyledManageForm>
         </CardContent>
       </Card>
+      <ToastContainer />
     </>
   );
 };

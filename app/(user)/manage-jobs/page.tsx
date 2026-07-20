@@ -178,19 +178,6 @@ const ManageJobs = () => {
       startDate: rowData.startDate,
       industry: rowData.company?.industry || rowData.industryName,
       city: `${rowData.city?.[0] ? rowData.city[0][0] : ""} ${rowData.city?.length > 1 ? `${rowData.city.length - 1} more` : ""}`,
-      website: rowData.website ? (
-        <a
-          href={rowData.website}
-          target="_blank"
-          rel="noreferrer"
-          style={{ color: "#2894A2" }}
-        >
-          {rowData.website}
-        </a>
-      ) : (
-        "-"
-      ),
-      phoneNumber: rowData.phoneNumber || "-",
       applications: rowData.count,
       status: (
         <div

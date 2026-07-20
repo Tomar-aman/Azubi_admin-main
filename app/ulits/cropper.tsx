@@ -51,10 +51,13 @@ const Cropper = ({
       }
     }
 
-    // Handle size validation for new uploads
+    // Handle size validation for new uploads.
+    // Limit is generous (5 MB) because cropped PNGs are often larger than the
+    // old 500 KB cap; the backend itself imposes no upload size limit.
+    const MAX_FILE_KB = 5120; // 5 MB
     if (file.status === 'uploading' || file.status === 'done' || !file.status) {
-      if (file.originFileObj && file.originFileObj.size / 1024 >= 500) {
-        alert(`${file.name} is too large (must be less than 500kb)`);
+      if (file.originFileObj && file.originFileObj.size / 1024 >= MAX_FILE_KB) {
+        alert(`${file.name} is too large (must be less than 5MB)`);
         // Filter out the oversized file
         newFileList = newFileList.filter((f: any) => f.uid !== file.uid);
       }
@@ -86,7 +89,13 @@ const Cropper = ({
           maxCount={maxCount ? maxCount : 10000}
           showUploadList={{ showRemoveIcon: true }}
           openFileDialogOnClick={true}
-          beforeUpload={() => false}
+          // Do NOT return false from beforeUpload: with antd-img-crop that
+          // discards the cropped file and keeps the original uncropped one.
+          // Instead, accept the (cropped) file and no-op the upload so it stays
+          // in fileList (with originFileObj = cropped file) for manual saving.
+          customRequest={({ onSuccess }) => {
+            setTimeout(() => onSuccess && onSuccess("ok"), 0);
+          }}
         >
           <Button
             id={id || "cropper"}

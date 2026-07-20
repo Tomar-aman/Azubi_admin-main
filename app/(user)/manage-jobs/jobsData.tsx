@@ -39,16 +39,6 @@ export const COLUMS_DATA = [
     key: "city",
   },
   {
-    id: 10,
-    name: "Website",
-    key: "website",
-  },
-  {
-    id: 11,
-    name: "Phone",
-    key: "phoneNumber",
-  },
-  {
     id: 7,
     name: "Applications",
     key: "applications",

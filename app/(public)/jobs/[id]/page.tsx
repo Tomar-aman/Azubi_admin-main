@@ -145,8 +145,16 @@ export default function JobDetailPage() {
   // Sidebar contact rows
   const contactRows = [
     { label: "EMAIL", value: job.email, icon: <EmailIcon sx={{ fontSize: 18 }} /> },
-    { label: "WEBSITE", value: job.company?.website, icon: <WebIcon sx={{ fontSize: 18 }} /> },
-    { label: "PHONE", value: job.company?.phoneNo, icon: <PhoneIcon sx={{ fontSize: 18 }} /> },
+    {
+      label: "WEBSITE",
+      value: job.website || job.company?.website,
+      icon: <WebIcon sx={{ fontSize: 18 }} />,
+    },
+    {
+      label: "PHONE",
+      value: job.phoneNumber || job.company?.phoneNo,
+      icon: <PhoneIcon sx={{ fontSize: 18 }} />,
+    },
     {
       label: "ADDITIONAL EMAIL",
       value: job.additionalEmail,

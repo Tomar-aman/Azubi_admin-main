@@ -84,7 +84,10 @@ export const updateJob = async (
       key !== "embeddedCode" &&
       key !== "training" &&
       key !== "beginning" &&
-      key !== "federalState"
+      key !== "federalState" &&
+      // Allow clearing these fields on edit (send empty so they can be removed).
+      key !== "website" &&
+      key !== "phoneNumber"
     ) {
       return;
     }

@@ -18,6 +18,8 @@ import { FormHelperText,
 import { SVG } from "@/app/components/icon";
 import Title from "@/app/components/title.components";
 import PhoneNumberField from "@/app/components/phoneNumberField";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useRouter } from "next/navigation";
 import { StyledManageForm } from "@/app/components/form.styled";
@@ -330,7 +332,8 @@ const AddComponent: React.FC = () => {
             state.iconWithContent
           );
           if (response.remote === "success") {
-            route.push("/manage-jobs");
+            // Stay on the edit page after saving; just confirm success.
+            toast.success("Job updated successfully!");
           } else {
             setError("Something went wrong");
           }
@@ -348,7 +351,8 @@ const AddComponent: React.FC = () => {
             state.iconWithContent
           );
           if (response.remote === "success") {
-            route.push("/manage-jobs");
+            window.location.href = "/manage-jobs";
+            return;
           }
           setIsLoading(false);
         }
@@ -1614,6 +1618,7 @@ const AddComponent: React.FC = () => {
         }}
         inputId={""}
       />
+      <ToastContainer />
     </>
   );
 };

@@ -94,8 +94,8 @@ const AddUserPage = () => {
           if (values.password) payload.newPassword = values.password;
           const res = await updateManagedUser(id as string, payload);
           if (res.remote === "success") {
+            // Stay on the edit page after saving; just confirm success.
             toast.success("User updated successfully!");
-            setTimeout(() => router.push("/manage-users"), 1200);
           } else {
             toast.error(res.error?.errors?.message ?? "Update failed");
           }
@@ -103,7 +103,9 @@ const AddUserPage = () => {
           const res = await createManagedUser(values);
           if (res.remote === "success") {
             toast.success("User created! Welcome email sent.");
-            setTimeout(() => router.push("/manage-users"), 1200);
+            setTimeout(() => {
+              window.location.href = "/manage-users";
+            }, 1200);
           } else {
             toast.error(res.error?.errors?.message ?? "Create failed");
           }
