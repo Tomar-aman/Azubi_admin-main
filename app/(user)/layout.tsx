@@ -124,75 +124,75 @@ export default function AdminLayout({
             </IconButton> */}
           </Box>
           <Stack direction="row" spacing={2} sx={{ mr: 2 }}>
-              <Button
-                component={Link}
-                href="/manage-jobs"
-                startIcon={<SVG.JobsIcon />}
-                sx={{
-                  color: "#646464",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  fontSize: "15px",
-                  borderRadius: "20px",
-                  px: 2.5,
-                  py: 1,
-                  border: "1px solid transparent",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            <Button
+              component={Link}
+              href="/jobs"
+              startIcon={<SVG.JobsIcon />}
+              sx={{
+                color: "#646464",
+                fontWeight: 600,
+                textTransform: "none",
+                fontSize: "15px",
+                borderRadius: "20px",
+                px: 2.5,
+                py: 1,
+                border: "1px solid transparent",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                "& svg": {
+                  width: "20px",
+                  height: "20px",
+                  fill: "#646464",
+                  transition: "fill 0.3s ease",
+                },
+                "&:hover": {
+                  backgroundColor: "#e5f3f3",
+                  color: "#0096A4",
+                  borderColor: "#0096A4",
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 4px 12px rgba(0, 150, 164, 0.1)",
                   "& svg": {
-                    width: "20px",
-                    height: "20px",
-                    fill: "#646464",
-                    transition: "fill 0.3s ease",
+                    fill: "#0096A4",
                   },
-                  "&:hover": {
-                    backgroundColor: "#e5f3f3",
-                    color: "#0096A4",
-                    borderColor: "#0096A4",
-                    transform: "translateY(-1px)",
-                    boxShadow: "0 4px 12px rgba(0, 150, 164, 0.1)",
-                    "& svg": {
-                      fill: "#0096A4",
-                    },
-                  },
-                }}
-              >
-                Jobs
-              </Button>
-              <Button
-                component={Link}
-                href="/manage-employers"
-                startIcon={<SVG.GroupUser />}
-                sx={{
-                  color: "#646464",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  fontSize: "15px",
-                  borderRadius: "20px",
-                  px: 2.5,
-                  py: 1,
-                  border: "1px solid transparent",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                },
+              }}
+            >
+              Jobs
+            </Button>
+            <Button
+              component={Link}
+              href="/companies"
+              startIcon={<SVG.GroupUser />}
+              sx={{
+                color: "#646464",
+                fontWeight: 600,
+                textTransform: "none",
+                fontSize: "15px",
+                borderRadius: "20px",
+                px: 2.5,
+                py: 1,
+                border: "1px solid transparent",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                "& svg": {
+                  width: "20px",
+                  height: "20px",
+                  fill: "#646464",
+                  transition: "fill 0.3s ease",
+                },
+                "&:hover": {
+                  backgroundColor: "#e5f3f3",
+                  color: "#0096A4",
+                  borderColor: "#0096A4",
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 4px 12px rgba(0, 150, 164, 0.1)",
                   "& svg": {
-                    width: "20px",
-                    height: "20px",
-                    fill: "#646464",
-                    transition: "fill 0.3s ease",
+                    fill: "#0096A4",
                   },
-                  "&:hover": {
-                    backgroundColor: "#e5f3f3",
-                    color: "#0096A4",
-                    borderColor: "#0096A4",
-                    transform: "translateY(-1px)",
-                    boxShadow: "0 4px 12px rgba(0, 150, 164, 0.1)",
-                    "& svg": {
-                      fill: "#0096A4",
-                    },
-                  },
-                }}
-              >
-                Companies
-              </Button>
-            </Stack>
+                },
+              }}
+            >
+              Companies
+            </Button>
+          </Stack>
           {/* <div>
             <Stack
               direction={"row"}
