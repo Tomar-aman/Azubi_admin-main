@@ -69,6 +69,8 @@ export interface NewJob {
   startDate: string | null;
   email: string;
   additionalEmail: string;
+  website?: string;
+  phoneNumber?: string;
   address: string;
   mapUrl?: string;
   zipCode?: string | null;
@@ -104,6 +106,8 @@ export interface NewJobResponse {
   startDate: string | null;
   email: string;
   additionalEmail: string;
+  website?: string;
+  phoneNumber?: string;
   isDesktopView?: boolean;
   address: string;
   mapUrl?: string;
@@ -209,6 +213,9 @@ const AddComponent: React.FC = () => {
       .email("Invalid email address")
       .required("email is required"),
     additionalEmail: Yup.string().email("Invalid email address"),
+    website: Yup.string(),
+    // Phone number is free text: special characters (| \ - etc.) are allowed.
+    phoneNumber: Yup.string(),
     address: Yup.string().required("address is required"),
     mapUrl: Yup.string(),
     zipCode: Yup.number(),
@@ -275,6 +282,8 @@ const AddComponent: React.FC = () => {
       startDate: "",
       email: "",
       additionalEmail: "",
+      website: "",
+      phoneNumber: "",
       address: "",
       mapUrl: "",
       zipCode: "",
@@ -506,6 +515,11 @@ const AddComponent: React.FC = () => {
       );
       formik.setFieldValue("locationUrl", response.data.data.locationUrl || "");
       formik.setFieldValue("email", response.data.data.email);
+      formik.setFieldValue("website", response.data.data.website || "");
+      formik.setFieldValue(
+        "phoneNumber",
+        response.data.data.phoneNumber || ""
+      );
       formik.setFieldValue("address", response.data.data.address);
       formik.setFieldValue("mapUrl", response.data.data.mapUrl || "");
       formik.setFieldValue("zipCode", response.data.data.zipCode);
@@ -1080,6 +1094,38 @@ const AddComponent: React.FC = () => {
 
                     helperText={formik.touched.additionalEmail && (formik.errors.additionalEmail as string)}
 
+                  />
+                </Grid>
+                <Grid item xs={12} lg={2}>
+                  <label>Website</label>
+                </Grid>
+                <Grid item xs={10}>
+                  <TextField
+                    placeholder="https://example.com"
+                    type="text"
+                    fullWidth
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.website}
+                    name="website"
+                    error={formik.touched.website && Boolean(formik.errors.website)}
+                    helperText={formik.touched.website && (formik.errors.website as string)}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={2}>
+                  <label>Phone Number</label>
+                </Grid>
+                <Grid item xs={10}>
+                  <TextField
+                    placeholder="Enter phone number"
+                    type="text"
+                    fullWidth
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.phoneNumber}
+                    name="phoneNumber"
+                    error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                    helperText={formik.touched.phoneNumber && (formik.errors.phoneNumber as string)}
                   />
                 </Grid>
                 <Grid item xs={12} lg={2}>

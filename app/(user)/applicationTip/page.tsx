@@ -38,7 +38,7 @@ const ManageTips = () => {
   const [isDeleteModal, setDeleteModal] = useState(false);
   const [isTips, setIsTips] = useState(false);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [recordPerPage, setRecordPerPage] = useState<string>("5");
+  const [recordPerPage, setRecordPerPage] = useState<string>("10");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [pageNo, setPageNo] = useState<number>(1);

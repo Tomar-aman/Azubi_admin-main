@@ -12,8 +12,6 @@ import { FormHelperText,
   InputAdornment,
   TextField,
 } from "@mui/material";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import { SVG } from "@/app/components/icon";
 import Title from "@/app/components/title.components";
 import { useRouter } from "next/navigation";
@@ -613,28 +611,19 @@ const AddComponent = () => {
                 <label>Phone No.</label>
               </Grid>
               <Grid item xs={10}>
-                <PhoneInput
-                  country={"de"} // Default country: Germany (+49)
+                {/* Free-text phone field: special characters (| \ - etc.) allowed. */}
+                <TextField
+                  type="text"
+                  fullWidth
                   disabled={disable}
                   placeholder="Enter phone number"
-                  enableLongNumbers // allow long numbers / leading zeros (e.g. 000...)
+                  name="phoneNo"
                   value={formik.values.phoneNo}
-                  onChange={(value) => {
-                    // Store the full international number (with country code)
-                    formik.setFieldValue("phoneNo", value ? "+" + value : "");
-                  }}
-                  onBlur={(e) => {
-                    e.target.name = "phoneNo";
-                    formik.handleBlur(e);
-                  }}
-                  inputProps={{ name: "phoneNo" }}
-                  containerStyle={formik.touched.phoneNo && Boolean(formik.errors.phoneNo) ? { border: "1px solid #d32f2f", borderRadius: "4px" } : {}}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
+                  helperText={formik.touched.phoneNo && (formik.errors.phoneNo as string)}
                 />
-                {formik.touched.phoneNo && formik.errors.phoneNo && (
-                  <FormHelperText error sx={{ ml: "5px", color: "#d32f2f", fontWeight: "500" }}>
-                    {formik.errors.phoneNo as string}
-                  </FormHelperText>
-                )}
               </Grid>
 
               <Grid item xs={12} lg={2}>

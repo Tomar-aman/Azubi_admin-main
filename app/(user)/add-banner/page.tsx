@@ -43,7 +43,7 @@ const ManageBanners = () => {
   const [isDeleteModal, setDeleteModal] = useState(false);
   const [isAddCity, setIsAddCity] = useState(false);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [recordPerPage, setRecordPerPage] = useState<string>("5");
+  const [recordPerPage, setRecordPerPage] = useState<string>("10");
   const [pageNo, setPageNo] = useState<number>(1);
   const [name, setName] = useState("");
   const [rowData, setRowData] = useState<Banner[]>([]);

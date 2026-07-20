@@ -6,6 +6,8 @@ export interface Job {
   startDate: string;
   email: string;
   additionalEmail: string;
+  website: string;
+  phoneNumber: string;
   address: string;
   zipCode: string;
   jobDescription: string;
@@ -35,6 +37,8 @@ export interface UpdateJob {
   startDate?: string;
   email?: string;
   additionalEmail?: string;
+  website?: string;
+  phoneNumber?: string;
   address?: string;
   zipCode?: string;
   attachments?: any;

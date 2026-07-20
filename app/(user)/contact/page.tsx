@@ -38,7 +38,7 @@ const ManageContacts = () => {
   const [isDeleteModal, setDeleteModal] = useState(false);
   const [isContacts, setIsContacts] = useState(false);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [recordPerPage, setRecordPerPage] = useState<string>("5");
+  const [recordPerPage, setRecordPerPage] = useState<string>("10");
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");

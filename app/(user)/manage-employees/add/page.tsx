@@ -32,8 +32,6 @@ import { SIDEBAR_TABS } from "@/app/ulits/sidebarTabs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CustomLoader from "@/app/components/SpinLoader";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import { useSelector } from "react-redux";
 
 const AddEmployeePage = () => {
@@ -225,16 +223,17 @@ const AddEmployeePage = () => {
                 {/* PHONE */}
                 <Grid item xs={12} lg={2}><label>Phone No.</label></Grid>
                 <Grid item xs={12} lg={10}>
-                  <PhoneInput
-                    country={"de"} // Default country: Germany (+49)
+                  {/* Free-text phone field: special characters (| \ - etc.) allowed. */}
+                  <TextField
+                    type="text"
+                    fullWidth
                     placeholder="Enter phone number"
-                    enableLongNumbers // allow long numbers / leading zeros (e.g. 000...)
+                    name="phoneNo"
                     value={formik.values.phoneNo}
-                    onChange={(value) => {
-                      // Store the full international number (with country code)
-                      formik.setFieldValue("phoneNo", value ? "+" + value : "");
-                    }}
-                    inputProps={{ name: "phoneNo" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.phoneNo && Boolean(formik.errors.phoneNo)}
+                    helperText={formik.touched.phoneNo && (formik.errors.phoneNo as string)}
                   />
                 </Grid>
 

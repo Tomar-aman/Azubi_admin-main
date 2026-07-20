@@ -16,6 +16,8 @@ export const transformJobsData = (rawJobs: any): Job[] => {
       email: rawJob.email,
       count: rawJob.count ? rawJob.count.applicationCount : "0",
       additionalEmail: rawJob.additionalEmail,
+      website: rawJob.website || "",
+      phoneNumber: rawJob.phoneNumber || "",
       address: rawJob.address,
       zipCode: rawJob.zipCode,
       jobDescription: rawJob.jobDescription,

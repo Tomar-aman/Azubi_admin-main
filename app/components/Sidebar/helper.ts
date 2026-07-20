@@ -55,7 +55,6 @@ export const MENU_DATA: SidebarMenu[] = [
     label: "Job",
     url: "/jobs",
     key: "public-jobs",
-    target: "_blank",
   },
   {
     id: 102,
@@ -63,7 +62,6 @@ export const MENU_DATA: SidebarMenu[] = [
     label: "Companies",
     url: "/companies",
     key: "public-companies",
-    target: "_blank",
   },
   {
     id: 4,
