@@ -147,7 +147,7 @@ export default function JobsPage() {
         sx={{
           bgcolor: TEAL,
           px: { xs: 2, md: 5 },
-          pt: 3,
+          pt: { xs: 3, md: 6 },
           pb: { xs: 5, md: 8 },
           textAlign: "center",
         }}
@@ -475,8 +475,8 @@ export default function JobsPage() {
                           {typeof job.company === "string"
                             ? job.company
                             : job.company?.name ||
-                              job.companyDetail?.name ||
-                              "—"}
+                            job.companyDetail?.name ||
+                            "—"}
                         </Typography>
                       </Box>
                       <Box

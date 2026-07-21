@@ -21,7 +21,9 @@ export default function PublicLayout({
         <Box
           sx={{
             flexGrow: 1,
-            p: { xs: 2, md: 4 },
+            // Removed the surrounding padding so the full-bleed public pages
+            // (hero/header) reach the edges instead of showing a white border.
+            p: 0,
             height: "100%",
             overflowY: "auto",
           }}

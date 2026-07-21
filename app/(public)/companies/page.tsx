@@ -140,7 +140,7 @@ export default function CompaniesPage() {
         sx={{
           bgcolor: TEAL,
           px: { xs: 2, md: 5 },
-          pt: 3,
+          pt: { xs: 3, md: 6 },
           pb: { xs: 5, md: 8 },
           textAlign: "center",
         }}
