@@ -32,19 +32,22 @@ const DEFAULT_CODE = "+49";
  * space (e.g. legacy "+4915212345") still split correctly.
  */
 const parsePhone = (value?: string): { code: string; number: string } => {
-  const v = (value || "").trim();
-  if (!v) return { code: DEFAULT_CODE, number: "" };
+  // Do NOT trim the whole value — the user may intentionally type spaces in
+  // the number (e.g. "0176 123 456"); only strip the single separator space.
+  const v = value || "";
+  if (!v.trim()) return { code: DEFAULT_CODE, number: "" };
 
   const known = [...COUNTRY_CODES].sort(
     (a, b) => b.code.length - a.code.length
   );
   for (const c of known) {
     if (v.startsWith(c.code)) {
-      return { code: c.code, number: v.slice(c.code.length).trim() };
+      // Remove only the one separator space after the code, keep the rest.
+      return { code: c.code, number: v.slice(c.code.length).replace(/^ /, "") };
     }
   }
 
-  const match = v.match(/^(\+\d{1,4})\s*(.*)$/);
+  const match = v.match(/^(\+\d{1,4}) ?([\s\S]*)$/);
   if (match) return { code: match[1], number: match[2] };
 
   return { code: DEFAULT_CODE, number: v };
@@ -78,30 +81,34 @@ const PhoneNumberField: React.FC<Props> = ({
   error,
   helperText,
 }) => {
-  const parsed = parsePhone(value);
-  // Keep the selected code locally so it persists while the number is empty.
-  const [code, setCode] = React.useState(parsed.code);
-  const number = parsed.number;
-
-  // Sync the dropdown when an external value with an explicit code arrives
-  // (e.g. loading a record for edit).
-  React.useEffect(() => {
-    if (value) {
-      setCode(parsePhone(value).code);
-    }
-  }, [value]);
-
-  const options = COUNTRY_CODES.some((c) => c.code === code)
-    ? COUNTRY_CODES
-    : [{ code, label: code }, ...COUNTRY_CODES];
-
-  const emit = (nextCode: string, nextNumber: string) => {
-    const trimmed = (nextNumber || "").trim();
-    onChange(trimmed ? `${nextCode} ${trimmed}` : "");
-  };
+  // --- Country-code dropdown HIDDEN on request (kept, not removed) ---
+  // const parsed = parsePhone(value);
+  // // Keep the selected code locally so it persists while the number is empty.
+  // const [code, setCode] = React.useState(parsed.code);
+  // const number = parsed.number;
+  //
+  // // Sync the dropdown when an external value with an explicit code arrives
+  // // (e.g. loading a record for edit).
+  // React.useEffect(() => {
+  //   if (value) {
+  //     setCode(parsePhone(value).code);
+  //   }
+  // }, [value]);
+  //
+  // const options = COUNTRY_CODES.some((c) => c.code === code)
+  //   ? COUNTRY_CODES
+  //   : [{ code, label: code }, ...COUNTRY_CODES];
+  //
+  // const emit = (nextCode: string, nextNumber: string) => {
+  //   // Preserve spaces the user types; only treat an all-whitespace number
+  //   // as empty so the stored value stays clean.
+  //   const raw = nextNumber || "";
+  //   onChange(raw.trim() ? `${nextCode} ${raw}` : "");
+  // };
 
   return (
     <Stack direction="row" spacing={1} alignItems="flex-start">
+      {/* Country-code dropdown hidden on request (kept, not removed):
       <Select
         value={code}
         disabled={disabled}
@@ -119,14 +126,20 @@ const PhoneNumberField: React.FC<Props> = ({
           </MenuItem>
         ))}
       </Select>
+      */}
       <TextField
         type="text"
         fullWidth
         name={name}
         disabled={disabled}
         placeholder={placeholder || "Enter phone number"}
-        value={number}
-        onChange={(e) => emit(code, e.target.value)}
+        inputProps={{ inputMode: "tel" }}
+        value={value || ""}
+        onChange={(e) => {
+          // Block only alphabet letters; allow everything else.
+          const filtered = e.target.value.replace(/[a-zA-Z]/g, "");
+          onChange(filtered);
+        }}
         onBlur={onBlur}
         error={error}
         helperText={helperText}

@@ -656,7 +656,9 @@ const AddComponent = () => {
                 <TextField
                   placeholder="474010"
                   disabled={disable}
-                  type="number"
+                  // Text (not number) so a leading zero isn't stripped.
+                  type="text"
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
                   fullWidth
                   name="zipCode"
                   onChange={formik.handleChange}

@@ -77,23 +77,37 @@ export default function JobDetailPage() {
   if (!job) return null;
 
   const jobImages = Array.isArray(job.jobImages) ? job.jobImages : [];
+  // Company gallery images (backend returns them nested under `companyImages`).
+  const companyImages = Array.isArray(job.companyImages)
+    ? job.companyImages
+        .map((it: any) => it?.companyImages || it)
+        .filter((it: any) => it?.filepath)
+    : [];
   const companyName = job.company?.companyName || "—";
   const companyLogo = job.company?.companyLogo ? getImageUrl(job.company.companyLogo) : "";
-  const industry = job.industryName?.industryName || "";
-  const employmentType = job.jobType?.jobTypeName || "";
+  // Show ALL industries saved on the job (fall back to legacy single).
+  const industriesList =
+    Array.isArray(job.industries) && job.industries.length
+      ? job.industries.map((i: any) => i?.industryName).filter(Boolean)
+      : job.industryName?.industryName
+      ? [job.industryName.industryName]
+      : [];
+  const industry = industriesList.join(", ");
 
-  // Build employment type tags (comma-separated → individual labels)
-  const employmentTags = employmentType
-    ? employmentType.split(",").map((t: string) => t.trim()).filter(Boolean)
-    : [];
+  // Show ALL job types saved on the job (fall back to legacy single).
+  const jobTypesList =
+    Array.isArray(job.jobTypes) && job.jobTypes.length
+      ? job.jobTypes.map((t: any) => t?.jobTypeName).filter(Boolean)
+      : job.jobType?.jobTypeName
+      ? [job.jobType.jobTypeName]
+      : [];
+  const employmentType = jobTypesList.join(", ");
 
-  const cityNames = Array.isArray(job.cityDetail)
-    ? job.cityDetail.map((c: any) => c?.name).filter(Boolean).join(", ")
-    : "";
-  const locationText =
-    [job.address, [job.zipCode, cityNames].filter(Boolean).join(" ")]
-      .filter(Boolean)
-      .join(", ") || "N/A";
+  // One tag per job type
+  const employmentTags = jobTypesList;
+
+  // Location: address only (zip code and cities hidden on request)
+  const locationText = job.address || "N/A";
 
   const videoUrl = Array.isArray(job.videoLink) && job.videoLink[0] ? job.videoLink[0] : null;
 
@@ -346,6 +360,34 @@ export default function JobDetailPage() {
                           sx={{
                             width: "100%",
                             aspectRatio: "16 / 10",
+                            objectFit: "cover",
+                            borderRadius: "12px",
+                            border: "1px solid #eef2f4",
+                            display: "block",
+                          }}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              )}
+
+              {/* Company Gallery */}
+              {companyImages.length > 0 && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography sx={{ fontWeight: 800, fontSize: "16px", color: NAVY, mb: 2 }}>
+                    Company Gallery
+                  </Typography>
+                  <Grid container spacing={2}>
+                    {companyImages.map((image: any) => (
+                      <Grid item xs={6} sm={3} key={image._id}>
+                        <Box
+                          component="img"
+                          src={getImageUrl(image.filepath)}
+                          alt={companyName}
+                          sx={{
+                            width: "100%",
+                            aspectRatio: "1 / 1",
                             objectFit: "cover",
                             borderRadius: "12px",
                             border: "1px solid #eef2f4",

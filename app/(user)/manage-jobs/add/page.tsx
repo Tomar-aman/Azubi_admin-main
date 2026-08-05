@@ -228,7 +228,7 @@ const AddComponent: React.FC = () => {
     phoneNumber: Yup.string(),
     address: Yup.string().required("address is required"),
     mapUrl: Yup.string(),
-    zipCode: Yup.number(),
+    zipCode: Yup.string().matches(/^[0-9]*$/, "Zip code must be digits only"),
     jobTypes: Yup.array()
       .min(1, "Job Type is required")
       .required("Job Type is required"),
@@ -1243,8 +1243,10 @@ const AddComponent: React.FC = () => {
                 <Grid item xs={12} lg={10}>
                   <TextField
                     placeholder=""
-                    type="number"
-                    inputProps={{ maxLength: 8 }}
+                    // Text (not number) so a leading zero isn't stripped
+                    // (German zip codes can start with 0, e.g. 01067).
+                    type="text"
+                    inputProps={{ maxLength: 8, inputMode: "numeric", pattern: "[0-9]*" }}
                     fullWidth
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}

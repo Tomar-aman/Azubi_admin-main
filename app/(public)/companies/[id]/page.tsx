@@ -136,7 +136,7 @@ export default function CompanyDetailPage() {
                   <Stack direction="column" spacing={1} alignItems="flex-start">
                     <Chip
                       icon={<WorkIcon sx={{ fontSize: "14px !important", color: "#1FA49A !important" }} />}
-                      label={employer.industryName?.industryName || "Industry"}
+                      label={employer.industryName || "Industry"}
                       size="small"
                       sx={{ bgcolor: "#e6f3f3", color: "#1FA49A", fontWeight: 600, borderRadius: "8px" }}
                     />
