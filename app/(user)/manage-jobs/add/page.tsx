@@ -820,7 +820,9 @@ const AddComponent: React.FC = () => {
                       if (filteredCities.length) {
                         getCompaniesByCityId(filteredCities);
                         formik.setFieldValue("newCity", filteredCities);
-                        formik.setFieldValue("company", { id: "", label: "" });
+                        // Keep the already-selected company when changing cities
+                        // (don't reset it) — important in edit mode.
+                        // formik.setFieldValue("company", { id: "", label: "" });
                       } else {
                         formik.resetForm();
                       }
