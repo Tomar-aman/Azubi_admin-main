@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
+  Edit as EditIcon,
   LocationOn as LocationIcon,
   Apartment as ApartmentIcon,
   Email as EmailIcon,
@@ -37,9 +38,25 @@ const getImageUrl = (filepath: string) => {
 export default function JobDetailPage() {
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  // Only logged-in admins see the Edit button (public visitors don't).
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
+
+  useEffect(() => {
+    const checkLogin = () =>
+      setIsLoggedIn(!!localStorage.getItem("x-access"));
+    checkLogin();
+    // Keep in sync when the user logs out/in from another tab (storage event
+    // fires cross-tab), and re-check when this tab regains focus.
+    window.addEventListener("storage", checkLogin);
+    window.addEventListener("focus", checkLogin);
+    return () => {
+      window.removeEventListener("storage", checkLogin);
+      window.removeEventListener("focus", checkLogin);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchJobDetail = async () => {
@@ -80,8 +97,8 @@ export default function JobDetailPage() {
   // Company gallery images (backend returns them nested under `companyImages`).
   const companyImages = Array.isArray(job.companyImages)
     ? job.companyImages
-        .map((it: any) => it?.companyImages || it)
-        .filter((it: any) => it?.filepath)
+      .map((it: any) => it?.companyImages || it)
+      .filter((it: any) => it?.filepath)
     : [];
   const companyName = job.company?.companyName || "—";
   const companyLogo = job.company?.companyLogo ? getImageUrl(job.company.companyLogo) : "";
@@ -90,8 +107,8 @@ export default function JobDetailPage() {
     Array.isArray(job.industries) && job.industries.length
       ? job.industries.map((i: any) => i?.industryName).filter(Boolean)
       : job.industryName?.industryName
-      ? [job.industryName.industryName]
-      : [];
+        ? [job.industryName.industryName]
+        : [];
   const industry = industriesList.join(", ");
 
   // Show ALL job types saved on the job (fall back to legacy single).
@@ -99,8 +116,8 @@ export default function JobDetailPage() {
     Array.isArray(job.jobTypes) && job.jobTypes.length
       ? job.jobTypes.map((t: any) => t?.jobTypeName).filter(Boolean)
       : job.jobType?.jobTypeName
-      ? [job.jobType.jobTypeName]
-      : [];
+        ? [job.jobType.jobTypeName]
+        : [];
   const employmentType = jobTypesList.join(", ");
 
   // One tag per job type
@@ -156,22 +173,34 @@ export default function JobDetailPage() {
   const mapLink = job.mapUrl || "";
   const showMap = isEmbedCode || Boolean(mapSrc);
 
-  // Sidebar contact rows
+  // Sidebar contact rows (clickable)
+  const withProtocol = (url: string) =>
+    /^https?:\/\//i.test(url) ? url : `https://${url}`;
+  const websiteVal = job.website || job.company?.website;
+  const phoneVal = job.phoneNumber || job.company?.phoneNo;
   const contactRows = [
-    { label: "EMAIL", value: job.email, icon: <EmailIcon sx={{ fontSize: 18 }} /> },
+    {
+      label: "EMAIL",
+      value: job.email,
+      href: job.email ? `mailto:${job.email}` : undefined,
+      icon: <EmailIcon sx={{ fontSize: 18 }} />,
+    },
     {
       label: "WEBSITE",
-      value: job.website || job.company?.website,
+      value: websiteVal,
+      href: websiteVal ? withProtocol(websiteVal) : undefined,
       icon: <WebIcon sx={{ fontSize: 18 }} />,
     },
     {
       label: "PHONE",
-      value: job.phoneNumber || job.company?.phoneNo,
+      value: phoneVal,
+      href: phoneVal ? `tel:${String(phoneVal).replace(/\s/g, "")}` : undefined,
       icon: <PhoneIcon sx={{ fontSize: 18 }} />,
     },
     {
       label: "ADDITIONAL EMAIL",
       value: job.additionalEmail,
+      href: job.additionalEmail ? `mailto:${job.additionalEmail}` : undefined,
       icon: <EmailIcon sx={{ fontSize: 18 }} />,
     },
   ].filter((r) => r.value);
@@ -179,7 +208,16 @@ export default function JobDetailPage() {
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#F5F7F9" }}>
       {/* Header Bar */}
-      <Box sx={{ bgcolor: TEAL, py: 1.5, px: { xs: 2, md: 6 } }}>
+      <Box
+        sx={{
+          bgcolor: TEAL,
+          py: 1.5,
+          px: { xs: 2, md: 6 },
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <Button
           onClick={() => router.push("/jobs")}
           startIcon={<ArrowBackIcon />}
@@ -193,6 +231,35 @@ export default function JobDetailPage() {
         >
           Back To Jobs
         </Button>
+        {/* Edit button — only visible to logged-in admins */}
+        {isLoggedIn && (
+          <Button
+            onClick={() => {
+              // Re-check at click time — the token may have been cleared in
+              // another tab since this page loaded.
+              if (!localStorage.getItem("x-access")) {
+                setIsLoggedIn(false);
+                return;
+              }
+              window.open(`/manage-jobs/add?id=${id}`, "_blank");
+            }}
+            startIcon={<EditIcon />}
+            variant="outlined"
+            sx={{
+              color: "#fff",
+              borderColor: "rgba(255,255,255,0.7)",
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "14px",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,0.15)",
+                borderColor: "#fff",
+              },
+            }}
+          >
+            Edit
+          </Button>
+        )}
       </Box>
 
       {/* Page Body */}
@@ -580,16 +647,37 @@ export default function JobDetailPage() {
                             >
                               {row.label}
                             </Typography>
-                            <Typography
-                              sx={{
-                                color: NAVY,
-                                fontWeight: 600,
-                                fontSize: "13px",
-                                wordBreak: "break-word",
-                              }}
-                            >
-                              {row.value}
-                            </Typography>
+                            {row.href ? (
+                              <Box
+                                component="a"
+                                href={row.href}
+                                {...(row.label === "WEBSITE"
+                                  ? { target: "_blank", rel: "noreferrer" }
+                                  : {})}
+                                sx={{
+                                  color: TEAL,
+                                  fontWeight: 600,
+                                  fontSize: "13px",
+                                  wordBreak: "break-word",
+                                  textDecoration: "none",
+                                  display: "block",
+                                  "&:hover": { textDecoration: "underline" },
+                                }}
+                              >
+                                {row.value}
+                              </Box>
+                            ) : (
+                              <Typography
+                                sx={{
+                                  color: NAVY,
+                                  fontWeight: 600,
+                                  fontSize: "13px",
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {row.value}
+                              </Typography>
+                            )}
                           </Box>
                         </Box>
                       ))}

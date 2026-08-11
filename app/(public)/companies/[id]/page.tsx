@@ -71,6 +71,9 @@ export default function CompanyDetailPage() {
 
   const { employer, jobs } = data;
 
+  const withProtocol = (url: string) =>
+    /^https?:\/\//i.test(url) ? url : `https://${url}`;
+
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#F5F7F9" }}>
       {/* Header Bar */}
@@ -280,9 +283,9 @@ export default function CompanyDetailPage() {
                   <Box sx={{ bgcolor: "#e6f3f3", p: 1, borderRadius: "8px", display: "flex" }}>
                     <EmailIcon sx={{ color: "#008B8B", fontSize: 20 }} />
                   </Box>
-                  <Box>
+                  <Box sx={{ minWidth: 0 }}>
                     <Typography variant="caption" sx={{ color: "#888", fontWeight: 700, display: "block", mb: 0.5, letterSpacing: "0.5px" }}>EMAIL</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{employer.email}</Typography>
+                    <Box component="a" href={`mailto:${employer.email}`} sx={{ display: "block", fontWeight: 600, fontSize: "0.875rem", color: "#008B8B", textDecoration: "none", overflowWrap: "anywhere", "&:hover": { textDecoration: "underline" } }}>{employer.email}</Box>
                   </Box>
                 </Box>
 
@@ -290,9 +293,9 @@ export default function CompanyDetailPage() {
                   <Box sx={{ bgcolor: "#e6f3f3", p: 1, borderRadius: "8px", display: "flex" }}>
                     <PhoneIcon sx={{ color: "#008B8B", fontSize: 20 }} />
                   </Box>
-                  <Box>
+                  <Box sx={{ minWidth: 0 }}>
                     <Typography variant="caption" sx={{ color: "#888", fontWeight: 700, display: "block", mb: 0.5, letterSpacing: "0.5px" }}>PHONE</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{employer.phoneNo}</Typography>
+                    <Box component="a" href={`tel:${String(employer.phoneNo || "").replace(/\s/g, "")}`} sx={{ display: "block", fontWeight: 600, fontSize: "0.875rem", color: "#008B8B", textDecoration: "none", overflowWrap: "anywhere", "&:hover": { textDecoration: "underline" } }}>{employer.phoneNo}</Box>
                   </Box>
                 </Box>
 
@@ -301,9 +304,9 @@ export default function CompanyDetailPage() {
                     <Box sx={{ bgcolor: "#e6f3f3", p: 1, borderRadius: "8px", display: "flex" }}>
                       <WebIcon sx={{ color: "#008B8B", fontSize: 20 }} />
                     </Box>
-                    <Box>
+                    <Box sx={{ minWidth: 0 }}>
                       <Typography variant="caption" sx={{ color: "#888", fontWeight: 700, display: "block", mb: 0.5, letterSpacing: "0.5px" }}>WEBSITE</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: "#1a1a1a" }}>{employer.website}</Typography>
+                      <Box component="a" href={withProtocol(employer.website)} target="_blank" rel="noreferrer" sx={{ display: "block", fontWeight: 600, fontSize: "0.875rem", color: "#008B8B", textDecoration: "none", overflowWrap: "anywhere", "&:hover": { textDecoration: "underline" } }}>{employer.website}</Box>
                     </Box>
                   </Box>
                 )}
