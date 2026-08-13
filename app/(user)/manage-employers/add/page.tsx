@@ -733,7 +733,8 @@ const AddComponent = () => {
                   disabled={disable}
                   maxCount={1}
                   isA4={false}
-                  aspect={1}
+                  // Same upload UI; free-form (drag/resize) crop dialog.
+                  freeCropModal={true}
                 />
                 {formik.touched.companyLogo && Boolean(formik.errors.companyLogo) && (
                   <FormHelperText error sx={{ ml: 1, mt: 0 }}>CompanyLogo is Required</FormHelperText>
