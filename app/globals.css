@@ -124,3 +124,46 @@ input::file-selector-button {
 .MuiSvgIcon-root {
   z-index: 999;
 }
+
+/* CKEditor content styles.
+   The `* { padding: 0; margin: 0 }` reset at the top of this file also hits the
+   editor's editable area. CKEditor only sets `list-style-type` and relies on the
+   browser defaults for the rest, so lists lost their indent (bullets/numbers got
+   clipped) and headings, paragraphs and quotes lost their spacing.
+   Restore those defaults, scoped to `.ck-content` so the rest of the admin UI is
+   untouched. */
+.ck-content p {
+  margin: 1em 0;
+}
+.ck-content h1 {
+  margin: 0.67em 0;
+}
+.ck-content h2 {
+  margin: 0.83em 0;
+}
+.ck-content h3 {
+  margin: 1em 0;
+}
+.ck-content h4 {
+  margin: 1.33em 0;
+}
+.ck-content h5 {
+  margin: 1.67em 0;
+}
+.ck-content h6 {
+  margin: 2.33em 0;
+}
+.ck-content ul,
+.ck-content ol {
+  padding-left: 40px;
+  margin: 1em 0;
+}
+.ck-content ul ul,
+.ck-content ul ol,
+.ck-content ol ul,
+.ck-content ol ol {
+  margin: 0;
+}
+.ck-content blockquote {
+  margin: 1em 0;
+}
