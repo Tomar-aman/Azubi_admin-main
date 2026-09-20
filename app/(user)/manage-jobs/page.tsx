@@ -163,7 +163,13 @@ const ManageJobs = () => {
   };
   // handle table row
   const handleTableRow = (rowData: any) => {
-    const length = rowData.city[0]?.length - 1;
+    // `city` arrives as an array of city names (e.g. ["Aachen"]); tolerate a
+    // bare string too so the column never falls back to character indexing.
+    const cityNames: string[] = Array.isArray(rowData.city)
+      ? rowData.city.filter(Boolean)
+      : rowData.city
+        ? [rowData.city]
+        : [];
     return {
       id: rowData.id,
       date: rowData.date,
@@ -177,7 +183,9 @@ const ManageJobs = () => {
       jobTitle: rowData.jobTitle,
       startDate: rowData.startDate,
       industry: rowData.company?.industry || rowData.industryName,
-      city: `${rowData.city?.[0] ? rowData.city[0][0] : ""} ${rowData.city?.length > 1 ? `${rowData.city.length - 1} more` : ""}`,
+      city: cityNames.length
+        ? `${cityNames[0]}${cityNames.length > 1 ? ` +${cityNames.length - 1} more` : ""}`
+        : "",
       applications: rowData.count,
       status: (
         <div

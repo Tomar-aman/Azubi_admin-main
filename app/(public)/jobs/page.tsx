@@ -54,7 +54,8 @@ export default function JobsPage() {
     const response = await getAllJobs({
       searchValue: searchValue,
       pageNo: 1,
-      recordPerPage: "100", // Increased to allow client-side filtering of more jobs
+      // recordPerPage intentionally omitted: this page filters client-side,
+      // so it needs the whole public list. The API bounds the size.
       isFrontend: "true",
     });
 
